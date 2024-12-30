@@ -1,0 +1,28 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
+  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20.x"
+  },
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "webpack",
+    "start": "fastify start server/plugin.js -l debug -P -o"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zyabridos/taskManager.git"
+  },
+  "author": "Nina Zyabrina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zyabridos/taskManager/issues"
+  },
+  "homepage": "https://github.com/Zyabridos/taskManager#readme",
+  "dependencies": {
+    "fastify": "^5.2.0"
+  }
+}
