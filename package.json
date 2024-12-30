@@ -23,16 +23,29 @@
   },
   "homepage": "https://github.com/Zyabridos/taskManager#readme",
   "dependencies": {
+    "@fastify/view": "^10.0.1",
+    "bootstrap": "^5.3.3",
     "fastify": "^5.2.0",
-    "prettier": "^3.4.2"
+    "i18n": "^0.15.1",
+    "i18next": "^24.2.0",
+    "i18next-fs-backend": "^2.6.0",
+    "i18next-http-middleware": "^3.7.1",
+    "point-of-view": "^6.3.0",
+    "prettier": "^3.4.2",
+    "pug": "^3.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "css-loader": "^7.1.2",
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.10.0",
-    "globals": "^15.14.0"
+    "globals": "^15.14.0",
+    "mini-css-extract-plugin": "^2.9.2",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   }
 }
