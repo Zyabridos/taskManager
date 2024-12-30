@@ -46,7 +46,63 @@ app.get('/', async (req, res) => {
           title: t('Привет!'),
           message: t('Добро пожаловать в менеджер задач - практический проект на Fastufy'),
           button: t('Узнать больше'),
-        }
+        },
+      },
+    }
+  });
+});
+
+app.get('/users', { name: 'users' }, (req, res) => {
+  const t = req.t; 
+  return res.view('./server/views/users/index.pug', {
+    views: {
+      users: {
+        title: t('Менеджер задач'),
+        taskManager: t('Менеджер задач'),
+        navBar: {
+          taskManager: t('Менеджер задач'),
+          users: t('Пользователи'),
+          signIn: t('Вход'),
+          createAccount: t('Регистрация'),
+        },
+        table: {
+          title: t('Пользователи'),
+          id: t('ID'),
+          fullName: t('Полное имя'),
+          email: t('Email'),
+          createdAt: t('Дата создания'),
+          actions: t('Действия'),
+        },
+      }
+    }
+  });
+});
+
+app.get('/users/new', { name: 'newUser' }, (req, res) => {
+  const t = req.t; 
+  return res.view('./server/views/users/new.pug', {
+    views: {
+      users: {
+        title: t('Менеджер задач'),
+        taskManager: t('Менеджер задач'),
+        navBar: {
+          taskManager: t('Менеджер задач'),
+          users: t('Пользователи'),
+          signIn: t('Вход'),
+          createAccount: t('Регистрация'),
+        },
+        new: {
+          title: t('Регистрация'),
+          firstName: t('Имя'),
+          lastName: t('Фамилия'),
+          email: t('Email'),
+          password: t('Пароль'),
+          submit: t('Зарегистрироваться'),
+          firstNamePlaceholder: t('Введите ваше имя'),
+          lastNamePlaceholder: t('Введите вашу фамилию'),
+          emailPlaceholder: t('Введите ваш email'),
+          passwordPlaceholder: t('Введите ваш пароль'),
+    },
       }
     }
   });
