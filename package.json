@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "fastify start server/plugin.js -l debug -P -o"
+    "start": "node server/index.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,16 @@
   },
   "homepage": "https://github.com/Zyabridos/taskManager#readme",
   "dependencies": {
-    "fastify": "^5.2.0"
+    "fastify": "^5.2.0",
+    "prettier": "^3.4.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^8.51.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.10.0",
+    "globals": "^15.14.0"
   }
 }

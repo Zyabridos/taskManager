@@ -3,3 +3,6 @@ install:
 
 a:
 		node server/index.js
+
+p:
+		npx prettier --write .
