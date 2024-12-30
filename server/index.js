@@ -12,32 +12,34 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const app = fastify({ logger: true });
 
 i18next
-  .use(middleware.LanguageDetector)
+  .use(middleware.LanguageDetector) // Используем детектор языка
   .init({
-    fallbackLng: 'en',
-    preload: ['en', 'ru'],
+    lng: 'en', // Язык по умолчанию
+    fallbackLng: 'en', // Запасной язык
     resources: {
       en,
-      ru
-    }
+      ru,
+    },
+    debug: true,
   });
 
 app.register(middleware.plugin, { i18next });
 
 app.register(fastifyView, {
   engine: { pug },
+  // root: path.join(__dirname, '..', 'server', 'views'),
 });
 
-// Роут для главной страницы с локализацией
 app.get('/', async (req, res) => {
-  const t = req.t; // функция перевода
+  const t = req.t; 
+  console.log('Title translation:', t('title'));
+  console.log('Message translation:', t('message'));
   return res.view('./server/views/index.pug', {
     title: t('title'),
     message: t('message'),
   });
 });
 
-// Запуск сервера
 app.listen({ port: 3000 }, (err) => {
   if (err) {
     app.log.error(err);

@@ -1,4 +1,6 @@
 export default {
-  "title": "Home Page",
-  "message": "Welcome to our service!"
-}
+  translation: {
+    title: "Home Page",
+    message: "Welcome to our service!"
+  }
+};
