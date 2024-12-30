@@ -20,7 +20,7 @@ i18next
       en,
       ru,
     },
-    debug: true,
+    // debug: true,
   });
 
 app.register(middleware.plugin, { i18next });
@@ -32,11 +32,23 @@ app.register(fastifyView, {
 
 app.get('/', async (req, res) => {
   const t = req.t; 
-  console.log('Title translation:', t('title'));
-  console.log('Message translation:', t('message'));
   return res.view('./server/views/index.pug', {
-    title: t('title'),
-    message: t('message'),
+    views: {
+      mainPage: {
+        title: t('Менеджер задач'),
+        taskManager: t('Менеджер задач'),
+        users: t('Пользователи'),
+        status: t('Статусы'),
+        labels: t('Метки'),
+        tasks: t('Задачи'),
+        exit: t('Выход'),
+        welcomeCard: {
+          title: t('Привет!'),
+          message: t('Добро пожаловать в менеджер задач - практический проект на Fastufy'),
+          button: t('Узнать больше'),
+        }
+      }
+    }
   });
 });
 
