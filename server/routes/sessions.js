@@ -1,5 +1,5 @@
 const sessionRoutes = {
-   // logIn
+  // logIn
   logIn: '/session',
   // signIn
   signIn: '/session/new',

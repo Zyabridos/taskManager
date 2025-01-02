@@ -21,6 +21,11 @@ html
     .container.mt-5
       h1.text-center= views.users.new.title
 
+      if messages && messages.error
+        ul
+          each error in messages.error
+            li.text-danger= error
+            
       form(method="post" action="/users")
         .mb-3
           label(for="data_firstName")= views.users.new.firstName
@@ -36,6 +41,6 @@ html
 
         .mb-3
           label(for="data_password")= views.users.new.password
-          input#data_password.form-control(type="password" name="data[password]" required placeholder=views.users.new.passwordPlaceholder)
+          input#data_password.form-control(type="password" name="data[password]" autocomplete="data[password]" required placeholder=views.users.new.passwordPlaceholder)
 
         button.btn.btn-primary(type="submit")= views.users.new.submit

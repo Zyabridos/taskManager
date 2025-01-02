@@ -6,7 +6,7 @@ html
   body
       nav.navbar.navbar-expand-lg.navbar-light.bg-light
         .container
-          a.navbar-brand(href="/")= views.users.navNar.taskManager
+          a.navbar-brand(href="/")= views.users.taskManager
           button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent")
             span.navbar-toggler-icon
           #navbarNav.collapse.navbar-collapse
@@ -29,3 +29,15 @@ html
                 th= views.users.table.createdAt
                 th= views.users.table.actions
               tbody
+                each user, index in users
+                  tr
+                    td= `${user.id}`
+                    td= `${user.firstName} ${user.lastName}`
+                    td= `${user.email}`
+                    td= `${user.createdAt}`
+                    td
+                     .d-flex.flex-wrap
+                      a.btn.btn-primary.me-1(href="/users/1/edit" value="Изменить")
+                      form(action='/users/1' method='post')
+                        input(type="hidden" name="_method" value="delete")
+                        input.btn.btn-danger(type="submit" name="_method" value="Удалить")

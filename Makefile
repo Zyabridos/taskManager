@@ -6,3 +6,9 @@ a:
 
 p:
 		npx prettier --write .
+
+build:
+		npm run build
+
+start:
+		npm start
