@@ -1,3 +1,4 @@
+// import { FastifyPluginAsync } from 'fastify';
 import userValidationSchema from '../validationSchemas/userValidationSchema.js';
 
 const routes = {

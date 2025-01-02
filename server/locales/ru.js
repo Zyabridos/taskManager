@@ -1,6 +1,16 @@
 export default {
   translation: {
     views: {
+      login: {
+      title: 'Вход',
+      email: 'Электронная почта',
+      password: 'Пароль',
+      submit: 'Войти',
+      error: {
+        invalidCredentials: 'Неверный email или пароль.',
+        missingFields: 'Пожалуйста, заполните все поля.',
+      },
+    },
       mainPage: {
         title: 'Менеджер задач',
         taskManager: 'Менеджер задач',
@@ -12,7 +22,7 @@ export default {
         welcomeCard: {
           title: 'Привет!',
           message:
-            'Добро пожаловать в менеджер задач - практический проект на Fastufy',
+            'Добро пожаловать в менеджер задач - практический проект на Fastify',
           button: 'Узнать больше',
         },
       },

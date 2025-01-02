@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title= views.users.title
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css")
+  body
+    .container.mt-5
+      .row.justify-content-center
+        .col-md-6
+          h1.text-center= views.login.title
+          if errorMessage
+            .alert.alert-danger.text-center= errorMessage
+          form(method="POST" action="/session")
+            .mb-3
+              label(for="email" class="form-label")= views.login.email
+              input#email.form-control(type="email" name="email" placeholder="Введите ваш email" required)
+            .mb-3
+              label(for="password" class="form-label")= views.login.password
+              input#password.form-control(type="password" name="password" placeholder="Введите ваш пароль" required)
+            button.btn.btn-primary.w-100(type="submit")= views.login.submit
+          .text-center.mt-3
+            a(href="/users/new")= views.users.navBar.taskManager
