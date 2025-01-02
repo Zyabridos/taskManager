@@ -2,15 +2,15 @@ export default {
   translation: {
     views: {
       login: {
-      title: 'Вход',
-      email: 'Электронная почта',
-      password: 'Пароль',
-      submit: 'Войти',
-      error: {
-        invalidCredentials: 'Неверный email или пароль.',
-        missingFields: 'Пожалуйста, заполните все поля.',
+        title: 'Вход',
+        email: 'Электронная почта',
+        password: 'Пароль',
+        submit: 'Войти',
+        error: {
+          invalidCredentials: 'Неверный email или пароль.',
+          missingFields: 'Пожалуйста, заполните все поля.',
+        },
       },
-    },
       mainPage: {
         title: 'Менеджер задач',
         taskManager: 'Менеджер задач',
@@ -19,6 +19,7 @@ export default {
         labels: 'Метки',
         tasks: 'Задачи',
         exit: 'Выход',
+        changeLanguage: 'Changle language to English',
         welcomeCard: {
           title: 'Привет!',
           message:
@@ -55,17 +56,17 @@ export default {
           passwordPlaceholder: 'Введите ваш пароль',
         },
         edit: {
-            title: 'Изменение пользователя',
-            firstName: 'Имя',
-            lastName: 'Фамилия',
-            email: 'Email',
-            password: 'Пароль',
-            submit: 'Сохранить изменения',
-            firstNamePlaceholder: 'Введите ваше имя',
-            lastNamePlaceholder: 'Введите вашу фамилию',
-            emailPlaceholder: 'Введите ваш email',
-            passwordPlaceholder: 'Введите ваш новый пароль',
-          },
+          title: 'Изменение пользователя',
+          firstName: 'Имя',
+          lastName: 'Фамилия',
+          email: 'Email',
+          password: 'Пароль',
+          submit: 'Сохранить изменения',
+          firstNamePlaceholder: 'Введите ваше имя',
+          lastNamePlaceholder: 'Введите вашу фамилию',
+          emailPlaceholder: 'Введите ваш email',
+          passwordPlaceholder: 'Введите ваш новый пароль',
+        },
       },
     },
     title: 'Главная страница',

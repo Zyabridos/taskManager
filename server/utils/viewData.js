@@ -21,7 +21,8 @@ export const formViewData = (req, t, formType) => ({
       lastName: t('Фамилия'),
       email: t('Email'),
       password: t('Пароль'),
-      submit: formType === 'new' ? t('Зарегистрироваться') : t('Сохранить изменения'),
+      submit:
+        formType === 'new' ? t('Зарегистрироваться') : t('Сохранить изменения'),
       firstNamePlaceholder: t('Введите ваше имя'),
       lastNamePlaceholder: t('Введите вашу фамилию'),
       emailPlaceholder: t('Введите ваш email'),

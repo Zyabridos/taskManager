@@ -11,10 +11,11 @@ Task Manager is a task management system. It allows users to create tasks, assig
 This project is a work in progress, and I'm actively developing it. New features and improvements are being added regularly. Currently, it includes basic task management functionalities with user authentication.
 
 # Deployed version
+
 [Deployed project](https://taskmanager-tnpn.onrender.com/)
 You can Sign in by creating an account
 
-# Project Setup Locally 
+# Project Setup Locally
 
 This project uses a `Makefile` to simplify common development tasks. Below are the steps for installation, development, and building the project.
 
@@ -34,7 +35,6 @@ make install
 ```
 
 This will run `npm ci` to install dependencies.
-
 
 ## Building the Project
 
@@ -59,11 +59,10 @@ make start
 
 This command will launch the app. By default, the app should be accessible at [http://127.0.0.1:3000](http://127.0.0.1:3000). If you cannot access the app, check the terminal output for the correct URL or any errors related to the server startup.
 
-
 ## Summary of Makefile Commands
 
-| Command               | Description                                        |
-|-------------------    |----------------------------------------------------|
-| `make install`        | Installs dependencies using `npm ci`.              |           
-| `make build`          | Builds the frontend for production.                |
-| `make start`          | Starts the built application.                      |
+| Command        | Description                           |
+| -------------- | ------------------------------------- |
+| `make install` | Installs dependencies using `npm ci`. |
+| `make build`   | Builds the frontend for production.   |
+| `make start`   | Starts the built application.         |

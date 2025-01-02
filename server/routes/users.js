@@ -29,12 +29,12 @@ export default async function userRoutes(app, opts) {
 
   // GET /users/new - registration form
   app.get('/users/new', (req, res) => {
-  const { t } = req; // Функция перевода
-  return res.view('./server/views/users/new.pug', {
-    views: formViewData(req, t, 'new'),
-    messages: {},
+    const { t } = req; // Функция перевода
+    return res.view('./server/views/users/new.pug', {
+      views: formViewData(req, t, 'new'),
+      messages: {},
+    });
   });
-});
 
   // POST /users - process form data
   app.post('/users', async (req, res) => {
@@ -78,7 +78,7 @@ export default async function userRoutes(app, opts) {
     const userId = req.params.id;
     const { t } = req;
 
-    const user = users.find(u => u.id === parseInt(userId, 10));
+    const user = users.find((u) => u.id === parseInt(userId, 10));
 
     if (user) {
       return res.view('./server/views/users/edit.pug', {
@@ -102,7 +102,7 @@ export default async function userRoutes(app, opts) {
       password: formData['data[password]'],
     };
 
-    const user = users.find(u => u.id === parseInt(userId, 10));
+    const user = users.find((u) => u.id === parseInt(userId, 10));
     if (user) {
       user.firstName = data.firstName;
       user.lastName = data.lastName;
