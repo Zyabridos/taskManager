@@ -39,8 +39,8 @@ html
                   td= user.created_at_local_time || 'N/A'
                   td
                     .d-flex.flex-wrap
-                      a.btn.btn-primary.me-1(href=`/users/${index}/edit`)= 'Изменить'
-                      form(action=`/users/${index}` method='post')
+                      a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)= 'Изменить'
+                      form(action=`/users/${user.id}` method='POST')
                         input(type="hidden" name="_method" value="delete")
                         input.btn.btn-danger(type="submit" value="Удалить")
             else

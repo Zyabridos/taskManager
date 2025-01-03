@@ -8,6 +8,7 @@ import path from 'path';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyCookie from '@fastify/cookie';
 import sqlite3 from 'sqlite3';
+// import methodOverride from 'method-override'
 import userRoutes from './routes/users.js';
 import en from './locales/en.js';
 import ru from './locales/ru.js';
@@ -35,6 +36,7 @@ i18next.use(middleware.LanguageDetector).init({
 
 app.register(middleware.plugin, { i18next });
 app.register(fastifyFormbody);
+// app.register(methodOverride, { methods: ['POST', 'DELETE'] });
 app.register(fastifyCookie); // Регистрируем плагин для cookies
 
 // Регистрируем статичные файлы

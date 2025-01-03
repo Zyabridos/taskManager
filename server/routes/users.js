@@ -34,7 +34,7 @@ export default async function userRoutes(app, opts) {
           resolve(rows);
         });
       });
-      console.log(users);
+      // console.log(users);
       res.view('./server/views/users/index.pug', {
         views: {
           users: {
@@ -103,25 +103,24 @@ export default async function userRoutes(app, opts) {
         messages: { error: messages },
       });
     }
-    console.log(user);
   });
 
   // GET /users/:id/edit - форма редактирования
   app.get('/users/:id/edit', (req, res) => {
-    const userId = req.params.id;
-    const { t } = req;
+  const userId = req.params.id;   
+  const { t } = req;
 
-    db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
-      if (err || !user) {
-        res.status(404).send(t('Пользователь не найден'));
-        return;
-      }
-      res.view('./server/views/users/edit.pug', {
-        views: formViewData(req, t, 'edit'),
-        user,
-      });
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err || !user) {
+      res.status(404).send(t('Пользователь не найден'));
+      return;
+    }
+    res.view('./server/views/users/edit.pug', {
+      views: formViewData(req, t, 'edit'),
+      user,
     });
   });
+});
 
   // PATCH /users/:id/edit - обновление пользователя
   app.patch('/users/:id/edit', (req, res) => {
@@ -146,4 +145,20 @@ export default async function userRoutes(app, opts) {
       }
     );
   });
+
+  // DELETE /users/:id - удаление пользователя - DOES`NT WORK YET
+  app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+  console.log(`Attempting to delete user with ID: ${id}`); 
+
+  db.run(`DELETE FROM users WHERE id = ?`, [id], (err) => {
+    if (err) {
+      console.error(`Error deleting user: ${err.message}`);
+      res.status(500).send(err.message);
+      return;
+    }
+    console.log(`User with ID: ${id} deleted successfully`);
+    res.redirect('/users');
+  });
+});
 }
