@@ -8,7 +8,7 @@ import path from 'path';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyCookie from '@fastify/cookie';
 import sqlite3 from 'sqlite3';
-// import methodOverride from 'method-override'
+import session from '@fastify/session';
 import userRoutes from './routes/users.js';
 import en from './locales/en.js';
 import ru from './locales/ru.js';
@@ -36,8 +36,19 @@ i18next.use(middleware.LanguageDetector).init({
 
 app.register(middleware.plugin, { i18next });
 app.register(fastifyFormbody);
-// app.register(methodOverride, { methods: ['POST', 'DELETE'] });
-app.register(fastifyCookie); // Регистрируем плагин для cookies
+app.register(fastifyCookie);
+app.register(session, {
+    secret: 'a secret with minimum length of 32 characters',
+    cookie: {
+      secure: false,
+    },
+  });
+
+// хук для просмотра настроек текущей сессии
+// app.addHook('preHandler', (req, res, done) => {
+//   console.log('Текущая сессия:', req.session);
+//   done();
+// });
 
 // Регистрируем статичные файлы
 app.register(fastifyStatic, {
@@ -50,7 +61,7 @@ app.register(fastifyView, {
 });
 
 // Регистрируем маршруты
-app.register(sessionsRoutses);
+app.register(sessionsRoutses, { db });
 app.register(changeLanguage);
 // для пользователей передает БД как options
 app.register(userRoutes, { db });
