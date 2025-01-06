@@ -10,7 +10,8 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,10 +25,12 @@
   "homepage": "https://github.com/Zyabridos/taskManager#readme",
   "dependencies": {
     "@fastify/cookie": "^6.0.0",
+    "@fastify/flash": "^4.0.1",
     "@fastify/formbody": "^6.0.1",
     "@fastify/passport": "^3.0.1",
     "@fastify/session": "^6.5.2",
     "@fastify/static": "^5.0.0",
+    "@jest/globals": "^29.7.0",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "connect-flash": "^0.1.1",
@@ -38,17 +41,20 @@
     "i18next": "^24.2.0",
     "i18next-fs-backend": "^2.6.0",
     "i18next-http-middleware": "^3.7.1",
+    "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "point-of-view": "^5.3.0",
     "prettier": "^3.4.2",
     "pug": "^3.0.3",
+    "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@faker-js/faker": "^9.3.0",
     "css-loader": "^7.1.2",
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",

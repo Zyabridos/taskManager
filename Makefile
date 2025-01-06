@@ -12,3 +12,6 @@ build:
 
 start:
 		npm start
+
+t:
+		npm test -s

@@ -9,7 +9,7 @@ html(lang="ru")
     header
       h1= views.users.edit.title
     main
-      form(action=`/users/${user.id}/edit`, method="POST")
+      form(action=`/users/${user.id}/edit`, method="PATCH")
         input(type="hidden", name="_method", value="PATCH")
 
         div.form-group
