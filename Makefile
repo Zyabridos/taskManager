@@ -2,7 +2,7 @@ install:
 		npm ci
 
 a:
-		node server/index.js --watch
+		node server/startServer.js --watch
 
 p:
 		npx prettier --write .
