@@ -64,5 +64,5 @@
 // });
 
 test('dummy test for now', () => {
-  expect(true).toBe(true)
-})
+  expect(true).toBe(true);
+});

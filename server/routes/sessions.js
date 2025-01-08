@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import routes from './routes.js'
+import routes from './routes.js';
 
 export default async function sessionsRoutes(app, opts) {
   const { db } = opts; // Получаем базу данных из опций
@@ -30,12 +30,11 @@ export default async function sessionsRoutes(app, opts) {
       },
     });
   });
-
   // Страница входа
-  app.get('/session/new', { name: 'sessionNew' }, (req, res) => {
+  app.get('/session/new', { name: 'sessionNew' }, (req, reply) => {
     const { t } = req;
 
-    return res.view('./server/views/sessions/new.pug', {
+    return reply.view('./server/views/sessions/new.pug', {
       views: {
         users: {
           title: t('Менеджер задач'),
@@ -58,54 +57,54 @@ export default async function sessionsRoutes(app, opts) {
   });
 
   // Обработка входа
-  app.post('/session', { name: 'sessionCreate' }, async (req, res) => {
+  app.post('/session', { name: 'sessionCreate' }, async (req, reply) => {
     const { email, password } = req.body;
     console.log('Request body:', req.body);
 
     try {
-      const user = await new Promise((resolve, reject) => {
+      const user = await new Promise((replyolve, reject) => {
         db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
           if (err) return reject(err);
-          resolve(row);
+          replyolve(row);
         });
       });
 
       if (!user) {
         console.log('Пользователь не найден:', email);
-        // return res.redirect(app.reverse('sessionNew')); // позже подставим имя маршрута (sessionCreate)
-        return res.redirect(routes.sessionCreate);
+        // return reply.redirect(app.reverse('sessionNew')); // позже подставим имя маршрута (sessionCreate)
+        return reply.redirect(routes.sessionCreate);
       }
 
       const passwordMatches = await bcrypt.compare(password, user.password);
 
       if (!passwordMatches) {
         console.log('Пароли не совпадают:', { email, password });
-        // return res.redirect(app.reverse('sessionNew')); // позже подставим имя маршрута (sessionCreate)
-        return res.redirect(routes.sessionCreate);
+        // return reply.redirect(app.reverse('sessionNew')); // позже подставим имя маршрута (sessionCreate)
+        return reply.redirect(routes.sessionCreate);
       }
 
       console.log('Вы успешно авторизовались:', { userId: user.id });
-      req.flash('info', ('SUCCESS')); // надо на 18n потом заменить
+      req.flash('info', 'SUCCESS'); // надо на 18n потом заменить
       req.session.userId = user.id;
-      // res.redirect(app.reverse('root'));
-      res.redirect(routes.root)
+      // reply.redirect(app.reverse('root'));
+      reply.redirect(routes.root);
     } catch (err) {
       console.error('Ошибка при выполнении запроса:', err);
-      res.status(500).send('Внутренняя ошибка сервера');
+      reply.status(500).send('Внутренняя ошибка сервера');
     }
   });
 
   // Обработка выхода
-  app.post('/session/delete', { name: 'sessionDelete' }, (req, res) => {
+  app.post('/session/delete', { name: 'sessionDelete' }, (req, reply) => {
     console.log('Обрабатываю /session/delete');
     if (!req.session) {
-      // return res.redirect(app.reverse('root'));
-      return res.redirect(routes.root);
+      // return reply.redirect(app.reverse('root'));
+      return reply.redirect(routes.root);
     }
 
     req.session = null; // Удаляем данные сессии
     console.log('Сессия удалена');
-    // res.redirect(app.reverse('root'));
-    return res.redirect(routes.root);
+    // reply.redirect(app.reverse('root'));
+    return reply.redirect(routes.root);
   });
 }

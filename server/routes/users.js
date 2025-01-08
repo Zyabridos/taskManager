@@ -70,59 +70,59 @@ export default async function userRoutes(app, opts) {
     });
   });
 
- app.post('/users', { name: 'userCreate' }, async (req, reply) => {
-  const formData = req.body;
-  const user = {
-    firstName: formData['data[firstName]'],
-    lastName: formData['data[lastName]'],
-    email: formData['data[email]'],
-    password: formData['data[password]'],
-  };
+  app.post('/users', { name: 'userCreate' }, async (req, reply) => {
+    const formData = req.body;
+    const user = {
+      firstName: formData['data[firstName]'],
+      lastName: formData['data[lastName]'],
+      email: formData['data[email]'],
+      password: formData['data[password]'],
+    };
 
-  try {
-    // Валидация данных
-    await userValidationSchema.validate(user, { abortEarly: false });
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+    try {
+      // Валидация данных
+      await userValidationSchema.validate(user, { abortEarly: false });
+      const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    await new Promise((resolve, reject) => {
-      const stmt = db.prepare(
-        'INSERT INTO users (firstName, lastName, email, password, created_at, created_at_local_time) VALUES (?, ?, ?, ?, ?, ?)'
-      );
-      stmt.run(
-        [
-          user.firstName,
-          user.lastName,
-          user.email,
-          hashedPassword,
-          formattedDate,
-          formattedDateLocal,
-        ],
-        (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
+      await new Promise((resolve, reject) => {
+        const stmt = db.prepare(
+          'INSERT INTO users (firstName, lastName, email, password, created_at, created_at_local_time) VALUES (?, ?, ?, ?, ?, ?)'
+        );
+        stmt.run(
+          [
+            user.firstName,
+            user.lastName,
+            user.email,
+            hashedPassword,
+            formattedDate,
+            formattedDateLocal,
+          ],
+          (err) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
           }
-        }
-      );
-      stmt.finalize();
-    });
+        );
+        stmt.finalize();
+      });
 
-    req.flash('info', ('SUCCESS')); // надо на 18n потом заменить
-    console.log('Flash после записи:', req.session.flash);
-    return reply.redirect('/users');
-  } catch (error) {
-    const messages = error.inner?.map((e) => e.message) || [error.message];
-    const { t } = req;
+      req.flash('info', 'SUCCESS'); // надо на 18n потом заменить
+      console.log('Flash после записи:', req.session.flash);
+      return reply.redirect('/users');
+    } catch (error) {
+      const messages = error.inner?.map((e) => e.message) || [error.message];
+      const { t } = req;
 
-    req.flash('error', ('ERROR!')); // надо на 18n потом заменить
+      req.flash('error', 'ERROR!'); // надо на 18n потом заменить
 
-    return reply.view('./server/views/users/new.pug', {
-      views: formViewData(req, t, 'new'),
-      messages: { error: messages },
-    });
-  }
-});
+      return reply.view('./server/views/users/new.pug', {
+        views: formViewData(req, t, 'new'),
+        messages: { error: messages },
+      });
+    }
+  });
 
   // GET /users/:id/edit - форма редактирования
   app.get('/users/:id/edit', { name: 'userEditForm' }, (req, res) => {

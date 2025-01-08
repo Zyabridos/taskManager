@@ -33,6 +33,9 @@ export const setUpViews = (app) => {
     engine: { pug },
     templates: path.join('./'),
   });
+  app.decorateReply('render', function render(viewPath, locals) {
+    this.view(viewPath, { ...locals, reply: this });
+  });
 };
 
 export const setUpStaticAssets = (app) => {
@@ -70,25 +73,25 @@ export const registerPlugins = async (app) => {
 
   // add flash декоратор - пока не работает
   app.decorateRequest('flash', function (type, message) {
-  if (!this.session.flash) {
-    this.session.flash = {};
-  }
-
-  if (message) {
-    if (!this.session.flash[type]) {
-      this.session.flash[type] = [];
+    if (!this.session.flash) {
+      this.session.flash = {};
     }
-    this.session.flash[type].push(message);
-  } else if (type) {
-    const messages = this.session.flash[type] || [];
-    delete this.session.flash[type];
-    return messages;
-  } else {
-    const allMessages = { ...this.session.flash };
-    this.session.flash = {}; // Удаляем все сообщения после чтения
-    return allMessages;
-  }
-});
+
+    if (message) {
+      if (!this.session.flash[type]) {
+        this.session.flash[type] = [];
+      }
+      this.session.flash[type].push(message);
+    } else if (type) {
+      const messages = this.session.flash[type] || [];
+      delete this.session.flash[type];
+      return messages;
+    } else {
+      const allMessages = { ...this.session.flash };
+      this.session.flash = {}; // Удаляем все сообщения после чтения
+      return allMessages;
+    }
+  });
 };
 
 // register custom routes
