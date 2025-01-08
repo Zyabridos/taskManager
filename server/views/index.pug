@@ -25,12 +25,12 @@ html
               form(action='/sessions/delete', method='post')
                 input.btn.nav-link(type='submit', value=views.mainPage.exit)
     .container.wrapper.flex-grow-1
-      //- if flash && flash.success
-      //-   for message in flash.success
-      //-     .alert.alert-success= message
-      //- if flash && flash.warning
-      //-   for message in flash.warning
-      //-     .alert.alert-warning= message
+      if flash && flash.success
+        for message in flash.success
+          .alert.alert-success= message
+      if flash && flash.warning
+        for message in flash.warning
+          .alert.alert-warning= message
       h1.display-4.fw-bold.mt-4= views.mainPage.welcomeCard.title
       .container
         .row

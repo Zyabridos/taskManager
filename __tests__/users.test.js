@@ -27,7 +27,7 @@ describe('test users CRUD', () => {
       exposeHeadRoutes: false,
       logger: { target: 'pino-pretty' },
     });
-    await init();
+    await init(app);
     // knex = app.objection.knex;
     // models = app.objection.models;
     knex = app.objection.knex;
@@ -75,7 +75,10 @@ describe('test users CRUD', () => {
       },
     });
 
+    // 302 - code of redirect
     expect(response.statusCode).toBe(302);
+    // just to be sure we redirect to /users
+    expect(response.headers.location).toBe(routes.users);
     const expected = {
       ..._.omit(params, 'password'),
       passwordDigest: encrypt(params.password),

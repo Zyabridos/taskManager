@@ -7,11 +7,12 @@ import middleware from 'i18next-http-middleware';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyCookie from '@fastify/cookie';
 import session from '@fastify/session';
-import fastifyMethodOverride from 'fastify-method-override';
+// import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
 // import fastifyReverseRoutes from 'fastify-reverse-routes';
+import flash from 'connect-flash';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
@@ -59,10 +60,32 @@ export const registerPlugins = async (app) => {
     secret: 'a secret with minimum length of 32 characters',
     cookie: { secure: false },
   });
-  await app.register(fastifyMethodOverride);
+  // await app.register(fastifyMethodOverride);
   await app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[process.env.NODE_ENV || 'development'],
     models,
+  });
+
+  // add flash декоратор - пока не работает
+  app.decorateRequest('flash', function (type, message) {
+    // вот это работает, а в целом нет
+    console.log(`message!!!!!!!!${  message}`)
+    if (!this.session.flash) {
+      this.session.flash = {};
+    }
+
+    if (message) {
+      // Установка сообщения
+      if (!this.session.flash[type]) {
+        this.session.flash[type] = [];
+      }
+      this.session.flash[type].push(message);
+    } else {
+      // Получение сообщения
+      const messages = this.session.flash[type] || [];
+      delete this.session.flash[type];
+      return messages;
+    }
   });
 };
 
@@ -86,5 +109,3 @@ const init = async (app) => {
 };
 
 export default init;
-
-//  git commit -m 'code refactoring; move routes to fastifyReverseRoutes'

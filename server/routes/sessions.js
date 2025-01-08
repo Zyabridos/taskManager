@@ -63,7 +63,7 @@ export default async function sessionsRoutes(app, opts) {
   // app.post('/session', { name: 'sessionCreate' }, async (req, res) => {
     app.post('/session', async (req, res) => {
     const { email, password } = req.body;
-    // console.log('Request body:', req.body);
+    console.log('Request body:', req.body);
 
     try {
       const user = await new Promise((resolve, reject) => {
@@ -88,8 +88,10 @@ export default async function sessionsRoutes(app, opts) {
       }
 
       console.log('Вы успешно авторизовались:', { userId: user.id });
+      req.flash('info', ('SUCCESS')); // надо на 18n потом заменить
       req.session.userId = user.id;
-      res.redirect(app.reverse('home'));
+      // res.redirect(app.reverse('root'));
+      res.redirect(routes.root)
     } catch (err) {
       console.error('Ошибка при выполнении запроса:', err);
       res.status(500).send('Внутренняя ошибка сервера');
