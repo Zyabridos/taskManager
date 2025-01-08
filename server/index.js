@@ -10,7 +10,8 @@ import session from '@fastify/session';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
-import sqlite3 from 'sqlite3'
+import sqlite3 from 'sqlite3';
+// import fastifyReverseRoutes from 'fastify-reverse-routes';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
@@ -22,8 +23,8 @@ import prepareDatabase from './db/init.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-  const db = new sqlite3.Database(':memory:');
-  prepareDatabase(db);
+const db = new sqlite3.Database(':memory:');
+prepareDatabase(db);
 
 export const setUpViews = (app) => {
   app.register(fastifyView, {
@@ -40,17 +41,17 @@ export const setUpStaticAssets = (app) => {
 };
 
 export const setupLocalization = async () => {
-  await i18next
-    .use(middleware.LanguageDetector)
-    .init({
-      lng: 'en',
-      fallbackLng: 'ru',
-      resources: { ru, en },
-      detection: { order: ['cookie', 'header'], caches: ['cookie'] },
-    });
+  await i18next.use(middleware.LanguageDetector).init({
+    lng: 'en',
+    fallbackLng: 'ru',
+    resources: { ru, en },
+    detection: { order: ['cookie', 'header'], caches: ['cookie'] },
+  });
 };
 
+// register all plugins that we have imported
 export const registerPlugins = async (app) => {
+  // await app.register(fastifyReverseRoutes);
   app.register(middleware.plugin, { i18next });
   app.register(fastifyFormbody);
   app.register(fastifyCookie);
@@ -67,21 +68,23 @@ export const registerPlugins = async (app) => {
 
 // register custom routes
 export const addRoutes = (app) => {
+  console.log('Регистрация маршрутов начата...');
   app.register(sessionsRoutses, { db }, { prefix: '/session' });
   app.register(userRoutes, { db }, { prefix: '/users' });
   app.register(changeLanguage, { prefix: '/change-language' });
+  console.log('Маршруты успешно зарегистрированы.');
 
   return app;
 };
 
 const init = async (app) => {
-
   await setupLocalization();
   await registerPlugins(app);
   setUpViews(app);
   setUpStaticAssets(app);
   addRoutes(app);
-
 };
 
 export default init;
+
+//  git commit -m 'code refactoring; move routes to fastifyReverseRoutes'

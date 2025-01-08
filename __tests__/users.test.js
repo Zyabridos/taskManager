@@ -7,6 +7,15 @@ import init from '../server/index.js';
 import encrypt from '../server/lib/secure.cjs';
 import { getTestData, prepareData } from './helpers/index.js';
 
+const routes = {
+  root: '/',
+  users: '/users',
+  userNew: '/users/new',
+  sessionNew: '/session/new',
+  sessionCreate: '/session',
+  sessionDelete: '/session/delete',
+};
+
 describe('test users CRUD', () => {
   let app;
   let knex;
@@ -38,7 +47,8 @@ describe('test users CRUD', () => {
   it('index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('users'),
+      // url: app.reverse('users'),
+      url: routes.users,
     });
 
     expect(response.statusCode).toBe(200);
@@ -47,7 +57,8 @@ describe('test users CRUD', () => {
   it('new', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: app.reverse('newUser'),
+      // url: app.reverse('newUser'),
+      url: routes.userNew,
     });
 
     expect(response.statusCode).toBe(200);
@@ -57,7 +68,8 @@ describe('test users CRUD', () => {
     const params = testData.users.new;
     const response = await app.inject({
       method: 'POST',
-      url: app.reverse('users'),
+      // url: app.reverse('users'),
+      url: routes.users,
       payload: {
         data: params,
       },

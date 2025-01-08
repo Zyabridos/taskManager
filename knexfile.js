@@ -26,7 +26,7 @@ export const test = {
   migrations,
 };
 
-export const production =  {
+export const production = {
   client: 'sqlite3',
   connection: {
     filename: path.resolve(__dirname, 'database.sqlite'),

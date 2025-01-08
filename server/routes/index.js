@@ -1,5 +1,6 @@
 export default async function changeLanguage(app, opts) {
-  app.post('/change-language', (req, reply) => {
+  app.post('/change-language', { name: 'changeLanguage' }, (req, reply) => {
+    // app.post('/change-language', (req, reply) => {
     const { language } = req.body;
     if (language) {
       req.i18n.changeLanguage(language); // Меняем язык через i18next

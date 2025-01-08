@@ -1,15 +1,13 @@
 import bcrypt from 'bcrypt';
+import routes from './routes.js'
 
 export default async function sessionsRoutes(app, opts) {
   const { db } = opts; // Получаем базу данных из опций
 
   // Главная страница с отображением flash-сообщений
-  app.get('/', async (req, res) => {
+  app.get('/', { name: 'home' }, async (req, res) => {
+    // app.get('/', async (req, res) => {
     const { t } = req;
-    // const flashMessages = req.flash();
-    // console.log('Flash messages:', flashMessages);
-    // console.log('Flash success messages:', req.flash('success'));
-    // console.log('Flash warning messages:', req.flash('warning'));
 
     return res.view('./server/views/index.pug', {
       views: {
@@ -25,18 +23,18 @@ export default async function sessionsRoutes(app, opts) {
           welcomeCard: {
             title: t('Привет!'),
             message: t(
-              'Добро пожаловать в менеджер задач - практический проект на Fastufy'
+              'Добро пожаловать в менеджер задач - практический проект на Fastify'
             ),
             button: t('Узнать больше'),
           },
         },
       },
-      // flash: flashMessages,
     });
   });
 
   // Страница входа
-  app.get('/session/new', (req, res) => {
+  app.get('/session/new', { name: 'sessionNew' }, (req, res) => {
+    // app.get('/session/new', (req, res) => {
     const { t } = req;
 
     return res.view('./server/views/sessions/new.pug', {
@@ -62,9 +60,10 @@ export default async function sessionsRoutes(app, opts) {
   });
 
   // Обработка входа
-  app.post('/session', async (req, res) => {
+  // app.post('/session', { name: 'sessionCreate' }, async (req, res) => {
+    app.post('/session', async (req, res) => {
     const { email, password } = req.body;
-    console.log('Request body:', req.body);
+    // console.log('Request body:', req.body);
 
     try {
       const user = await new Promise((resolve, reject) => {
@@ -76,22 +75,21 @@ export default async function sessionsRoutes(app, opts) {
 
       if (!user) {
         console.log('Пользователь не найден:', email);
-        // req.flash('warning', 'Пользователь не найден!');
-        return res.redirect('/session/new'); // Перенаправляем на страницу входа
+        // return res.redirect(app.reverse('sessionNew')); // позже подставим имя маршрута (sessionCreate)
+        return res.redirect(routes.sessionCreate);
       }
 
       const passwordMatches = await bcrypt.compare(password, user.password);
 
       if (!passwordMatches) {
         console.log('Пароли не совпадают:', { email, password });
-        // req.flash('warning', 'Неверный пароль!');
-        return res.redirect('/session/new'); // Перенаправляем на страницу входа
+        // return res.redirect(app.reverse('sessionNew')); // позже подставим имя маршрута (sessionCreate)
+        return res.redirect(routes.sessionCreate);
       }
 
       console.log('Вы успешно авторизовались:', { userId: user.id });
-      // req.flash('success', 'Вы успешно вошли в систему!');
       req.session.userId = user.id;
-      res.redirect('/'); // Перенаправляем на главную страницу
+      res.redirect(app.reverse('home'));
     } catch (err) {
       console.error('Ошибка при выполнении запроса:', err);
       res.status(500).send('Внутренняя ошибка сервера');
@@ -99,16 +97,17 @@ export default async function sessionsRoutes(app, opts) {
   });
 
   // Обработка выхода
-  app.post('/session/delete', (req, res) => {
-    console.log('Обработчик маршрута /sessions/delete вызван');
+  app.post('/session/delete', { name: 'sessionDelete' }, (req, res) => {
+    // app.post('/session/delete', (req, res) => {
+    console.log('Обрабатываю /sessions/delete');
     if (!req.session) {
-      // req.flash('warning', 'Сессия не найдена!');
-      return res.redirect('/'); // Перенаправляем на главную страницу
+      // return res.redirect(app.reverse('root'));
+      return res.redirect(routes.root);
     }
 
     req.session = null; // Удаляем данные сессии
-    // req.flash('success', 'Вы вышли из системы!');
     console.log('Сессия удалена');
-    res.redirect('/'); // Перенаправляем на главную страницу
+    // res.redirect(app.reverse('root'));
+    return res.redirect(routes.root);
   });
 }

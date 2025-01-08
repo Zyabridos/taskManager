@@ -1,11 +1,16 @@
-import fastify from 'fastify'
+import fastify from 'fastify';
 import init from './index.js';
 
 const app = fastify({ logger: true });
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
-  await init(app)
+  await init(app);
+
+  app.ready((err) => {
+    if (err) throw err;
+    console.log(app.printRoutes()); // show routes
+  });
 
   app.listen(
     {

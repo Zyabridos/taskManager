@@ -23,9 +23,10 @@ const formattedDateLocal = new Date().toLocaleString('en-US', {
 });
 
 export default async function userRoutes(app, opts) {
-  const { db } = opts;
+  const { db } = opts; // Получаем базу данных из опций
   // GET /users - список всех пользователей
-  app.get('/users', async (req, res) => {
+  app.get('/users', { name: 'usersList' }, async (req, res) => {
+    // app.get('/users', async (req, res) => {
     const { t } = req;
 
     try {
@@ -36,7 +37,7 @@ export default async function userRoutes(app, opts) {
         });
       });
       console.log(users);
-      res.view('./server/views/users/index.pug', {
+      return res.view('./server/views/users/index.pug', {
         views: {
           users: {
             title: t('Пользователи'),
@@ -60,16 +61,18 @@ export default async function userRoutes(app, opts) {
   });
 
   // GET /users/new - форма регистрации
-  app.get('/users/new', async (req, res) => {
+  app.get('/users/new', { name: 'userNew' }, async (req, res) => {
+    // app.get('/users/new', async (req, res) => {
     const { t } = req;
-    res.view('./server/views/users/new.pug', {
+    return res.view('./server/views/users/new.pug', {
       views: formViewData(req, t, 'new'),
       messages: {},
     });
   });
 
   // POST /users - обработка данных формы
-  app.post('/users', async (req, res) => {
+  app.post('/users', { name: 'userCreate' }, async (req, res) => {
+    // app.post('/users', async (req, res) => {
     const formData = req.body;
     const user = {
       firstName: formData['data[firstName]'],
@@ -107,7 +110,7 @@ export default async function userRoutes(app, opts) {
     } catch (error) {
       const messages = error.inner.map((e) => e.message);
       const { t } = req;
-      res.view('./server/views/users/new.pug', {
+      return res.view('./server/views/users/new.pug', {
         views: formViewData(req, t, 'new'),
         messages: { error: messages },
       });
@@ -116,7 +119,8 @@ export default async function userRoutes(app, opts) {
   });
 
   // GET /users/:id/edit - форма редактирования
-  app.get('/users/:id/edit', (req, res) => {
+  app.get('/users/:id/edit', { name: 'userEditForm' }, (req, res) => {
+    // app.get('/users/:id/edit', (req, res) => {
     const userId = req.params.id;
     const { t } = req;
 
@@ -133,7 +137,8 @@ export default async function userRoutes(app, opts) {
   });
 
   // PATCH /users/:id/edit - обновление пользователя
-  app.patch('/users/:id/edit', (req, res) => {
+  // app.patch('/users/:id/edit', { name: 'userUpdate' }, async (req, res) => {
+  app.patch('/users/:id/edit', async (req, res) => {
     const userId = req.params.id;
     const formData = req.body;
 
