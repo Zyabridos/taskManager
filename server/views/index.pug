@@ -22,15 +22,12 @@ html
             li.nav-item
               a.nav-link(href="/tasks")= views.mainPage.tasks
             li.nav-item
-              form(action='/sessions/delete', method='post')
+              form(action='/session/delete', method='post')
                 input.btn.nav-link(type='submit', value=views.mainPage.exit)
     .container.wrapper.flex-grow-1
-      if flash && flash.success
-        for message in flash.success
-          .alert.alert-success= message
-      if flash && flash.warning
-        for message in flash.warning
-          .alert.alert-warning= message
+      //- each messages, type in reply.flash() || []
+      //-   each message in messages
+      //-     div.alert(class=`alert-${getAlertClass(type)}`)= message
       h1.display-4.fw-bold.mt-4= views.mainPage.welcomeCard.title
       .container
         .row

@@ -12,7 +12,8 @@ import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
 // import fastifyReverseRoutes from 'fastify-reverse-routes';
-import flash from 'connect-flash';
+// latest v.4 doesnt work with fastufy 4
+// import fastifyFlesh from '@fastify/flash'
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
@@ -59,6 +60,7 @@ export const registerPlugins = async (app) => {
   app.register(session, {
     secret: 'a secret with minimum length of 32 characters',
     cookie: { secure: false },
+    saveUninitialized: false,
   });
   // await app.register(fastifyMethodOverride);
   await app.register(fastifyObjectionjs, {
@@ -68,25 +70,25 @@ export const registerPlugins = async (app) => {
 
   // add flash декоратор - пока не работает
   app.decorateRequest('flash', function (type, message) {
-    // вот это работает, а в целом нет
-    console.log(`message!!!!!!!!${  message}`)
-    if (!this.session.flash) {
-      this.session.flash = {};
-    }
+  if (!this.session.flash) {
+    this.session.flash = {};
+  }
 
-    if (message) {
-      // Установка сообщения
-      if (!this.session.flash[type]) {
-        this.session.flash[type] = [];
-      }
-      this.session.flash[type].push(message);
-    } else {
-      // Получение сообщения
-      const messages = this.session.flash[type] || [];
-      delete this.session.flash[type];
-      return messages;
+  if (message) {
+    if (!this.session.flash[type]) {
+      this.session.flash[type] = [];
     }
-  });
+    this.session.flash[type].push(message);
+  } else if (type) {
+    const messages = this.session.flash[type] || [];
+    delete this.session.flash[type];
+    return messages;
+  } else {
+    const allMessages = { ...this.session.flash };
+    this.session.flash = {}; // Удаляем все сообщения после чтения
+    return allMessages;
+  }
+});
 };
 
 // register custom routes

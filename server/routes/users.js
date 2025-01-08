@@ -26,8 +26,8 @@ export default async function userRoutes(app, opts) {
   const { db } = opts; // Получаем базу данных из опций
   // GET /users - список всех пользователей
   app.get('/users', { name: 'usersList' }, async (req, res) => {
-    // app.get('/users', async (req, res) => {
     const { t } = req;
+    const messages = req.flash() || {};
 
     try {
       const users = await new Promise((resolve, reject) => {
@@ -53,6 +53,7 @@ export default async function userRoutes(app, opts) {
             },
           },
         },
+        messages,
         data: { users: users || [] },
       });
     } catch (error) {
@@ -62,7 +63,6 @@ export default async function userRoutes(app, opts) {
 
   // GET /users/new - форма регистрации
   app.get('/users/new', { name: 'userNew' }, async (req, res) => {
-    // app.get('/users/new', async (req, res) => {
     const { t } = req;
     return res.view('./server/views/users/new.pug', {
       views: formViewData(req, t, 'new'),
@@ -109,6 +109,7 @@ export default async function userRoutes(app, opts) {
     });
 
     req.flash('info', ('SUCCESS')); // надо на 18n потом заменить
+    console.log('Flash после записи:', req.session.flash);
     return reply.redirect('/users');
   } catch (error) {
     const messages = error.inner?.map((e) => e.message) || [error.message];
@@ -125,7 +126,6 @@ export default async function userRoutes(app, opts) {
 
   // GET /users/:id/edit - форма редактирования
   app.get('/users/:id/edit', { name: 'userEditForm' }, (req, res) => {
-    // app.get('/users/:id/edit', (req, res) => {
     const userId = req.params.id;
     const { t } = req;
 
@@ -142,8 +142,7 @@ export default async function userRoutes(app, opts) {
   });
 
   // PATCH /users/:id/edit - обновление пользователя
-  // app.patch('/users/:id/edit', { name: 'userUpdate' }, async (req, res) => {
-  app.patch('/users/:id/edit', async (req, res) => {
+  app.patch('/users/:id/edit', { name: 'userUpdate' }, async (req, res) => {
     const userId = req.params.id;
     const formData = req.body;
 

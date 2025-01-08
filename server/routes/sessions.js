@@ -5,8 +5,7 @@ export default async function sessionsRoutes(app, opts) {
   const { db } = opts; // Получаем базу данных из опций
 
   // Главная страница с отображением flash-сообщений
-  app.get('/', { name: 'home' }, async (req, res) => {
-    // app.get('/', async (req, res) => {
+  app.get('/', { name: 'root' }, async (req, res) => {
     const { t } = req;
 
     return res.view('./server/views/index.pug', {
@@ -34,7 +33,6 @@ export default async function sessionsRoutes(app, opts) {
 
   // Страница входа
   app.get('/session/new', { name: 'sessionNew' }, (req, res) => {
-    // app.get('/session/new', (req, res) => {
     const { t } = req;
 
     return res.view('./server/views/sessions/new.pug', {
@@ -60,8 +58,7 @@ export default async function sessionsRoutes(app, opts) {
   });
 
   // Обработка входа
-  // app.post('/session', { name: 'sessionCreate' }, async (req, res) => {
-    app.post('/session', async (req, res) => {
+  app.post('/session', { name: 'sessionCreate' }, async (req, res) => {
     const { email, password } = req.body;
     console.log('Request body:', req.body);
 
@@ -100,8 +97,7 @@ export default async function sessionsRoutes(app, opts) {
 
   // Обработка выхода
   app.post('/session/delete', { name: 'sessionDelete' }, (req, res) => {
-    // app.post('/session/delete', (req, res) => {
-    console.log('Обрабатываю /sessions/delete');
+    console.log('Обрабатываю /session/delete');
     if (!req.session) {
       // return res.redirect(app.reverse('root'));
       return res.redirect(routes.root);

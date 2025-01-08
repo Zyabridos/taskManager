@@ -1,3 +1,4 @@
+// User can have many tasks - O2M model
 const objectionUnique = require('objection-unique');
 const BaseModel = require('./BaseModel.cjs');
 const encrypt = require('../lib/secure.cjs');
