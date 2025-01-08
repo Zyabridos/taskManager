@@ -7,7 +7,7 @@ import middleware from 'i18next-http-middleware';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyCookie from '@fastify/cookie';
 import session from '@fastify/session';
-// import fastifyMethodOverride from 'fastify-method-override';
+import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
@@ -65,7 +65,7 @@ export const registerPlugins = async (app) => {
     cookie: { secure: false },
     saveUninitialized: false,
   });
-  // await app.register(fastifyMethodOverride);
+  await app.register(fastifyMethodOverride);
   await app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[process.env.NODE_ENV || 'development'],
     models,
@@ -98,7 +98,7 @@ export const registerPlugins = async (app) => {
 export const addRoutes = (app) => {
   console.log('Регистрация маршрутов начата...');
   app.register(sessionsRoutses, { db }, { prefix: '/session' });
-  app.register(userRoutes, { db }, { prefix: '/users' });
+  app.register(userRoutes, { db }, { prefix: '/users' }); // добавляет /users к началу всех маршрутов внутри userRoutes.
   app.register(changeLanguage, { prefix: '/change-language' });
   console.log('Маршруты успешно зарегистрированы.');
 

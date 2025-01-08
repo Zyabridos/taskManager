@@ -164,4 +164,23 @@ export default async function userRoutes(app, opts) {
       }
     );
   });
+
+  app.delete('/users/:id', { name: 'userDelete' }, async (req, reply) => {
+  const userId = req.params.id;
+
+  try {
+    const result = await db.run('DELETE FROM users WHERE id = ?', userId);
+
+    if (result.changes === 0) {
+      reply.status(404).send('Пользователь не найден');
+      return;
+    }
+
+    req.flash('info', 'Пользователь успешно удален');
+    return reply.redirect('/users');
+  } catch (error) {
+    req.flash('error', 'Ошибка при удалении пользователя');
+    reply.status(500).send(error.message);
+  }
+});
 }

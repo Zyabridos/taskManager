@@ -6,10 +6,12 @@ const encrypt = require('../lib/secure.cjs');
 const unique = objectionUnique({ fields: ['email'] });
 
 module.exports = class User extends unique(BaseModel) {
+  // Метод tableName указывает таблицу базы данных, с которой связана модель
   static get tableName() {
     return 'users';
   }
 
+  // ну тут структру примерно как в ЬД
   static get jsonSchema() {
     return {
       type: 'object',
@@ -24,23 +26,12 @@ module.exports = class User extends unique(BaseModel) {
     };
   }
 
-  static get relationMappings() {
-    return {
-      tasks: {
-        relation: BaseModel.HasManyRelation,
-        modelClass: 'Task.cjs',
-        join: {
-          from: 'users.id',
-          to: 'tasks.authorId',
-        },
-      },
-    };
-  }
-
+  // сеттер (захэшированного) пароля
   set password(value) {
     this.passwordDigest = encrypt(value);
   }
-
+  
+  // метод, проверяющий верность пароля
   verifyPassword(password) {
     return encrypt(password) === this.passwordDigest;
   }
