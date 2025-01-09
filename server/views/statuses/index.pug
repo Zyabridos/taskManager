@@ -36,19 +36,18 @@ html
               th="Наименование"
               th="Дата создания"
           tbody
-            //- if data.users && data.users.length > 0
-            //-   each user in data.users
-            //-     tr
-            //-       td= user.id
-            //-       td= `${user.firstName} ${user.lastName}`
-            //-       td= user.email
-            //-       td= user.created_at_local_time || 'N/A'
-            //-       td
-            //-         .d-flex.flex-wrap
-            //-           a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)= 'Изменить'
-            //-           form(action=`/users/${user.id}` method='POST')
-            //-             input(type="hidden" name="_method" value="delete")
-            //-             input.btn.btn-danger(type="submit" value="Удалить")
-            //- else
-            //-   tr
-            //-     td(colspan="5").text-center= 'Нет пользователей'
+            if data.statuses && data.statuses.length > 0
+              each status in data.statuses
+                tr
+                  td= status.id
+                  td= status.name
+                  td= user.created_at_local_time || 'N/A'
+                  td
+                    .d-flex.flex-wrap
+                      a.btn.btn-primary.me-1(href=`/statuses/${status.id}/edit`)= 'Изменить'
+                      form(action=`/statuses/${status.id}` method='POST')
+                        input(type="hidden" name="_method" value="delete")
+                        input.btn.btn-danger(type="submit" value="Удалить")
+            else
+              tr
+                td(colspan="5").text-center= 'Нет статусов'

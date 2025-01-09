@@ -30,7 +30,7 @@ module.exports = class User extends unique(BaseModel) {
   set password(value) {
     this.passwordDigest = encrypt(value);
   }
-  
+
   // метод, проверяющий верность пароля
   verifyPassword(password) {
     return encrypt(password) === this.passwordDigest;

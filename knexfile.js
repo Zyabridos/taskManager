@@ -7,14 +7,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Миграции — это файлы, которые описывают изменения структуры базы данных (создание таблиц, их удаление, модификация итд)
 const migrations = {
-  // путь до миграций 
+  // путь до миграций
   directory: path.join(__dirname, 'server', 'migrations'),
 };
 
 export const development = {
-  // какую БД использовать как клиент 
+  // какую БД использовать как клиент
   client: 'sqlite3',
-  // которая находится по пути 
+  // которая находится по пути
   connection: {
     filename: path.resolve(__dirname, 'database.sqlite'),
   },

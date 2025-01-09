@@ -22,9 +22,9 @@ import en from './locales/en.js';
 import userRoutes from './routes/users.js';
 import sessionsRoutses from './routes/sessions.js';
 import changeLanguage from './routes/index.js';
-import statusesRoutes from './routes/statuses.js'
+import statusesRoutes from './routes/statuses.js';
 import prepareDatabase from './db/init.js';
-import flashTest from './routes/temp.js'
+import flashTest from './routes/temp.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -105,13 +105,14 @@ export const addRoutes = (app) => {
   app.register(userRoutes, { db }, { prefix: '/users' }); // добавляет /users к началу всех маршрутов внутри userRoutes.
   app.register(changeLanguage);
   app.register(flashTest);
-  app.register(statusesRoutes);
+  app.register(statusesRoutes, { db }, { prefix: '/statuses' });
   console.log('Маршруты успешно зарегистрированы.');
 
   return app;
 };
 
 const init = async (app) => {
+  console.log(db);
   await setupLocalization();
   await registerPlugins(app);
   setUpViews(app);
