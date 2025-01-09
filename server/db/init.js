@@ -13,5 +13,16 @@ export default (db) => {
     `);
   });
 
+  db.serialize(() => {
+    db.run(`
+      CREATE TABLE statuses (
+        id INTEGER PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        created_at_local_time timestamp NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+  });
+
   return db;
 };

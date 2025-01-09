@@ -1,33 +1,14 @@
 import bcrypt from 'bcrypt';
 import { commonViewData, formViewData } from '../utils/viewData.js';
 import userValidationSchema from '../validationSchemas/userValidationSchema.js';
-
-const formattedDate = new Date().toUTCString('en-US', {
-  month: 'numeric',
-  day: 'numeric',
-  year: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: true,
-});
-
-const formattedDateLocal = new Date().toLocaleString('en-US', {
-  month: 'numeric',
-  day: 'numeric',
-  year: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
-  hour12: true,
-});
+import { formattedDate, formattedDateLocal } from '../utils/dateFormatters.js'
 
 export default async function userRoutes(app, opts) {
   const { db } = opts; // Получаем базу данных из опций
   // GET /users - список всех пользователей
   app.get('/users', { name: 'usersList' }, async (req, res) => {
     const { t } = req;
-    const messages = req.flash() || {};
+    const flash = req.flash() || {};
 
     try {
       const users = await new Promise((resolve, reject) => {
@@ -53,7 +34,7 @@ export default async function userRoutes(app, opts) {
             },
           },
         },
-        messages,
+        flash,
         data: { users: users || [] },
       });
     } catch (error) {
@@ -71,58 +52,62 @@ export default async function userRoutes(app, opts) {
   });
 
   app.post('/users', { name: 'userCreate' }, async (req, reply) => {
-    const formData = req.body;
-    const user = {
-      firstName: formData['data[firstName]'],
-      lastName: formData['data[lastName]'],
-      email: formData['data[email]'],
-      password: formData['data[password]'],
-    };
+  const formData = req.body;
+  const flash = req.flash() || {};
+  const user = {
+    firstName: formData['data[firstName]'],
+    lastName: formData['data[lastName]'],
+    email: formData['data[email]'],
+    password: formData['data[password]'],
+  };
 
-    try {
-      // Валидация данных
-      await userValidationSchema.validate(user, { abortEarly: false });
-      const hashedPassword = await bcrypt.hash(user.password, 10);
+  try {
+    // Валидация данных
+    await userValidationSchema.validate(user, { abortEarly: false });
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
-      await new Promise((resolve, reject) => {
-        const stmt = db.prepare(
-          'INSERT INTO users (firstName, lastName, email, password, created_at, created_at_local_time) VALUES (?, ?, ?, ?, ?, ?)'
-        );
-        stmt.run(
-          [
-            user.firstName,
-            user.lastName,
-            user.email,
-            hashedPassword,
-            formattedDate,
-            formattedDateLocal,
-          ],
-          (err) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
+    await new Promise((resolve, reject) => {
+      const stmt = db.prepare(
+        'INSERT INTO users (firstName, lastName, email, password, created_at, created_at_local_time) VALUES (?, ?, ?, ?, ?, ?)'
+      );
+      stmt.run(
+        [
+          user.firstName,
+          user.lastName,
+          user.email,
+          hashedPassword,
+          formattedDate,
+          formattedDateLocal,
+        ],
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
           }
-        );
-        stmt.finalize();
-      });
+        }
+      );
+      stmt.finalize();
+    });
 
-      req.flash('info', 'SUCCESS'); // надо на 18n потом заменить
-      console.log('Flash после записи:', req.session.flash);
-      return reply.redirect('/users');
-    } catch (error) {
-      const messages = error.inner?.map((e) => e.message) || [error.message];
-      const { t } = req;
+    req.flash('info', 'SUCCESS'); // Создаем flash-сообщение
+    console.log('Сессия:', req.session);
+    return reply.redirect('/');
+  } catch (error) {
+    const messages = error.inner?.map((e) => e.message) || [error.message];
+    const { t } = req;
 
-      req.flash('error', 'ERROR!'); // надо на 18n потом заменить
+    req.flash('error', 'ERROR!'); // Создаем flash-сообщение для ошибок
 
-      return reply.view('./server/views/users/new.pug', {
-        views: formViewData(req, t, 'new'),
-        messages: { error: messages },
-      });
-    }
-  });
+    console.log('Flash для шаблона:', flash);
+
+    return reply.view('./server/views/users/new.pug', {
+      views: formViewData(req, t, 'new'),
+      messages: { error: messages },
+      flash, // Передаем flash-сообщения в шаблон
+    });
+  }
+});
 
   // GET /users/:id/edit - форма редактирования
   app.get('/users/:id/edit', { name: 'userEditForm' }, (req, res) => {
@@ -165,7 +150,9 @@ export default async function userRoutes(app, opts) {
     );
   });
 
+  // DELETE /users/:id - удаление пользователя
   app.delete('/users/:id', { name: 'userDelete' }, async (req, reply) => {
+  const flash = req.flash() || {};
   const userId = req.params.id;
 
   try {
@@ -176,7 +163,7 @@ export default async function userRoutes(app, opts) {
       return;
     }
 
-    req.flash('info', 'Пользователь успешно удален');
+    flash('info', 'Пользователь успешно удален');
     return reply.redirect('/users');
   } catch (error) {
     req.flash('error', 'Ошибка при удалении пользователя');

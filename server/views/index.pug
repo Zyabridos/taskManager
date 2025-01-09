@@ -26,9 +26,9 @@ html
               form(action='/session/delete', method='post')
                 input.btn.nav-link(type='submit', value=views.mainPage.exit)
     .container.wrapper.flex-grow-1
-      //- each messages, type in reply.flash() || []
-      //-   each message in messages
-      //-     div.alert(class=`alert-${getAlertClass(type)}`)= message
+      each messages, type in flash || []
+        each message in messages
+          div.alert(class=`alert-${getAlertClass(type)}`)= message
       h1.display-4.fw-bold.mt-4= views.mainPage.welcomeCard.title
       .container
         .row
@@ -38,6 +38,6 @@ html
                 p.lead= views.mainPage.welcomeCard.message
                 .d-flex.gap-3 
                   a.btn.btn-primary.btn-lg.px-4.mt-3.fw-bold(href="https://github.com/Zyabridos/taskManager" target='_blank')= views.mainPage.welcomeCard.button
-                  form(action='/change-language', method='POST')
+                  form(action="/change-language" method="POST")
                     input(type='hidden', name='language', value='en')
                     button.btn.btn-primary.btn-lg.px-4.mt-3.fw-bold(type='submit') Change language to English (work in progress)

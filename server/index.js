@@ -12,8 +12,9 @@ import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
 import sqlite3 from 'sqlite3';
 // import fastifyReverseRoutes from 'fastify-reverse-routes';
-// latest v.4 doesnt work with fastufy 4
-// import fastifyFlesh from '@fastify/flash'
+
+// NOTE latest v.4 doesnt work with fastufy 4
+// import flash from '@fastify/flash';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
@@ -21,7 +22,9 @@ import en from './locales/en.js';
 import userRoutes from './routes/users.js';
 import sessionsRoutses from './routes/sessions.js';
 import changeLanguage from './routes/index.js';
+import statusesRoutes from './routes/statuses.js'
 import prepareDatabase from './db/init.js';
+import flashTest from './routes/temp.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -57,12 +60,13 @@ export const setupLocalization = async () => {
 // register all plugins that we have imported
 export const registerPlugins = async (app) => {
   // await app.register(fastifyReverseRoutes);
+  // await app.register(flash);
   app.register(middleware.plugin, { i18next });
   app.register(fastifyFormbody);
   app.register(fastifyCookie);
   app.register(session, {
     secret: 'a secret with minimum length of 32 characters',
-    cookie: { secure: false },
+    cookie: { secure: false }, // ok, if u test locally, на продакшне поменяем
     saveUninitialized: false,
   });
   await app.register(fastifyMethodOverride);
@@ -99,7 +103,9 @@ export const addRoutes = (app) => {
   console.log('Регистрация маршрутов начата...');
   app.register(sessionsRoutses, { db }, { prefix: '/session' });
   app.register(userRoutes, { db }, { prefix: '/users' }); // добавляет /users к началу всех маршрутов внутри userRoutes.
-  app.register(changeLanguage, { prefix: '/change-language' });
+  app.register(changeLanguage);
+  app.register(flashTest);
+  app.register(statusesRoutes);
   console.log('Маршруты успешно зарегистрированы.');
 
   return app;
