@@ -25,7 +25,8 @@ html
         each message in messages
           div.alert(class=`alert-${type}`)= message
 
-      form(action="/statuses" method="POST")
+      button.btn.btn-primary(type="submit")="Покажи flash сообщение"
+      form(action="/statuses/new" method="POST")
         button.btn.btn-primary(type="submit")="Создать статус"
 
       .table-responsive
@@ -41,7 +42,7 @@ html
                 tr
                   td= status.id
                   td= status.name
-                  td= user.created_at_local_time || 'N/A'
+                  td= status.created_at_local_time || 'N/A'
                   td
                     .d-flex.flex-wrap
                       a.btn.btn-primary.me-1(href=`/statuses/${status.id}/edit`)= 'Изменить'
