@@ -3,3 +3,4 @@
 .prettuerrc
 .eslintrc.yml
 node_modules
+.env

@@ -1,123 +1,146 @@
 import path from 'path';
-import fastifyView from 'point-of-view';
 import fastifyStatic from '@fastify/static';
-import pug from 'pug';
+import Pug from 'pug';
 import i18next from 'i18next';
-import middleware from 'i18next-http-middleware';
+import fastifyView from '@fastify/view';
 import fastifyFormbody from '@fastify/formbody';
-import fastifyCookie from '@fastify/cookie';
-import session from '@fastify/session';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
-import sqlite3 from 'sqlite3';
-// import fastifyReverseRoutes from 'fastify-reverse-routes';
-
+import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 // NOTE latest v.4 doesnt work with fastufy 4
 // import flash from '@fastify/flash';
+import fastifyPassport from '@fastify/passport';
+import fastifySensible from '@fastify/sensible';
+import qs from 'qs';
+import dotenv from 'dotenv';
+import fastifySecureSession from '@fastify/secure-session';
+import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
 import en from './locales/en.js';
 import userRoutes from './routes/users.js';
-import sessionsRoutses from './routes/sessions.js';
-import changeLanguage from './routes/index.js';
-import statusesRoutes from './routes/statuses.js';
-import prepareDatabase from './db/init.js';
-import flashTest from './routes/temp.js';
+import addRoutes from './routes/index.js';
+import getHelpers from './helpers/index.js'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// export const addRoutes = async (app) => {
+//   console.log('Регистрация маршрутов начата...');
+//   // app.register(sessionsRoutses, { db }, { prefix: '/session' });
+//   console.log(`userRoutes: ${  userRoutes}`)
+//   await app.register(userRoutes, { prefix: '/users' }); // добавляет /users к началу всех маршрутов внутри userRoutes.
+//   console.log('Маршруты успешно зарегистрированы.');
+//   console.log(`Зарегистрированные маршруты: ${app.printRoutes()}`);
+// };
 
-const db = new sqlite3.Database(':memory:');
-prepareDatabase(db);
+dotenv.config();
 
-export const setUpViews = (app) => {
+const __dirname = fileURLToPath(path.dirname(import.meta.url));
+
+const mode = process.env.NODE_ENV || 'development';
+// const isDevelopment = mode === 'development';
+
+const setUpViews = (app) => {
+  const helpers = getHelpers(app);
   app.register(fastifyView, {
-    engine: { pug },
-    templates: path.join('./'),
+    engine: {
+      pug: Pug,
+    },
+    includeViewExtension: true,
+    defaultContext: {
+      ...helpers,
+      assetPath: (filename) => `/assets/${filename}`,
+    },
+    templates: path.join(__dirname, '..', 'server', 'views'),
   });
+
   app.decorateReply('render', function render(viewPath, locals) {
     this.view(viewPath, { ...locals, reply: this });
   });
 };
 
-export const setUpStaticAssets = (app) => {
+const setUpStaticAssets = (app) => {
+  const pathPublic = path.join(__dirname, '..', 'dist');
   app.register(fastifyStatic, {
-    root: path.join(__dirname, '../public'),
+    root: pathPublic,
     prefix: '/assets/',
   });
 };
 
-export const setupLocalization = async () => {
-  await i18next.use(middleware.LanguageDetector).init({
-    lng: 'en',
-    fallbackLng: 'ru',
-    resources: { ru, en },
-    detection: { order: ['cookie', 'header'], caches: ['cookie'] },
+const setupLocalization = async () => {
+  await i18next
+    .init({
+      lng: 'en',
+      fallbackLng: 'ru',
+      // debug: isDevelopment,
+      resources: {
+        ru,
+        en,
+      },
+    });
+};
+
+const addHooks = (app) => {
+  app.addHook('preHandler', async (req, reply) => {
+    reply.locals = {
+      isAuthenticated: () => req.isAuthenticated(),
+    };
   });
 };
 
-// register all plugins that we have imported
-export const registerPlugins = async (app) => {
-  // await app.register(fastifyReverseRoutes);
-  // await app.register(flash);
-  app.register(middleware.plugin, { i18next });
-  app.register(fastifyFormbody);
-  app.register(fastifyCookie);
-  app.register(session, {
-    secret: 'a secret with minimum length of 32 characters',
-    cookie: { secure: false }, // ok, if u test locally, на продакшне поменяем
-    saveUninitialized: false,
+const registerPlugins = async (app) => {
+  await app.register(fastifySensible);
+  // await app.register(fastifyErrorPage);
+  await app.register(fastifyReverseRoutes);
+  await app.register(fastifyFormbody, { parser: qs.parse });
+  await app.register(fastifySecureSession, {
+    secret: process.env.SESSION_KEY,
+    cookie: {
+      path: '/',
+    },
   });
+
+  fastifyPassport.registerUserDeserializer(
+    (user) => app.objection.models.user.query().findById(user.id),
+  );
+  fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
+  fastifyPassport.use(new FormStrategy('form', app));
+  await app.register(fastifyPassport.initialize());
+  await app.register(fastifyPassport.secureSession());
+  await app.decorate('fp', fastifyPassport);
+  app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
+    'form',
+    {
+      failureRedirect: app.reverse('root'),
+      // failureFlash: i18next.t('flash.authError'),
+    },
+  // @ts-ignore
+  )(...args));
+
   await app.register(fastifyMethodOverride);
   await app.register(fastifyObjectionjs, {
-    knexConfig: knexConfig[process.env.NODE_ENV || 'development'],
+    knexConfig: knexConfig[mode],
     models,
-  });
-
-  // add flash декоратор - пока не работает
-  app.decorateRequest('flash', function (type, message) {
-    if (!this.session.flash) {
-      this.session.flash = {};
-    }
-
-    if (message) {
-      if (!this.session.flash[type]) {
-        this.session.flash[type] = [];
-      }
-      this.session.flash[type].push(message);
-    } else if (type) {
-      const messages = this.session.flash[type] || [];
-      delete this.session.flash[type];
-      return messages;
-    } else {
-      const allMessages = { ...this.session.flash };
-      this.session.flash = {}; // Удаляем все сообщения после чтения
-      return allMessages;
-    }
   });
 };
 
-// register custom routes
-export const addRoutes = (app) => {
-  console.log('Регистрация маршрутов начата...');
-  app.register(sessionsRoutses, { db }, { prefix: '/session' });
-  app.register(userRoutes, { db }, { prefix: '/users' }); // добавляет /users к началу всех маршрутов внутри userRoutes.
-  app.register(changeLanguage);
-  app.register(flashTest);
-  app.register(statusesRoutes, { db }, { prefix: '/statuses' });
-  console.log('Маршруты успешно зарегистрированы.');
+export const options = {
+  exposeHeadRoutes: false,
+};
+
+// eslint-disable-next-line no-unused-vars
+export default async (app, _options) => {
+  await registerPlugins(app);
+
+  await setupLocalization();
+  setUpViews(app);
+  setUpStaticAssets(app);
+  console.log('Перед регистрацией маршрутов:', app.printRoutes());
+  await addRoutes(app);
+  console.log('После регистрации маршрутов:', app.printRoutes());
+  addHooks(app);
 
   return app;
 };
 
-const init = async (app) => {
-  console.log(db);
-  await setupLocalization();
-  await registerPlugins(app);
-  setUpViews(app);
-  setUpStaticAssets(app);
-  addRoutes(app);
-};
 
-export default init;

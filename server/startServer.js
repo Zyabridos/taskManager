@@ -9,7 +9,7 @@ const startServer = async () => {
 
   app.ready((err) => {
     if (err) throw err;
-    console.log(app.printRoutes()); // show routes
+    console.log(`Зарегестрированные маршруты: ${  app.printRoutes()}`); // show routes
   });
 
   app.addHook('onRequest', (req, reply, done) => {
