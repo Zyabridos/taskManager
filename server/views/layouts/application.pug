@@ -19,7 +19,8 @@ html(lang="en")
             ul.navbar-nav.mr-auto
               li.nav-item
                 //- a.nav-link(href=route('users'))= t('layouts.application.users')
-                a.nav-link(href=app.reverse('users'))= t('layouts.application.users')
+                //- a.nav-link(href=app.reverse('users'))= t('layouts.application.users')
+                a.nav-link(href="/users")= t('layouts.application.users')
           ul.navbar-nav
             if isAuthenticated()
               li.nav-item

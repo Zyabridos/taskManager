@@ -19,13 +19,14 @@ export default (app) => {
         return reply;
       }
       await req.logIn(user);
-      req.flash('success', i18next.t('flash.session.create.success'));
-      reply.redirect(app.reverse('root'));
-      return reply;
+      // req.flash('success', i18next.t('flash.session.create.success'));
+      reply.redirect('/')
+      return reply
     }))
     .delete('/session', (req, reply) => {
+      console.log('User logging out...');
       req.logOut();
-      req.flash('info', i18next.t('flash.session.delete.success'));
-      reply.redirect(app.reverse('root'));
+      // req.flash('info', i18next.t('flash.session.delete.success'));
+      return reply.redirect('/')
     });
 };

@@ -1,10 +1,32 @@
 extends ../layouts/application.pug
 
 block header
-  = t('views.users.new.signUp')
+  h1= t('views.users.new.title')
 
 block content
-  +formFor()(action=route('users') method='post')
-    +input(user, 'email', errors)(type="text")
-    +input(user, 'password', errors)(type="password")
-    +submit(user)(value=t('views.users.new.submit'))
+  form(action="/users" method="post")
+    .form-group
+      label(for="data_firstName")= t('views.users.new.firstName')
+      input#data_firstName.form-control(type="text" name="data[firstName]" value=user.firstName)
+      if errors && errors.firstName
+        .text-danger= errors.firstName[0].message
+
+    .form-group
+      label(for="data_lastName")= t('views.users.new.lastName')
+      input#data_lastName.form-control(type="text" name="data[lastName]" value=user.lastName)
+      if errors && errors.lastName
+        .text-danger= errors.lastName[0].message
+
+    .form-group
+      label(for="data_email")= t('views.users.new.email')
+      input#data_email.form-control(type="email" name="data[email]" value=user.email)
+      if errors && errors.email
+        .text-danger= errors.email[0].message
+
+    .form-group
+      label(for="data_password")= t('views.users.new.password')
+      input#data_password.form-control(type="password" name="data[password]")
+      if errors && errors.password
+        .text-danger= errors.password[0].message
+
+    button.btn.btn-primary(type="submit")= t('views.users.new.submit')

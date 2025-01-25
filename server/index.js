@@ -25,15 +25,6 @@ import en from './locales/en.js';
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js'
 
-// export const addRoutes = async (app) => {
-//   console.log('Регистрация маршрутов начата...');
-//   // app.register(sessionsRoutses, { db }, { prefix: '/session' });
-//   console.log(`userRoutes: ${  userRoutes}`)
-//   await app.register(userRoutes, { prefix: '/users' }); // добавляет /users к началу всех маршрутов внутри userRoutes.
-//   console.log('Маршруты успешно зарегистрированы.');
-//   console.log(`Зарегистрированные маршруты: ${app.printRoutes()}`);
-// };
-
 dotenv.config();
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
@@ -88,6 +79,11 @@ const addHooks = (app) => {
     reply.locals = {
       isAuthenticated: () => req.isAuthenticated(),
     };
+  });
+
+  app.addHook('onRequest', (req, reply, done) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`);
+    done();
   });
 };
 
