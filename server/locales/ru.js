@@ -1,8 +1,23 @@
 export default {
   translation: {
+    appName: 'Менеджер задач',
+    layouts: {
+      application: {
+        users: 'Пользователи',
+        signIn: 'Войти',
+        signUp: 'Зарегистрироваться',
+      },
+    },
     views: {
+      welcome: {
+        index: {
+          hello: 'Привет от Нины!',
+          description: 'Добро пожаловать в мой проект на Fastify!',
+          more: 'Узнать больше'
+        },
+      },
       login: {
-        title: 'Вход',
+        title: 'Авторизация',
         email: 'Электронная почта',
         password: 'Пароль',
         submit: 'Войти',
@@ -19,11 +34,10 @@ export default {
         labels: 'Метки',
         tasks: 'Задачи',
         exit: 'Выход',
-        changeLanguage: 'Changle language to English',
+        changeLanguage: 'Сменить язык на английский',
         welcomeCard: {
           title: 'Привет!',
-          message:
-            'Добро пожаловать в менеджер задач - практический проект на Fastify',
+          message: 'Добро пожаловать в менеджер задач — практический проект на Fastify',
           button: 'Узнать больше',
         },
       },
@@ -32,14 +46,14 @@ export default {
         navBar: {
           taskManager: 'Менеджер задач',
           users: 'Пользователи',
-          signIn: 'Вход',
+          signIn: 'Войти',
           createAccount: 'Регистрация',
         },
         table: {
           title: 'Пользователи',
           id: 'ID',
           fullName: 'Полное имя',
-          email: 'Email',
+          email: 'Электронная почта',
           createdAt: 'Дата создания',
           actions: 'Действия',
         },
@@ -47,7 +61,7 @@ export default {
           title: 'Регистрация',
           firstName: 'Имя',
           lastName: 'Фамилия',
-          email: 'Email',
+          email: 'Электронная почта',
           password: 'Пароль',
           submit: 'Зарегистрироваться',
           firstNamePlaceholder: 'Введите ваше имя',
@@ -56,16 +70,16 @@ export default {
           passwordPlaceholder: 'Введите ваш пароль',
         },
         edit: {
-          title: 'Изменение пользователя',
+          title: 'Редактирование пользователя',
           firstName: 'Имя',
           lastName: 'Фамилия',
-          email: 'Email',
+          email: 'Электронная почта',
           password: 'Пароль',
           submit: 'Сохранить изменения',
           firstNamePlaceholder: 'Введите ваше имя',
           lastNamePlaceholder: 'Введите вашу фамилию',
           emailPlaceholder: 'Введите ваш email',
-          passwordPlaceholder: 'Введите ваш новый пароль',
+          passwordPlaceholder: 'Введите новый пароль',
         },
       },
     },

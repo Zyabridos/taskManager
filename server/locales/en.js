@@ -1,6 +1,20 @@
 export default {
   translation: {
+    appName: 'Task Manager',
+    layouts: {
+      application: {
+        users: 'Users',
+        signIn: 'Sign In',
+        signUp: 'Sign Up',
+      },
+    },
     views: {
+      welcome: {
+        index: {
+          hello: 'Hello from Nina!',
+          description: 'Welcome to my Fastify project!',
+        },
+      },
       login: {
         title: 'Login',
         email: 'Email',
@@ -22,8 +36,7 @@ export default {
         changeLanguage: 'Change language to English',
         welcomeCard: {
           title: 'Hello!',
-          message:
-            'Welcome to the task manager - a practical project on Fastify',
+          message: 'Welcome to the task manager - a practical project on Fastify',
           button: 'Learn more',
         },
       },

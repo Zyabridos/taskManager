@@ -7,7 +7,9 @@ import fastifyFormbody from '@fastify/formbody';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import { fileURLToPath } from 'url';
-import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
+// NOTE plugin doesnt work properly: throws an error about route already been registered,
+// even though the route has an unique name and hasn`t been registered before
+// import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 // NOTE latest v.4 doesnt work with fastufy 4
 // import flash from '@fastify/flash';
 import fastifyPassport from '@fastify/passport';
@@ -20,7 +22,6 @@ import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
 import en from './locales/en.js';
-import userRoutes from './routes/users.js';
 import addRoutes from './routes/index.js';
 import getHelpers from './helpers/index.js'
 
@@ -50,6 +51,7 @@ const setUpViews = (app) => {
     defaultContext: {
       ...helpers,
       assetPath: (filename) => `/assets/${filename}`,
+      app,  // add app to template contex, so we can use href=app.reverse in pug
     },
     templates: path.join(__dirname, '..', 'server', 'views'),
   });
@@ -70,8 +72,9 @@ const setUpStaticAssets = (app) => {
 const setupLocalization = async () => {
   await i18next
     .init({
-      lng: 'en',
-      fallbackLng: 'ru',
+      lng: 'ru',
+      fallbackLng: 'en',
+      debug: true,
       // debug: isDevelopment,
       resources: {
         ru,
@@ -91,7 +94,7 @@ const addHooks = (app) => {
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
   // await app.register(fastifyErrorPage);
-  await app.register(fastifyReverseRoutes);
+  // await app.register(fastifyReverseRoutes);
   await app.register(fastifyFormbody, { parser: qs.parse });
   await app.register(fastifySecureSession, {
     secret: process.env.SESSION_KEY,
@@ -121,6 +124,16 @@ const registerPlugins = async (app) => {
   await app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[mode],
     models,
+  });
+
+  // temp solution that is used instead of reverse-routes
+  app.decorate('reverse', (routeName) => {
+    const routes = {
+      root: '/',
+      newUser: '/users/new',
+      newSession: '/session/new',
+    };
+    return routes[routeName] || '/';
   });
 };
 

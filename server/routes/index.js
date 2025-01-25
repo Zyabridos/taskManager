@@ -3,7 +3,7 @@ import users from './users.js';
 import session from './session.js';
 
 const controllers = [
-  // welcome,
+  welcome,
   users,
   session,
 ];
