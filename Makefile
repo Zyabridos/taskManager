@@ -15,3 +15,6 @@ start:
 
 t:
 		npm test -s
+
+fr:
+		cd frontend; npm run dev
