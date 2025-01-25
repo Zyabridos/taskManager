@@ -17,6 +17,7 @@ import fastifySensible from '@fastify/sensible';
 import qs from 'qs';
 import dotenv from 'dotenv';
 import fastifySecureSession from '@fastify/secure-session';
+import fastifyCors from '@fastify/cors';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
@@ -89,6 +90,11 @@ const addHooks = (app) => {
 
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
+  app.register(fastifyCors, {
+  origin: 'http://localhost:3000', 
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  credentials: true, 
+});
   // await app.register(fastifyErrorPage);
   // await app.register(fastifyReverseRoutes);
   await app.register(fastifyFormbody, { parser: qs.parse });

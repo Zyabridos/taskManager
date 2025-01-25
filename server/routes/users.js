@@ -1,67 +1,52 @@
 import i18next from 'i18next';
 
-
 export default (app) => {
   app
-    // Маршрут для просмотра списка пользователей
     .get('/users', { name: 'users' }, async (req, reply) => {
-      const users = await app.objection.models.user.query();
-      reply.render('users/index', { users });
-      return reply;
-    })
-    // Страница регистрации
-    .get('/users/new', { name: 'newUser' }, (req, reply) => {
-      const user = new app.objection.models.user();
-      reply.render('users/new', { user });
-    })
-    // Создание пользователя
-    .post('/users', async (req, reply) => {
-      const user = new app.objection.models.user();
-      user.$set(req.body.data);
-
       try {
-        const validUser = await app.objection.models.user.fromJson(req.body.data);
-        await app.objection.models.user.query().insert(validUser);
-        // req.flash('info', i18next.t('flash.users.create.success'));
-        console.log('User created successfully, redirecting...');
-        reply.redirect('/');
+        const users = await app.objection.models.user.query();
+        reply.send({ users });
       } catch (error) {
-        // req.flash('error', i18next.t('flash.users.create.error'));
-        console.error('Error during user creation:', error);
-        reply.render('users/new', { user, errors: error.data || {} });
-      }
-      return reply;
-    })
-    // Маршрут для получения страницы редактирования пользователя
-  .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
-    try {
-      const user = await app.objection.models.user.query().findById(req.params.id);
-
-      if (!user) {
-        return reply.notFound();
-      }
-
-      // return reply.render('users/edit', { user });
-      await reply.view('users/edit', { user });
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      return reply.redirect('/users');
-    }
-  })
-
-    // Маршрут для обновления пользователя (PATCH)
-    .patch('/users/:id', async (req, reply) => {
-      try {
-        const user = await app.objection.models.user.query().findById(req.params.id);
-        if (!user) {
-          reply.notFound();
-        }
-        await user.$query().patch(req.body.data);
-        console.log('User updated successfully, redirecting...');
-        return reply.redirect('/users');
-      } catch (error) {
-        console.error('Error updating user:', error);
-        return reply.render('users/edit', { errors: error.data || {} });
+        reply.code(500).send({ error: 'Failed to fetch users' });
       }
     });
+
+  app.get('/users/new', { name: 'newUser' }, (req, reply) => {
+    reply.send({ message: 'Render React component for user creation' });
+  });
+
+  app.post('/users', async (req, reply) => {
+    try {
+      const validUser = await app.objection.models.user.fromJson(req.body.data);
+      await app.objection.models.user.query().insert(validUser);
+      reply.send({ message: i18next.t('flash.users.create.success') });
+    } catch (error) {
+      reply.code(400).send({ error: i18next.t('flash.users.create.error'), details: error.data || {} });
+    }
+  });
+
+  app.get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
+    try {
+      const user = await app.objection.models.user.query().findById(req.params.id);
+      if (!user) {
+        return reply.code(404).send({ error: 'User not found' });
+      }
+      reply.send({ user });
+    } catch (error) {
+      reply.code(500).send({ error: 'Failed to fetch user' });
+    }
+  });
+
+  app.patch('/users/:id', async (req, reply) => {
+    try {
+      const user = await app.objection.models.user.query().findById(req.params.id);
+      if (!user) {
+        return reply.code(404).send({ error: 'User not found' });
+      }
+      await user.$query().patch(req.body.data);
+      reply.send({ message: 'User updated successfully' });
+    } catch (error) {
+      reply.code(400).send({ error: 'Failed to update user', details: error.data || {} });
+    }
+  });
 };
