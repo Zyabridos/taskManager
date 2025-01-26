@@ -1,19 +1,25 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useTranslation } from "react-i18next";
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 const NavbarButtons = () => {
   const { t } = useTranslation();
   return (
     <ul className="flex items-center space-x-6">
       <li>
-        <Link href="/login" className="text-lg text-gray-700 hover:text-gray-900 transition">
+        <Link
+          href="/session/new"
+          className="text-lg text-gray-700 hover:text-gray-900 transition"
+        >
           {t('layouts.application.signIn')}
         </Link>
       </li>
       <li>
-        <Link href="/register" className="text-lg text-gray-700 hover:text-gray-900 transition">
+        <Link
+          href="/users/new"
+          className="text-lg text-gray-700 hover:text-gray-900 transition"
+        >
           {t('layouts.application.signUp')}
         </Link>
       </li>

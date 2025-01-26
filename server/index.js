@@ -17,14 +17,14 @@ import fastifySensible from '@fastify/sensible';
 import qs from 'qs';
 import dotenv from 'dotenv';
 import fastifySecureSession from '@fastify/secure-session';
-// import fastifyCors from '@fastify/cors';
+import fastifyCors from '@fastify/cors';
 import FormStrategy from './lib/passportStrategies/FormStrategy.js';
 import * as knexConfig from '../knexfile.js';
 import models from './models/index.js';
 import ru from './locales/ru.js';
 import en from './locales/en.js';
 import addRoutes from './routes/index.js';
-import getHelpers from './helpers/index.js'
+import getHelpers from './helpers/index.js';
 
 dotenv.config();
 
@@ -43,7 +43,7 @@ const setUpViews = (app) => {
     defaultContext: {
       ...helpers,
       assetPath: (filename) => `/assets/${filename}`,
-      app,  // add app to template contex, so we can use href=app.reverse in pug
+      app, // add app to template contex, so we can use href=app.reverse in pug
     },
     templates: path.join(__dirname, '..', 'server', 'views'),
   });
@@ -62,17 +62,16 @@ const setUpStaticAssets = (app) => {
 };
 
 const setupLocalization = async () => {
-  await i18next
-    .init({
-      lng: 'ru',
-      fallbackLng: 'en',
-      debug: true,
-      // debug: isDevelopment,
-      resources: {
-        ru,
-        en,
-      },
-    });
+  await i18next.init({
+    lng: 'ru',
+    fallbackLng: 'en',
+    debug: true,
+    // debug: isDevelopment,
+    resources: {
+      ru,
+      en,
+    },
+  });
 };
 
 const addHooks = (app) => {
@@ -90,11 +89,11 @@ const addHooks = (app) => {
 
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
-//   app.register(fastifyCors, {
-//   origin: 'http://localhost:3000', 
-//   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-//   credentials: true, 
-// });
+  app.register(fastifyCors, {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true,
+  });
   // await app.register(fastifyErrorPage);
   // await app.register(fastifyReverseRoutes);
   await app.register(fastifyFormbody, { parser: qs.parse });
@@ -102,25 +101,30 @@ const registerPlugins = async (app) => {
     secret: process.env.SESSION_KEY,
     cookie: {
       path: '/',
+      //
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
     },
   });
 
-  fastifyPassport.registerUserDeserializer(
-    (user) => app.objection.models.user.query().findById(user.id),
+  fastifyPassport.registerUserDeserializer((user) =>
+    app.objection.models.user.query().findById(user.id)
   );
   fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
   fastifyPassport.use(new FormStrategy('form', app));
   await app.register(fastifyPassport.initialize());
   await app.register(fastifyPassport.secureSession());
   await app.decorate('fp', fastifyPassport);
-  app.decorate('authenticate', (...args) => fastifyPassport.authenticate(
-    'form',
-    {
-      failureRedirect: app.reverse('root'),
-      // failureFlash: i18next.t('flash.authError'),
-    },
-  // @ts-ignore
-  )(...args));
+  app.decorate('authenticate', (...args) =>
+    fastifyPassport.authenticate(
+      'form',
+      {
+        failureRedirect: app.reverse('root'),
+        // failureFlash: i18next.t('flash.authError'),
+      }
+      // @ts-ignore
+    )(...args)
+  );
 
   await app.register(fastifyMethodOverride);
   await app.register(fastifyObjectionjs, {
@@ -157,5 +161,3 @@ export default async (app, _options) => {
 
   return app;
 };
-
-

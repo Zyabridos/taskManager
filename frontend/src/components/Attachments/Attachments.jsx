@@ -4,12 +4,11 @@ export const LoginPicture = ({ t }) => {
       <img
         className="rounded-full w-48 h-48 object-cover shadow-lg"
         src="/loginPic.jpg"
-        alt={t("assetsAltName.login")}
+        alt={t('assetsAltName.login')}
       />
     </div>
   );
 };
-
 
 // Замена Bootstrap-классов на Tailwind:
 // col-12 → w-full (полная ширина на маленьких экранах)

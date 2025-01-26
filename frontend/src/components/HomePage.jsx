@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const HomePage = () => {
   const { t } = useTranslation();

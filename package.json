@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
-  "main": "index.js",
+  "main": "./server/plugin.js",
   "type": "module",
   "engines": {
     "node": ">=20.x"
@@ -30,6 +30,7 @@
   "homepage": "https://github.com/Zyabridos/taskManager#readme",
   "dependencies": {
     "@fastify/cookie": "^6.0.0",
+    "@fastify/cors": "^8.5.0",
     "@fastify/formbody": "^7.4.0",
     "@fastify/passport": "^2.3.0",
     "@fastify/secure-session": "^5.2.0",

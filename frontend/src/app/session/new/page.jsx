@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import LoginForm from "@/components/Forms/LoginForm.jsx";
+import LoginForm from '@/components/Forms/LoginForm.jsx';
 
 export default function UsersPage() {
   return (

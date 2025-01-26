@@ -1,35 +1,52 @@
-import { LoginPicture } from "../Attachments/Attachments";
+import { LoginPicture } from '../Attachments/Attachments';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { withZodSchema } from "formik-validator-zod";
-import { z } from "zod";
+import axios from 'axios';
+import { withZodSchema } from 'formik-validator-zod';
+import { z } from 'zod';
 
 const SignupForm = () => {
   const { t } = useTranslation();
 
-  const handleSubmit = (values) => {
-    alert(JSON.stringify(values));
-  }
+  // Функция отправки данных на сервер
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    console.log('Отправляемые данные:', values);
+    try {
+      // const response = await axios.post('/api/users', {
+      const response = await axios.post('/users', {
+        data: values,
+      });
 
-  const RegisterFormSchema = z
-  .object({
+      alert(t('Yay'));
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      if (error.response && error.response.data) {
+        setErrors(error.response.data.details || {});
+      } else {
+        // alert(t('Error')); 
+        alert(error);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const RegisterFormSchema = z.object({
     firstName: z
       .string()
       // .required("It is a requiered field")
-      .min(1, "Should be at least 1 character long"),
+      .min(1, 'Should be at least 1 character long'),
     lastName: z
       .string()
       // .required("It is a requiered field")
-      .min(1, "Should be at least 1 character long"),
-    email: z
-      .string()
-      .email("Invalid email"),
-      // .required("It is a requiered field"),
+      .min(1, 'Should be at least 1 character long'),
+    email: z.string().email('Invalid email'),
+    // .required("It is a requiered field"),
     password: z
       .string()
-      .min(2, "Password should be at least 2 characters long")
-      // .max(16, "Password should be at most 16 characters long"),
-    });
+      .min(2, 'Password should be at least 2 characters long'),
+    // .max(16, "Password should be at most 16 characters long"),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -40,12 +57,11 @@ const SignupForm = () => {
     },
     onSubmit: handleSubmit,
     validate: withZodSchema(RegisterFormSchema),
-  })
-   return (
-    // flex-grow позволяет занимать свободное место между шапкой и футером 
+  });
+  return (
+    // flex-grow позволяет занимать свободное место между шапкой и футером
     <div className="flex items-center justify-center flex-grow">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full flex flex-col md:flex-row items-center">
-        
         <div className="w-full md:w-1/3 flex justify-center mb-6 md:mb-0">
           <LoginPicture t={t} />
         </div>
@@ -57,7 +73,10 @@ const SignupForm = () => {
           <form className="space-y-6" onSubmit={formik.handleSubmit}>
             {/* First Name Input */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
+              <label
+                className="block text-gray-700 font-medium mb-2 sr-only"
+                htmlFor="email"
+              >
                 {t('views.signup.firstNameLabel')}
               </label>
               <input
@@ -78,7 +97,10 @@ const SignupForm = () => {
 
             {/* Last Name Input */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
+              <label
+                className="block text-gray-700 font-medium mb-2 sr-only"
+                htmlFor="email"
+              >
                 {t('views.signup.lastNameLabel')}
               </label>
               <input
@@ -99,7 +121,10 @@ const SignupForm = () => {
 
             {/* Email Input */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
+              <label
+                className="block text-gray-700 font-medium mb-2 sr-only"
+                htmlFor="email"
+              >
                 {t('views.signup.emailLabel')}
               </label>
               <input
@@ -120,7 +145,10 @@ const SignupForm = () => {
 
             {/* Password Input */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="password">
+              <label
+                className="block text-gray-700 font-medium mb-2 sr-only"
+                htmlFor="password"
+              >
                 {t('views.signup.passwordLabel')}
               </label>
               <input

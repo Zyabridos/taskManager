@@ -1,7 +1,6 @@
 // /** @type {import('next').NextConfig} */
 // const nextConfig = {};
 
-
 // export default nextConfig;
 
 import path from 'path';
@@ -36,10 +35,12 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/:path*',
+        // вот тут меняем порт, чтобы вместо next.js на 5000 порту работал бэк, который у нас на 3000
+        // destination: 'http://localhost:5000/:path*',
+        destination: 'http://localhost:3000/:path*',
       },
     ];
   },
 };
 
-export default nextConfig
+export default nextConfig;

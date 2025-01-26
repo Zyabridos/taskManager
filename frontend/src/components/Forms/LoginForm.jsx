@@ -3,13 +3,34 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { withZodSchema } from "formik-validator-zod";
 import { z } from "zod";
+import axios from "axios";
 
 const LoginForm = () => {
   const { t } = useTranslation();
 
-  const handleSubmit = (values) => {
-    alert(JSON.stringify(values));
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+  try {
+    console.log('Отправляю данные для регистрации:' + JSON.stringify(values))
+    const response = await axios.post('/api/session', values, {
+    // const response = await axios.post('/session', values, {
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      alert('Yay');
+      window.location.href = '/';  // redirect to main page
+    }
+  } catch (error) {
+    console.error('Ошибка входа:', error);
+    if (error.response && error.response.data) {
+      setErrors(error.response.data.details || {});
+    } else {
+      alert('Error');
+    }
+  } finally {
+    setSubmitting(false);
   }
+};
 
   const RegisterFormSchema = z
   .object({

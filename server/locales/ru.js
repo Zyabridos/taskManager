@@ -13,7 +13,7 @@ export default {
         index: {
           hello: 'Привет от Нины!',
           description: 'Добро пожаловать в мой проект на Fastify!',
-          more: 'Узнать больше'
+          more: 'Узнать больше',
         },
       },
       login: {
@@ -37,7 +37,8 @@ export default {
         changeLanguage: 'Сменить язык на английский',
         welcomeCard: {
           title: 'Привет!',
-          message: 'Добро пожаловать в менеджер задач — практический проект на Fastify',
+          message:
+            'Добро пожаловать в менеджер задач — практический проект на Fastify',
           button: 'Узнать больше',
         },
       },

@@ -11,7 +11,7 @@ export const up = (knex) =>
 
 export const down = (knex) => knex.schema.dropTable('users');
 
-// при изменении миграций не забываем делать откат и потом обновлять 
+// при изменении миграций не забываем делать откат и потом обновлять
 // # Откат всех миграций
 // npx knex migrate:rollback --all
 

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useTranslation } from "react-i18next";
-import Link from "next/link";
-import NavbarButtons from "../Buttons/Buttons";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
+import NavbarButtons from '../Buttons/Buttons';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -15,11 +15,14 @@ const Navbar = () => {
           <Link href="/" className="text-2xl font-bold text-gray-800">
             {t('taskManager')}
           </Link>
-          <Link href="/users" className="text-lg text-gray-700 hover:text-gray-900 transition">
+          <Link
+            href="/users"
+            className="text-lg text-gray-700 hover:text-gray-900 transition"
+          >
             {t('layouts.application.users')}
           </Link>
         </div>
-        
+
         <button
           className="block lg:hidden text-gray-800 focus:outline-none"
           aria-label="Toggle navigation"

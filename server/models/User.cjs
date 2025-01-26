@@ -14,9 +14,9 @@ module.exports = class User extends unique(BaseModel) {
   // ну тут структру примерно как в ЬД
   static get jsonSchema() {
     return {
-        type: 'object',
-        required: ['email', 'password'],
-        properties: {
+      type: 'object',
+      required: ['email', 'password'],
+      properties: {
         id: { type: 'integer' },
         first_name: { type: 'string', minLength: 1 },
         last_name: { type: 'string', minLength: 1 },

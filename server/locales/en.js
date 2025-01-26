@@ -36,7 +36,8 @@ export default {
         changeLanguage: 'Change language to English',
         welcomeCard: {
           title: 'Hello!',
-          message: 'Welcome to the task manager - a practical project on Fastify',
+          message:
+            'Welcome to the task manager - a practical project on Fastify',
           button: 'Learn more',
         },
       },
