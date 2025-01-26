@@ -18,3 +18,15 @@ t:
 
 fr:
 		cd frontend; npm run dev
+
+start-frontend:
+		cd frontend; npm run dev
+
+start-backend:
+		node server/startServer.js --watch
+
+develop:
+		make start-backend & make start-frontend
+
+dev:
+		make start-backend & make start-frontend

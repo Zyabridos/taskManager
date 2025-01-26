@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { withZodSchema } from "formik-validator-zod";
 import { z } from "zod";
 
-const LoginForm = () => {
+const SignupForm = () => {
   const { t } = useTranslation();
 
   const handleSubmit = (values) => {
@@ -13,7 +13,18 @@ const LoginForm = () => {
 
   const RegisterFormSchema = z
   .object({
-    email: z.string().email("Invalid email"),
+    firstName: z
+      .string()
+      // .required("It is a requiered field")
+      .min(1, "Should be at least 1 character long"),
+    lastName: z
+      .string()
+      // .required("It is a requiered field")
+      .min(1, "Should be at least 1 character long"),
+    email: z
+      .string()
+      .email("Invalid email"),
+      // .required("It is a requiered field"),
     password: z
       .string()
       .min(2, "Password should be at least 2 characters long")
@@ -22,6 +33,8 @@ const LoginForm = () => {
 
   const formik = useFormik({
     initialValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
     },
@@ -39,13 +52,55 @@ const LoginForm = () => {
 
         <div className="w-full md:w-2/3">
           <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">
-            {t('views.login.title')}
+            {t('views.signup.title')}
           </h1>
           <form className="space-y-6" onSubmit={formik.handleSubmit}>
+            {/* First Name Input */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
+                {t('views.signup.firstNameLabel')}
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                onChange={formik.handleChange}
+                value={formik.values.firstName}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                placeholder={t('views.signup.firstNamePlaceholder')}
+              />
+              {formik.errors.firstName && formik.touched.firstName && (
+                <div className="text-sm mt-2 text-red-600">
+                  {formik.errors.firstName}
+                </div>
+              )}
+            </div>
+
+            {/* Last Name Input */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
+                {t('views.signup.lastNameLabel')}
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                onChange={formik.handleChange}
+                value={formik.values.lastName}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                placeholder={t('views.signup.lastNamePlaceholder')}
+              />
+              {formik.errors.lastName && formik.touched.lastName && (
+                <div className="text-sm mt-2 text-red-600">
+                  {formik.errors.lastName}
+                </div>
+              )}
+            </div>
+
             {/* Email Input */}
             <div>
               <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
-                {t('views.login.emailLabel')}
+                {t('views.signup.emailLabel')}
               </label>
               <input
                 type="email"
@@ -54,7 +109,7 @@ const LoginForm = () => {
                 onChange={formik.handleChange}
                 value={formik.values.email}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder={t('views.login.emailPlaceholder')}
+                placeholder={t('views.signup.emailPlaceholder')}
               />
               {formik.errors.email && formik.touched.email && (
                 <div className="text-sm mt-2 text-red-600">
@@ -66,7 +121,7 @@ const LoginForm = () => {
             {/* Password Input */}
             <div>
               <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="password">
-                {t('views.login.passwordLabel')}
+                {t('views.signup.passwordLabel')}
               </label>
               <input
                 type="password"
@@ -75,7 +130,7 @@ const LoginForm = () => {
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder={t('views.login.passwordPlaceholder')}
+                placeholder={t('views.signup.passwordPlaceholder')}
               />
               {formik.errors.password && formik.touched.password && (
                 <div className="text-sm mt-2 text-red-600">
@@ -89,7 +144,7 @@ const LoginForm = () => {
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-medium"
             >
-              {t('views.login.submit')}
+              {t('views.signup.submit')}
             </button>
           </form>
         </div>
@@ -98,4 +153,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignupForm;

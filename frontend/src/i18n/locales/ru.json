@@ -32,6 +32,18 @@
         "registration": " Регистрация"
       }
     },
+    "signup": {
+      "title": "Регистрация",
+      "firstNameLabel": "Имя",
+      "firstNamePlaceholder": "Имя",
+      "lastNameLabel": "Фамилия",
+      "lastNamePlaceholder": "Фамилия",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Email",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Пароль",
+      "submit": "Зарегестрироваться"
+  },
     "users": {
       "title": "Пользователи",
       "id": "ID",
