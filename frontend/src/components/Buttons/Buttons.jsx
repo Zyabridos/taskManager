@@ -1,32 +1,24 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+"use client";
 
-{/* <Link className="nav-link" to="/users">
-                        {t('layouts.application.users')}
-                      </Link> */}
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 const NavbarButtons = () => {
   const { t } = useTranslation();
   return (
-    <ul className="navbar-nav justify-content-end w-100">
-      <li className="nav-item me-auto">
-        <Link className="nav-link" to="/users">
-          {t('layouts.application.users')}
-        </Link>
-      </li>
-      <li className="nav-item">
-        <Link className="nav-link" to="/login">
+    <ul className="flex items-center space-x-6">
+      <li>
+        <Link href="/login" className="text-lg text-gray-700 hover:text-gray-900 transition">
           {t('layouts.application.signIn')}
         </Link>
       </li>
-      <li className="nav-item">
-        <Link className="nav-link" to="/register">
+      <li>
+        <Link href="/register" className="text-lg text-gray-700 hover:text-gray-900 transition">
           {t('layouts.application.signUp')}
         </Link>
       </li>
     </ul>
-  )
-}
+  );
+};
 
-export default NavbarButtons
+export default NavbarButtons;

@@ -1,4 +1,6 @@
 {
+  "taskManager": "Менеджер задач",
+  "helloWorld": "Привет, МИР!",
   "appName": "Мое приложение",
   "layouts": {
     "application": {
@@ -14,7 +16,7 @@
     },
     "welcome": {
         "hello": "Привет от Нины!",
-        "description": "Добро пожаловать в мой проект, созданный с помощью Fastify и React!",
+        "description": "Добро пожаловать в мой проект, созданный с помощью Fastify и Next.js!",
         "more": "Узнать больше"
     },
     "users": {
