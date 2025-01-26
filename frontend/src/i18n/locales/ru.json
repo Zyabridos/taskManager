@@ -19,6 +19,19 @@
         "description": "Добро пожаловать в мой проект, созданный с помощью Fastify и Next.js!",
         "more": "Узнать больше"
     },
+    "login": {
+      "title": "Войти",
+      "emailLabel": "Ваш Email",
+      "emailPlaceholder": "Ваш Email",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Ваш пароль",
+      "submit": "Войти",
+      "wrongEmailOrPassword": "Неверные имя пользователя или пароль",
+      "footer": {
+        "noAccount?": "Нет аккаунта?",
+        "registration": " Регистрация"
+      }
+    },
     "users": {
       "title": "Пользователи",
       "id": "ID",
