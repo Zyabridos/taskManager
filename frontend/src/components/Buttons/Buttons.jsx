@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const NavbarButtons = () => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ const NavbarButtons = () => {
           {t('layouts.application.signUp')}
         </Link>
       </li>
+      <li><LanguageSwitcher /></li>
     </ul>
   );
 };

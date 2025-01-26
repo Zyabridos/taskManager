@@ -1,0 +1,70 @@
+{
+  "taskManager": "Oppgavebehandler",
+  "helloWorld": "Hei, VERDEN!",
+  "appName": "Min applikasjon",
+  "layouts": {
+    "application": {
+      "users": "Brukere",
+      "signIn": "Logg inn",
+      "signUp": "Registrer deg",
+      "signOut": "Logg ut"
+    }
+  },
+  "views": {
+    "mainPage": {
+      "title": "Hovedside"
+    },
+    "welcome": {
+      "hello": "Hei fra Nina!",
+      "description": "Velkommen til prosjektet mitt, laget med Fastify og Next.js!",
+      "more": "Lær mer"
+    },
+    "login": {
+      "title": "Logg inn",
+      "emailLabel": "Din e-post",
+      "emailPlaceholder": "Din e-post",
+      "passwordLabel": "Passord",
+      "passwordPlaceholder": "Ditt passord",
+      "submit": "Logg inn",
+      "wrongEmailOrPassword": "Feil brukernavn eller passord",
+      "footer": {
+        "noAccount?": "Ingen konto?",
+        "registration": " Registrer deg"
+      }
+    },
+    "signup": {
+      "title": "Registrering",
+      "firstNameLabel": "Fornavn",
+      "firstNamePlaceholder": "Fornavn",
+      "lastNameLabel": "Etternavn",
+      "lastNamePlaceholder": "Etternavn",
+      "emailLabel": "E-post",
+      "emailPlaceholder": "E-post",
+      "passwordLabel": "Passord",
+      "passwordPlaceholder": "Passord",
+      "submit": "Registrer deg"
+    },
+    "users": {
+      "title": "Brukere",
+      "id": "ID",
+      "fullName": "Fullt navn",
+      "email": "E-post",
+      "createdAt": "Opprettelsesdato",
+      "actions": "Handlinger",
+      "noUsers": "Ingen data",
+      "edit": "Rediger",
+      "delete": "Slett"
+    }
+  },
+  "assetsAltName": {
+    "login": "En mann med et flagg på fjellet"
+  },
+  "flash": {
+    "users": {
+      "create": {
+        "success": "Bruker ble opprettet vellykket!",
+        "error": "Feil under oppretting av bruker"
+      }
+    }
+  }
+}
