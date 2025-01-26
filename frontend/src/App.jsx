@@ -8,6 +8,7 @@ import { I18nextProvider } from 'react-i18next';
 import Home from './components/Home.jsx';
 import Navbar from './components/Navbar.jsx';
 import UsersList from './components/UserList.jsx';
+import LoginForm from './components/Forms/LoginForm.jsx';
 
 const App = () => {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/users" element={<UsersList />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </main>
