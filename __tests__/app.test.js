@@ -1,30 +1,24 @@
-// @ts-check
-
 import { describe, beforeAll, it, expect } from '@jest/globals';
 
 import fastify from 'fastify';
-import init from '../server/index.js';
-
-const routes = {
-  root: '/',
-};
+import init from '../server/plugin.js';
 
 describe('requests', () => {
   let app;
 
   beforeAll(async () => {
     app = fastify({
-      exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      exposeHeadRoutes: false, // отключаем автоматическую регистрацию маршрутов HEAD
+      logger: { target: 'pino-pretty' }, // просто логгер для красивого форматирования
     });
     await init(app);
   });
 
   it('GET 200', async () => {
+    // отправляем GET-запрос на корневой маршрут.
     const res = await app.inject({
       method: 'GET',
-      // url: app.reverse('root'),
-      url: routes.root,
+      url: app.reverse('root'),
     });
     expect(res.statusCode).toBe(200);
   });
@@ -38,6 +32,6 @@ describe('requests', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    await app.close(); // закрываем экземпляр Fastify, чтобы освободить ресурсы.
   });
 });

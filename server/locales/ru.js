@@ -50,8 +50,8 @@ export default {
           firstName: 'Имя',
           lastName: 'Фамилия',
           email: 'Email',
-          submit: 'Сохранить изменения'
-        }
+          submit: 'Сохранить изменения',
+        },
       },
       welcome: {
         index: {
