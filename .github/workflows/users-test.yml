@@ -1,0 +1,33 @@
+name: User Tests Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '__tests__/users.test.js'
+      - 'src/users/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '__tests__/users.test.js'
+      - 'src/users/**'
+
+jobs:
+  user-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # клонирование репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Apply database migrations
+        run: make db-migrate
+
+      - name: Run user tests
+        run: npm test -- __tests__/users.test.js
