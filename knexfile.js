@@ -39,3 +39,5 @@ export const production = {
   useNullAsDefault: true,
   migrations,
 };
+
+// не забываем выполнить команду для создания таблиц npx knex migrate:latest

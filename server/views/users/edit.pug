@@ -3,23 +3,27 @@ extends ../layouts/application.pug
 block content
   h1= t('views.users.edit.title')
 
-  form(action=`/users/${user.id}?_method=PATCH` method="post")
-    .form-group
-      label(for="data_firstName")= t('views.users.new.firstName')
-      input#data_firstName.form-control(type="text" name="data[firstName]" value=user.firstName)
-      if errors && errors.firstName
-        .text-danger= errors.firstName[0].message
+  if user
+    form(action=`/users/${user.id}` method="post")
+      input(type="hidden" name="_method" value="PATCH")
+      .form-group
+        label(for="data_firstName")= t('views.users.edit.firstName')
+        input#data_firstName.form-control(type="text" name="data[firstName]" value=user.firstName)
+        if errors && errors.firstName
+          .text-danger= errors.firstName[0].message
 
-    .form-group
-      label(for="data_lastName")= t('views.users.new.lastName')
-      input#data_lastName.form-control(type="text" name="data[lastName]" value=user.lastName)
-      if errors && errors.lastName
-        .text-danger= errors.lastName[0].message
+      .form-group
+        label(for="data_lastName")= t('views.users.edit.lastName')
+        input#data_lastName.form-control(type="text" name="data[lastName]" value=user.lastName)
+        if errors && errors.lastName
+          .text-danger= errors.lastName[0].message
 
-    .form-group
-      label(for="data_email")= t('views.users.new.email')
-      input#data_email.form-control(type="email" name="data[email]" value=user.email)
-      if errors && errors.email
-        .text-danger= errors.email[0].message
+      .form-group
+        label(for="data_email")= t('views.users.edit.email')
+        input#data_email.form-control(type="email" name="data[email]" value=user.email)
+        if errors && errors.email
+          .text-danger= errors.email[0].message
 
-    button.btn.btn-primary(type="submit")= t('views.users.edit.submit')
+      button.btn.btn-primary(type="submit")= t('views.users.edit.submit')
+  else
+    p.text-danger= t('flash.users.edit.notFound')

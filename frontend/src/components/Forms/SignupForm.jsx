@@ -23,7 +23,6 @@ const SignupForm = () => {
       if (error.response && error.response.data) {
         setErrors(error.response.data.details || {});
       } else {
-        // alert(t('Error')); 
         alert(error);
       }
     } finally {

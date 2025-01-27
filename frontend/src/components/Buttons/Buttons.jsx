@@ -24,7 +24,9 @@ const NavbarButtons = () => {
           {t('layouts.application.signUp')}
         </Link>
       </li>
-      <li><LanguageSwitcher /></li>
+      <li>
+        <LanguageSwitcher />
+      </li>
     </ul>
   );
 };

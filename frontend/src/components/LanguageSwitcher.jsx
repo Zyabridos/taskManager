@@ -7,7 +7,7 @@ const LanguageSwitcher = () => {
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
-    setIsOpen(false);  // закрыть меню после выбора языка
+    setIsOpen(false); // закрыть меню после выбора языка
   };
 
   const languages = [
@@ -16,7 +16,9 @@ const LanguageSwitcher = () => {
     { code: 'no', label: 'Norsk', flag: '🇳🇴' },
   ];
 
-  const selectedLanguage = languages.find((lang) => lang.code === i18n.language);
+  const selectedLanguage = languages.find(
+    (lang) => lang.code === i18n.language
+  );
 
   return (
     <div className="relative">

@@ -1,45 +1,44 @@
-import { LoginPicture } from "../Attachments/Attachments";
+import { LoginPicture } from '../Attachments/Attachments';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { withZodSchema } from "formik-validator-zod";
-import { z } from "zod";
-import axios from "axios";
+import { withZodSchema } from 'formik-validator-zod';
+import { z } from 'zod';
+import axios from 'axios';
 
 const LoginForm = () => {
   const { t } = useTranslation();
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-  try {
-    console.log('Отправляю данные для регистрации:' + JSON.stringify(values))
-    const response = await axios.post('/api/session', values, {
-    // const response = await axios.post('/session', values, {
-      withCredentials: true,
-    });
+    try {
+      console.log('Отправляю данные для регистрации:' + JSON.stringify(values));
+      const response = await axios.post('/api/session', values, {
+        // const response = await axios.post('/session', values, {
+        withCredentials: true,
+      });
 
-    if (response.status === 200) {
-      alert('Yay');
-      window.location.href = '/';  // redirect to main page
+      if (response.status === 200) {
+        alert('Yay');
+        window.location.href = '/'; // redirect to main page
+      }
+    } catch (error) {
+      console.error('Ошибка входа:', error);
+      if (error.response && error.response.data) {
+        setErrors(error.response.data.details || {});
+      } else {
+        alert('Error');
+      }
+    } finally {
+      setSubmitting(false);
     }
-  } catch (error) {
-    console.error('Ошибка входа:', error);
-    if (error.response && error.response.data) {
-      setErrors(error.response.data.details || {});
-    } else {
-      alert('Error');
-    }
-  } finally {
-    setSubmitting(false);
-  }
-};
+  };
 
-  const RegisterFormSchema = z
-  .object({
-    email: z.string().email("Invalid email"),
+  const RegisterFormSchema = z.object({
+    email: z.string().email('Invalid email'),
     password: z
       .string()
-      .min(2, "Password should be at least 2 characters long")
-      // .max(16, "Password should be at most 16 characters long"),
-    });
+      .min(2, 'Password should be at least 2 characters long'),
+    // .max(16, "Password should be at most 16 characters long"),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -48,12 +47,11 @@ const LoginForm = () => {
     },
     onSubmit: handleSubmit,
     validate: withZodSchema(RegisterFormSchema),
-  })
-   return (
-    // flex-grow позволяет занимать свободное место между шапкой и футером 
+  });
+  return (
+    // flex-grow позволяет занимать свободное место между шапкой и футером
     <div className="flex items-center justify-center flex-grow">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full flex flex-col md:flex-row items-center">
-        
         <div className="w-full md:w-1/3 flex justify-center mb-6 md:mb-0">
           <LoginPicture t={t} />
         </div>
@@ -65,7 +63,10 @@ const LoginForm = () => {
           <form className="space-y-6" onSubmit={formik.handleSubmit}>
             {/* Email Input */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="email">
+              <label
+                className="block text-gray-700 font-medium mb-2 sr-only"
+                htmlFor="email"
+              >
                 {t('views.login.emailLabel')}
               </label>
               <input
@@ -86,7 +87,10 @@ const LoginForm = () => {
 
             {/* Password Input */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2 sr-only" htmlFor="password">
+              <label
+                className="block text-gray-700 font-medium mb-2 sr-only"
+                htmlFor="password"
+              >
                 {t('views.login.passwordLabel')}
               </label>
               <input
