@@ -26,7 +26,7 @@ describe('test users CRUD', () => {
   });
 
   beforeEach(async () => {
-    // В случае необходимости можно добавить дополнительную логику перед каждым тестом
+    // maybe
   });
 
   it('index', async () => {
@@ -122,3 +122,6 @@ describe('test users CRUD', () => {
     await app.close();
   });
 });
+
+
+// npx jest __tests__/users.test.js

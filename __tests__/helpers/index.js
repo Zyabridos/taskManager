@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import bcrypt from 'bcrypt';
 
 export const getTestData = () => ({
   users: {
@@ -31,15 +32,18 @@ export const getTestData = () => ({
 
 export const prepareData = async (app) => {
   const { knex } = app.objection;
-
+  
   // создаст массив из 5 пользователей
-  const users = Array.from({ length: 5 }, () => ({
-    first_name: faker.person.firstName(),
-    last_name: faker.person.lastName(),
-    email: faker.internet.email(),
-    // создаст строку из 32 случайных букв и цифр
-    password_digest: faker.string.alphanumeric(32),
-  }));
+  const users = await Promise.all(
+    Array.from({ length: 5 }, async () => ({
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
+      email: faker.internet.email(),
+      //   // создаст строку из 32 случайных букв и цифр
+      //   password_digest: faker.string.alphanumeric(32), // не хэшурием пароль
+      password_digest: await bcrypt.hash('password123', 10), // хэшируем пароль
+    }))
+  );
 
   // добавляем пользователя, которого будем удалять
   users.push({

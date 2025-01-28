@@ -62,3 +62,5 @@ describe('test session', () => {
     await app.close();
   });
 });
+
+// npx jest __tests__/session.test.js
