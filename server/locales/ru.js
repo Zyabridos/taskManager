@@ -22,6 +22,7 @@ export default {
     layouts: {
       application: {
         users: 'Пользователи',
+        statuses: 'Статусы',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -52,6 +53,23 @@ export default {
           email: 'Email',
           submit: 'Сохранить изменения',
         },
+      },
+      statuses: {
+        title: 'Статусы',
+        createStatusBtn: 'Создать статус',
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        actions: 'Действия',
+        editBtn: 'Изменить',
+        delete: 'Удалить',
+        new: {
+          title: 'Создать статус',
+          submit: 'Создать'
+        },
+        statusForm: {
+          name: 'Наименование'
+        }
       },
       welcome: {
         index: {

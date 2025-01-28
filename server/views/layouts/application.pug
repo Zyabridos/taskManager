@@ -25,8 +25,8 @@ html(lang="en")
             if isAuthenticated()
               li.nav-item
                 //- +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
+                a.nav-link(href="/statuses")= t('layouts.application.statuses')
                 +buttonTo("/session", 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
-
             else
               li.nav-item
                 a.nav-link(href=app.reverse('newSession'))= t('layouts.application.signIn')
@@ -37,8 +37,7 @@ html(lang="en")
       //- each messages, type in reply.flash() || []
       //-   each message in messages
       //-     div.alert(class=`alert-${getAlertClass(type)}`)= message
-
-      h1.my-4
+      h1.display-4.fw-bold.mt-4
         block header
       block content
 
