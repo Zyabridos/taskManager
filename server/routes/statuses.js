@@ -15,7 +15,25 @@ export default (app) => {
     })
 
     // GET /statuses/:id/edit - page for editing a status
-
+    .get('/statuses/:id/edit', { name: 'editStatus' }, async (req, reply) => {
+      const { id } = req.params;
+      try {
+        const status = await app.objection.models.status.query().findById(id);
+        if (!status) {
+          // req.flash('error', i18next.t('flash.status.edit.notFound'));
+          reply.status(404).send('Status not found');
+          return;
+        }
+        console.log('Status data:', status); // Логирование данных
+        reply.render('statuses/edit', { status, errors: {} });
+      } catch ({ data }) {
+        reply.render('statuses/edit', { errors: data });
+        // req.flash('error', i18next.t('flash.statuses.edit.error'));
+        reply.status(500).send('Internal Server Error');
+      }
+      return reply;
+    })
+    
     // POST /statuses - create new status
     .post('/statuses', async (req, reply) => {
       const status = new app.objection.models.status();
@@ -37,6 +55,26 @@ export default (app) => {
     })
 
     // PATCH /statuses/:id - edit a status
+    .patch('/statuses/:id', async (req, reply) => {
+      const { id } = req.params;
+      const updatedData = req.body.data;
+      try {
+        const status = await app.objection.models.status.query().findById(id);
+        if (!status) {
+          // req.flash('error', i18next.t('flash.statuses.edit.notFound'));
+          return reply.status(404).send('Status not found');
+        }
+        await status.$query().patch(updatedData);
+        // req.flash('info', i18next.t('flash.statuses.edit.success'));
+        reply.redirect(`/statuses`);
+      } catch ({ data }) {
+        // req.flash('error', i18next.t('flash.statuses.edit.error'));
+        reply.render('statuses/edit', {
+          status: { id, ...updatedData },
+          errors: data,
+        });
+      }
+    })
 
     // DELETE /statuses/:id - delete a status
 };

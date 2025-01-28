@@ -1,0 +1,12 @@
+extends ../layouts/application.pug
+include ../mixins/statusForm.pug
+
+block header
+  h1= t('views.statuses.edit.title')
+
+block content
+  if status
+    +statusForm(`/statuses/${status.id}`, "post", t('views.statuses.edit.submit'), status, errors)
+      input(type="hidden" name="_method" value="PATCH")
+  else
+    p.text-danger= t('flash.statuses.edit.notFound')

@@ -63,12 +63,16 @@ export default {
         actions: 'Действия',
         editBtn: 'Изменить',
         delete: 'Удалить',
+        statusForm: {
+          name: 'Наименование'
+        },
         new: {
           title: 'Создать статус',
           submit: 'Создать'
         },
-        statusForm: {
-          name: 'Наименование'
+        edit: {
+          title: 'Изменить статус',
+          submit: 'Изменить'
         }
       },
       welcome: {

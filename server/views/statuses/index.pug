@@ -23,7 +23,7 @@ block content
           td= formatDate(status.createdAt)
           td
             .d-flex.flex-wrap
-              a.btn.btn-primary.me-1(href=`/statuss/${status.id}/edit`)= t('views.statuses.editBtn')
+              a.btn.btn-primary.me-1(href=`/statuses/${status.id}/edit`)= t('views.statuses.editBtn')
               form(action=`/statuses/${status.id}` method='post')
                 input(type="hidden" name="_method" value="delete")
                 input.btn.btn-danger(type="submit" value=t('views.statuses.delete'))
