@@ -75,6 +75,31 @@ export default {
           submit: 'Изменить'
         }
       },
+      tasks: {
+        title: 'Задачи',
+        createStatusBtn: 'Создать задачу',
+        id: 'ID',
+        name: 'Наименование',
+        status: 'Статус',
+        author: 'Автор',
+        executor: 'Исполнитель',
+        createdAt: 'Дата создания',
+        actions: 'Действия',
+        editBtn: 'Изменить',
+        delete: 'Удалить',
+        tasksForm: {
+          name: 'Наименование'
+        },
+        onlyMyTasks: 'Только мои задачи',
+        new: {
+          title: 'Создать задачу',
+          submit: 'Создать'
+        },
+        edit: {
+          title: 'Изменить задачу',
+          submit: 'Изменить'
+        },
+      },
       welcome: {
         index: {
           hello: 'Привет от Нины!',
