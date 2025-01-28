@@ -11,7 +11,7 @@ const generators = {
   }),
   status: () => ({
     name: faker.word.noun(),
-  })
+  }),
 };
 
 export const generateData = (type, length = 3) => {

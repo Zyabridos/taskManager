@@ -1,0 +1,11 @@
+extends ../layouts/application.pug
+include ../mixins/userForm.pug
+
+block content
+  h1= t('views.tasks.edit.title')
+
+  if task
+    +userForm(`/tasks/${task.id}`, "post", task, errors)
+      input(type="hidden" name="_method" value="PATCH")
+  else
+    p.text-danger= t('flash.tasks.edit.notFound')

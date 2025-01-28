@@ -123,5 +123,4 @@ describe('test users CRUD', () => {
   });
 });
 
-
 // npx jest __tests__/users.test.js

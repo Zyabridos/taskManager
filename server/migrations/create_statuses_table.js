@@ -6,11 +6,4 @@ export const up = (knex) =>
     table.timestamp('updated_at').defaultTo(knex.fn.now());
   });
 
-export const down = (knex) => knex.schema.dropTable('users');
-
-// при изменении миграций не забываем делать откат и потом обновлять
-// # Откат всех миграций
-// npx knex migrate:rollback --all
-
-// # Применение миграций с обновленными полями
-// npx knex migrate:latest
+export const down = (knex) => knex.schema.dropTable('statuses');

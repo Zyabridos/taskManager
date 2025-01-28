@@ -90,14 +90,18 @@ describe('test statuses CRUD', () => {
     });
 
     expect(response.statusCode).toBe(302);
-    const deletedStatus = await models.status.query().findOne({ name: params.name });
+    const deletedStatus = await models.status
+      .query()
+      .findOne({ name: params.name });
     expect(deletedStatus).toBeUndefined();
   });
 
   // work under progress
   it('update', async () => {
     const params = testData.statuses.existing.update;
-    const statusToDelete = await models.status.query().findOne({ name: params.name });
+    const statusToDelete = await models.status
+      .query()
+      .findOne({ name: params.name });
     const updatedStatusName = 'updated';
     const response = await app.inject({
       method: 'PATCH',

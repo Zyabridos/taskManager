@@ -21,7 +21,6 @@ export const prepareData = async (app) => {
   await knex('users').insert(usersData.seeds);
   await knex('statuses').insert(statusesData.seeds);
 
-
   return {
     users: usersData,
     statuses: statusesData,

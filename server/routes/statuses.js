@@ -2,7 +2,6 @@ export default (app) => {
   app
     // GET /statuses - list of all statuses
     .get('/statuses', { name: 'statuses' }, async (req, reply) => {
-
       const statuses = await app.objection.models.status.query();
       reply.render('statuses/index', { statuses });
       return reply;
@@ -33,9 +32,9 @@ export default (app) => {
       }
       return reply;
     })
-    
+
     // POST /statuses - create new status
-    .post('/statuses',  { name: 'createStatus' }, async (req, reply) => {
+    .post('/statuses', { name: 'createStatus' }, async (req, reply) => {
       const status = new app.objection.models.status();
       status.$set(req.body.data);
 
@@ -55,7 +54,7 @@ export default (app) => {
     })
 
     // PATCH /statuses/:id - edit a status
-    .patch('/statuses/:id',  { name: 'updateStatus' }, async (req, reply) => {
+    .patch('/statuses/:id', { name: 'updateStatus' }, async (req, reply) => {
       const { id } = req.params;
       const updatedData = req.body.data;
       try {
@@ -77,7 +76,7 @@ export default (app) => {
     })
 
     // DELETE /statuses/:id - delete a status
-    .delete('/statuses/:id',  { name: 'deleteStatus' }, async (req, reply) => {
+    .delete('/statuses/:id', { name: 'deleteStatus' }, async (req, reply) => {
       const { id } = req.params;
       try {
         const status = await app.objection.models.status.query().findById(id);

@@ -1,0 +1,9 @@
+extends ../layouts/application.pug
+include ../mixins/taskForm.pug
+
+block header
+  h1= t('views.tasks.new.title')
+
+block content
+  +taskForm("/tasks", "post", tasks, errors)
+  

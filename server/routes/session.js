@@ -20,12 +20,14 @@ export default (app) => {
           return reply;
         }
         await req.logIn(user);
-        reply.redirect(app.reverse('root'));
+        // reply.redirect(app.reverse('root'));
+        reply.redirect('/');
         return reply;
       })
     )
     .delete('/session', (req, reply) => {
       req.logOut();
-      reply.redirect(app.reverse('root'));
+      // reply.redirect(app.reverse('root'));
+      reply.redirect('/');
     });
 };

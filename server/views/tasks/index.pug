@@ -24,12 +24,13 @@ block content
               label.input-group-text(for="data_executor")= t('views.tasks.executor')
               select.form-select(id="data_executor" name="executor")
                 each executor in executors
-                  option(value=executor.id)= executor.first_name
+                  option(value=executor.id)= `${executor.firstName} ${executor.lastName}`
+
 
           //- Показать только мои задачи
           .mb-3.form-check
             input.form-check-input(type="checkbox" id="data_isCreatorUser" name="isCreatorUser")
-            label.form-check-label(for="data_isCreatorUser")= t('views.tasks.taskForm.onlyMyTasks')
+            label.form-check-label(for="data_isCreatorUser")= t('views.tasks.onlyMyTasks')
 
   //- Таблица статусов
   table.table.table-striped
@@ -43,14 +44,17 @@ block content
         th= t('views.tasks.createdAt')
         th= t('views.tasks.actions')
     tbody
-      //- each task in tasks
-      //-   tr
-      //-     td= status.id
-      //-     td= status.name
-      //-     td= formatDate(status.createdAt)
-      //-     td
-      //-       .d-flex.flex-wrap
-      //-         a.btn.btn-primary.me-1(href=`/tasks/${status.id}/edit`)= t('views.tasks.editBtn')
-      //-         form(action=`/tasks/${status.id}` method='post')
-      //-           input(type="hidden" name="_method" value="delete")
-      //-           input.btn.btn-danger(type="submit" value=t('views.tasks.delete'))
+      each task in tasks
+        tr
+          td= task.id
+          td= task.name
+          td= task.status
+          td= task.author
+          td= task.executor
+          td= formatDate(task.createdAt)
+          td
+            .d-flex.flex-wrap
+              a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= t('views.tasks.editBtn')
+              form(action=`/tasks/${task.id}` method='post')
+                input(type="hidden" name="_method" value="delete")
+                input.btn.btn-danger(type="submit" value=t('views.tasks.delete'))

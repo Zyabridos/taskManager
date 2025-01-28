@@ -23,6 +23,7 @@ export default {
       application: {
         users: 'Пользователи',
         statuses: 'Статусы',
+        tasks: 'Задачи',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -64,16 +65,16 @@ export default {
         editBtn: 'Изменить',
         delete: 'Удалить',
         statusForm: {
-          name: 'Наименование'
+          name: 'Наименование',
         },
         new: {
           title: 'Создать статус',
-          submit: 'Создать'
+          submit: 'Создать',
         },
         edit: {
           title: 'Изменить статус',
-          submit: 'Изменить'
-        }
+          submit: 'Изменить',
+        },
       },
       tasks: {
         title: 'Задачи',
@@ -87,17 +88,21 @@ export default {
         actions: 'Действия',
         editBtn: 'Изменить',
         delete: 'Удалить',
+        labels: 'Метки',
+        description: 'Описание',
         tasksForm: {
-          name: 'Наименование'
+          name: 'Наименование',
         },
         onlyMyTasks: 'Только мои задачи',
+        noExecutors:
+          'Список пользователей пуст, поэтому некому исполнить эту задачу :)',
         new: {
           title: 'Создать задачу',
-          submit: 'Создать'
+          submit: 'Создать',
         },
         edit: {
           title: 'Изменить задачу',
-          submit: 'Изменить'
+          submit: 'Изменить',
         },
       },
       welcome: {
