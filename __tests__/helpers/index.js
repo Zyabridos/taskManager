@@ -1,65 +1,45 @@
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
+import { generateUsers, generateStatuses } from './faker.js';
+
+// TODO: использовать для фикстур https://github.com/viglucci/simple-knex-fixtures
 
 export const getTestData = () => ({
-  users: {
-    new: {
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    },
-    existing: {
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    },
-    update: {
-      oldEmail: 'arya_stark@example.com', // уже существующий пользователь
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      email: faker.internet.email(), // Новый email
-    },
-    delete: {
-      first_name: 'John',
-      last_name: 'Snow',
-      email: 'john_snow@example.com',
-      password_digest: faker.string.alphanumeric(32),
-    },
-  },
+  users: generateUsers(),
+  statuses: generateStatuses(),
 });
 
 export const prepareData = async (app) => {
   const { knex } = app.objection;
-  
-  // создаст массив из 5 пользователей
-  const users = await Promise.all(
-    Array.from({ length: 5 }, async () => ({
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      email: faker.internet.email(),
-      //   // создаст строку из 32 случайных букв и цифр
-      //   password_digest: faker.string.alphanumeric(32), // не хэшурием пароль
-      password_digest: await bcrypt.hash('password123', 10), // хэшируем пароль
-    }))
-  );
 
-  // добавляем пользователя, которого будем удалять
-  users.push({
-    first_name: 'John',
-    last_name: 'Snow',
-    email: 'john_snow@example.com',
-    password_digest: faker.string.alphanumeric(32),
+  const usersData = generateUsers();
+  const statusesData = generateStatuses();
+
+  const users = await knex('users');
+  const statuses = await knex('statuses');
+
+  await knex('users').insert(usersData.seeds);
+  await knex('statuses').insert(statusesData.seeds);
+
+
+  return {
+    users: usersData,
+    statuses: statusesData,
+  };
+};
+
+export const makeLogin = async (app, userData) => {
+  const responseSignIn = await app.inject({
+    method: 'POST',
+    // url: app.reverse('session'),
+    url: '/session',
+    payload: {
+      data: userData,
+    },
   });
+  const [sessionCookie] = responseSignIn.cookies;
+  const { name, value } = sessionCookie;
+  const cookie = { [name]: value };
 
-  users.push({
-    first_name: 'Arya',
-    last_name: 'Stark',
-    email: 'arya_stark@example.com',
-    password_digest: faker.string.alphanumeric(32),
-  });
-
-  // говорим Knex.js работать с таблицей users в БД. (= INSERT INTO users)
-  await knex('users').insert(users);
+  return cookie;
 };

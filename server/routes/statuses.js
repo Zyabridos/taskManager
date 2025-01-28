@@ -35,7 +35,7 @@ export default (app) => {
     })
     
     // POST /statuses - create new status
-    .post('/statuses', async (req, reply) => {
+    .post('/statuses',  { name: 'createStatus' }, async (req, reply) => {
       const status = new app.objection.models.status();
       status.$set(req.body.data);
 
@@ -55,7 +55,7 @@ export default (app) => {
     })
 
     // PATCH /statuses/:id - edit a status
-    .patch('/statuses/:id', async (req, reply) => {
+    .patch('/statuses/:id',  { name: 'updateStatus' }, async (req, reply) => {
       const { id } = req.params;
       const updatedData = req.body.data;
       try {
@@ -77,7 +77,7 @@ export default (app) => {
     })
 
     // DELETE /statuses/:id - delete a status
-    .delete('/statuses/:id', async (req, reply) => {
+    .delete('/statuses/:id',  { name: 'deleteStatus' }, async (req, reply) => {
       const { id } = req.params;
       try {
         const status = await app.objection.models.status.query().findById(id);

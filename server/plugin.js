@@ -125,11 +125,11 @@ const registerPlugins = async (app) => {
       // @ts-ignore
     )(...args)
   );
-
+  app.register(fastifyMethodOverride);
   // await app.register(fastifyMethodOverride);
-  await app.register(fastifyMethodOverride, {
-    methods: ['POST'], // Методы, которые можно переопределять
-  });
+  // await app.register(fastifyMethodOverride, {
+  //   methods: ['POST'], // Методы, которые можно переопределять
+  // });
   await app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[mode],
     models,
