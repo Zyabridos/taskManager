@@ -16,7 +16,7 @@ const setUpViews = (app) => {
       assetPath: (filename) => `/assets/${filename}`,
       app,
     },
-    templates: path.join(__dirname, '..', 'views'),
+    templates: path.join(__dirname, '../..', 'views'),
   });
 
   app.decorateReply('render', function render(viewPath, locals) {

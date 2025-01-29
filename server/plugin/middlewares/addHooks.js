@@ -1,8 +1,8 @@
 const addHooks = (app) => {
   app.addHook('preHandler', async (req, reply) => {
     reply.locals = {
-      ...reply.locals,
-      flash: req.flash(),
+      // ...reply.locals,
+      // flash: req.flash(),
       isAuthenticated: () => req.isAuthenticated(),
     };
   });
