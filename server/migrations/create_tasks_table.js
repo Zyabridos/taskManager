@@ -1,22 +1,23 @@
+// Note to myself: Don`t forget to roll migrations back and update them !!
 export const up = (knex) =>
   knex.schema.createTable('tasks', (table) => {
     table.increments('id').primary();
     table.string('name').notNullable();
     table.string('description');
     table
-      .integer('statusId')
+      .integer('statusId') // id of a status that is connected to task
       .references('id')
       .inTable('statuses')
       .notNullable()
       .onDelete('CASCADE');
     table
-      .integer('creatorId')
+      .integer('authorId') // id of a task author (the person that has created task while was logged in)
       .references('id')
       .inTable('users')
-      .notNullable()
+      // .notNullable()
       .onDelete('CASCADE');
     table
-      .integer('executorId')
+      .integer('executorId') // id of a person that an author set as an executor of the task
       .references('id')
       .inTable('users')
       .notNullable()

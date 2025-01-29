@@ -13,25 +13,6 @@ export default (app) => {
       const user = new app.objection.models.user();
       reply.render('users/new', { user });
     })
-    // POST /users - create new user
-    .post('/users', async (req, reply) => {
-      const user = new app.objection.models.user();
-      user.$set(req.body.data);
-
-      try {
-        const validUser = await app.objection.models.user.fromJson(
-          req.body.data
-        );
-        await app.objection.models.user.query().insert(validUser);
-        // req.flash('info', i18next.t('flash.users.create.success'));
-        reply.redirect(app.reverse('root'));
-      } catch ({ data }) {
-        // req.flash('error', i18next.t('flash.users.create.error'));
-        reply.render('users/new', { user, errors: data });
-      }
-
-      return reply;
-    })
 
     // GET /users/:id/edit - page for editing user
     .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
@@ -43,14 +24,36 @@ export default (app) => {
           reply.status(404).send('User not found');
           return;
         }
-        console.log('User data:', user); // Логирование данных
+        console.log('User data:', user); //
         reply.render('users/edit', { user, errors: {} });
-        // return reply.render('users/edit');
       } catch ({ data }) {
         reply.render('users/edit', { errors: data });
         // req.flash('error', i18next.t('flash.users.edit.error'));
         reply.status(500).send('Internal Server Error');
       }
+      return reply;
+    })
+
+    // POST /users - send data for user creation
+    .post('/users', async (req, reply) => {
+      const user = new app.objection.models.user();
+
+      try {
+        const validUser = await app.objection.models.user.fromJson(
+          req.body.data
+        );
+        await app.objection.models.user.query().insert(validUser);
+
+        // const message = i18next.t('flash.users.create.success');
+        // console.log('Flash message:', message);
+        // req.flash('info', message);
+
+        reply.redirect(app.reverse('root'));
+      } catch ({ data }) {
+        // req.flash('error', i18next.t('flash.users.create.error'));
+        reply.render('users/new', { user, errors: data });
+      }
+
       return reply;
     })
 

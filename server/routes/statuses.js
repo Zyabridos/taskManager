@@ -36,7 +36,6 @@ export default (app) => {
     // POST /statuses - create new status
     .post('/statuses', { name: 'createStatus' }, async (req, reply) => {
       const status = new app.objection.models.status();
-      status.$set(req.body.data);
 
       try {
         const validStatus = await app.objection.models.status.fromJson(

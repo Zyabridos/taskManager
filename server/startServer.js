@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import init from './plugin.js';
+import init from './plugin/index.js';
 
 const app = fastify({ logger: true });
 const PORT = process.env.PORT || 3000;

@@ -2,7 +2,7 @@
 
 import fastify from 'fastify';
 
-import init from '../server/plugin.js';
+import init from '../server/plugin/index.js';
 import { prepareData, makeLogin } from './helpers/index.js';
 
 describe('test statuses CRUD', () => {

@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import init from '../server/plugin.js';
+import init from '../server/plugin/index.js';
 import { getTestData, prepareData } from './helpers/index.js';
 
 describe('test session', () => {

@@ -20,6 +20,8 @@ export default (app) => {
           return reply;
         }
         await req.logIn(user);
+        req.session.userId = user.id; // это мы так id пользователя после сохраняем
+        console.log('Session userId after login:', req.session.userId);
         // reply.redirect(app.reverse('root'));
         reply.redirect('/');
         return reply;

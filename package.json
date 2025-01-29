@@ -31,6 +31,7 @@
   "dependencies": {
     "@fastify/cookie": "^6.0.0",
     "@fastify/cors": "^8.5.0",
+    "@fastify/flash": "^5.2.0",
     "@fastify/formbody": "^7.4.0",
     "@fastify/passport": "^2.3.0",
     "@fastify/secure-session": "^5.2.0",
