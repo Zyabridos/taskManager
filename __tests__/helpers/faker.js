@@ -14,20 +14,11 @@ const generators = {
   }),
   task: () => ({
     name: faker.word.noun(),
-    description: faker.word.noun(),
+    description: faker.lorem.sentence(),
   }),
 };
 
-export const generateData = (type, length = 3) => {
-  const data = [];
-  const generator = generators[type];
-
-  Array.from({ length }).forEach(() => {
-    data.push(generator());
-  });
-
-  return data;
-};
+export const generateData = (type, length = 3) => Array.from({ length }, () => generators[type]());
 
 export const generateUsers = () => {
   const newUser = generateData('user', 1);
@@ -57,5 +48,23 @@ export const generateStatuses = () => {
       delete: statuses[1],
     },
     seeds: statuses,
+  };
+};
+
+export const generateTasks = (users, statuses) => {
+  const tasks = generateData('task', 3).map((task, index) => ({
+    ...task,
+    statusId: statuses[index % statuses.length].id,
+    authorId: users[0].id, // первый юзер — автор
+    executorId: users[1].id, // второй созданный нами юзер — исполнитель
+  }));
+
+  return {
+    new: generateData('task', 1)[0],
+    existing: {
+      update: tasks[0],
+      delete: tasks[1],
+    },
+    seeds: tasks,
   };
 };

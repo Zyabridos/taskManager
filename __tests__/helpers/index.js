@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
-import { generateUsers, generateStatuses } from './faker.js';
+import { generateUsers, generateStatuses, generateTasks } from './faker.js';
 
 // TODO: использовать для фикстур https://github.com/viglucci/simple-knex-fixtures
 
@@ -15,15 +15,22 @@ export const prepareData = async (app) => {
   const usersData = generateUsers();
   const statusesData = generateStatuses();
 
-  const users = await knex('users');
-  const statuses = await knex('statuses');
-
+  // вставляем пользователей и статусы в БД
   await knex('users').insert(usersData.seeds);
   await knex('statuses').insert(statusesData.seeds);
+
+  // достаём их обратно, чтобы получить их реальные ID
+  const users = await knex('users').select();
+  const statuses = await knex('statuses').select();
+
+  const tasksData = generateTasks(users, statuses);
+  
+  await knex('tasks').insert(tasksData.seeds);
 
   return {
     users: usersData,
     statuses: statusesData,
+    tasks: tasksData,
   };
 };
 
