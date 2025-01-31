@@ -18,7 +18,8 @@ const generators = {
   }),
 };
 
-export const generateData = (type, length = 3) => Array.from({ length }, () => generators[type]());
+export const generateData = (type, length = 3) =>
+  Array.from({ length }, () => generators[type]());
 
 export const generateUsers = () => {
   const newUser = generateData('user', 1);

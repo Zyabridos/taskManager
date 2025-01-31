@@ -25,8 +25,13 @@ html(lang="en")
             if isAuthenticated()
               li.nav-item
                 //- +buttonTo(route('session'), 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
+              li.nav-item
                 a.nav-link(href="/statuses")= t('layouts.application.statuses')
+              li.nav-item
                 a.nav-link(href="/tasks")= t('layouts.application.tasks')
+              li.nav-item
+                a.nav-link(href="/tasks")= t('layouts.application.labels')
+              li.nav-item
                 +buttonTo("/session", 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
             else
               li.nav-item

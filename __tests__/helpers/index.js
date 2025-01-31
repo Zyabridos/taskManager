@@ -24,7 +24,7 @@ export const prepareData = async (app) => {
   const statuses = await knex('statuses').select();
 
   const tasksData = generateTasks(users, statuses);
-  
+
   await knex('tasks').insert(tasksData.seeds);
 
   return {

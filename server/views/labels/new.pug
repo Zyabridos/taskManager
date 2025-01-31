@@ -1,0 +1,9 @@
+extends ../layouts/application.pug
+include ../mixins/labelForm.pug
+
+block header
+  h1= t('views.labels.new.title')
+
+block content
+  +labelForm("/labels", "post", labels, errors)
+  

@@ -24,6 +24,7 @@ export default {
         users: 'Пользователи',
         statuses: 'Статусы',
         tasks: 'Задачи',
+        labels: 'Метки',
         signIn: 'Вход',
         signUp: 'Регистрация',
         signOut: 'Выход',
@@ -103,6 +104,24 @@ export default {
         },
         edit: {
           title: 'Изменить задачу',
+          submit: 'Изменить',
+        },
+      },
+      labels: {
+        title: 'Метки',
+        createLabelBtn: 'Создать метку',
+        id: 'ID',
+        name: 'Наименование',
+        createdAt: 'Дата создания',
+        actions: 'Действия',
+        editBtn: 'Изменить',
+        delete: 'Удалить',
+        new: {
+          title: 'Создать статус',
+          submit: 'Создать',
+        },
+        edit: {
+          title: 'Изменить статус',
           submit: 'Изменить',
         },
       },

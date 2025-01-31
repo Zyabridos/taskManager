@@ -86,7 +86,9 @@ describe('test tasks CRUD', () => {
     });
 
     expect(response.statusCode).toBe(302);
-    const deletedTask = await models.task.query().findOne({ name: params.name });
+    const deletedTask = await models.task
+      .query()
+      .findOne({ name: params.name });
     expect(deletedTask).toBeNull();
   });
 
