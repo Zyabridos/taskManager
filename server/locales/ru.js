@@ -90,6 +90,7 @@ export default {
         delete: 'Удалить',
         labels: 'Метки',
         description: 'Описание',
+        filter: 'Показать',
         tasksForm: {
           name: 'Наименование',
         },

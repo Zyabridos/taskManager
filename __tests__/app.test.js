@@ -18,7 +18,8 @@ describe('requests', () => {
     // отправляем GET-запрос на корневой маршрут.
     const res = await app.inject({
       method: 'GET',
-      url: app.reverse('root'),
+      // url: app.reverse('root'),
+      url: '/',
     });
     expect(res.statusCode).toBe(200);
   });

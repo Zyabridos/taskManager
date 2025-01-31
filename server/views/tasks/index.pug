@@ -3,36 +3,41 @@ extends ../layouts/application.pug
 block header
   //- Заголовок страницы
   h1.display-4.fw-bold.mt-4= t('views.tasks.title')
-  //- Кнопка "Создать статус"
+  //- Кнопка "Создать задачу"
   a.btn.btn-primary(href="/tasks/new")= t('views.tasks.createStatusBtn')
 
 block content
-  //- Форма для назначения задач
+  //- Форма для фильтрации задач
   .card-shadow
     .card-body.p-4
-      form(action="/tasks" method="get")
+      form(action="/tasks" method="get" id="taskFilterForm")
         .row
           .col-12.col-md
             .input-group.mb-3
               label.input-group-text(for="data_status")= t('views.tasks.status')
               select.form-select(id="data_status" name="status")
                 each status in statuses
-                  option(value=status.id)= status.name
+                  option(value=status.id selected=(String(status.id) === String(selectedStatus) ? true : false))= status.name
           
           .col-12.col-md
             .input-group.mb-3
               label.input-group-text(for="data_executor")= t('views.tasks.executor')
               select.form-select(id="data_executor" name="executor")
                 each executor in executors
-                  option(value=executor.id)= `${executor.firstName} ${executor.lastName}`
-
+                  option(value=executor.id selected=(String(executor.id) === String(selectedExecutor) ? true : false))= executor.firstName + ' ' + executor.lastName
 
           //- Показать только мои задачи
-          .mb-3.form-check
-            input.form-check-input(type="checkbox" id="data_isCreatorUser" name="isCreatorUser")
-            label.form-check-label(for="data_isCreatorUser")= t('views.tasks.onlyMyTasks')
+          .col-12.col-md
+            .mb-3.form-check
+              input.form-check-input(type="checkbox" id="data_isCreatorUser" name="isCreatorUser" checked=isCreatorUser ? true : false)
+              label.form-check-label(for="data_isCreatorUser")= t('views.tasks.onlyMyTasks')
 
-  //- Таблица статусов
+        //- Кнопка отправки формы
+        .row
+          .col-12
+            button.btn.btn-primary(type="submit")= t('views.tasks.filter')
+
+  //- Таблица задач
   table.table.table-striped
     thead
       tr
@@ -48,7 +53,7 @@ block content
         tr
           td= task.id
           td
-            a(href=`/tasks/${task.id}`)= task.name/a
+            a(href=`/tasks/${task.id}`)= task.name
           td= task.status.name
           td= task.author.firstName + ' ' + task.author.lastName
           td= task.executor.firstName + ' ' + task.executor.lastName
@@ -59,3 +64,26 @@ block content
               form(action=`/tasks/${task.id}` method='post')
                 input(type="hidden" name="_method" value="delete")
                 input.btn.btn-danger(type="submit" value=t('views.tasks.delete'))
+
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      const isCreatorUserCheckbox = document.getElementById('data_isCreatorUser');
+      const executorSelect = document.getElementById('data_executor');
+
+      if (isCreatorUserCheckbox && executorSelect) {
+        isCreatorUserCheckbox.addEventListener('change', function () {
+          if (this.checked) {
+            executorSelect.value = "";
+            executorSelect.setAttribute("disabled", "true"); 
+          } else {
+            executorSelect.removeAttribute("disabled");
+          }
+        });
+
+        // если чекбокс уже активен, заблокировать селект
+        if (isCreatorUserCheckbox.checked) {
+          executorSelect.value = "";
+          executorSelect.setAttribute("disabled", "true");
+        }
+      }
+    });

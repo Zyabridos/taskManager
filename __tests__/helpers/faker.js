@@ -15,7 +15,7 @@ const generators = {
   task: () => ({
     name: faker.word.noun(),
     description: faker.word.noun(),
-  })
+  }),
 };
 
 export const generateData = (type, length = 3) => {

@@ -2,17 +2,51 @@ export default (app) => {
   app
     // GET /tasks - list of all tasks
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      console.log('Session userId before creating task:', req.session.userId);
-      const statuses = await app.objection.models.status.query();
-      const executors = await app.objection.models.user.query();
-      const tasks = await app.objection.models.task
-        .query()
-        .withGraphFetched('[status, executor, author]'); // загружаем связанные данные
-      console.log('Uploaded tasks:', tasks);
-      console.log('Executors:', executors);
-      reply.render('tasks/index', { tasks, statuses, executors });
-      return reply;
-    })
+  // параметры фильтрации из запроса
+  const { status, executor, isCreatorUser, onlyExecutorTasks } = req.query;
+  try {
+    const statuses = await app.objection.models.status.query();
+    const executors = await app.objection.models.user.query();
+
+    // сформируем запрос учитывая фильтры
+    const query = app.objection.models.task.query().withGraphFetched('[status, executor, author]');
+
+    if (status && !Number.isNaN(status)) {
+      query.where('statusId', Number(status));
+    }
+
+    if (executor && !Number.isNaN(executor)) {
+      query.where('executorId', Number(executor));
+    }
+
+    if (isCreatorUser !== undefined) {
+      query.where('authorId', req.session.userId);
+    }
+
+    if (onlyExecutorTasks !== undefined) {
+      query.where('executorId', req.session.userId);
+    }
+
+    // отфильтрованные задачи
+    const tasks = await query;
+    console.log('Filtered tasks:', tasks);
+    reply.render('tasks/index', {
+      tasks,
+      statuses,
+      executors,
+      selectedStatus: status || '',
+      selectedExecutor: executor || '',
+      isCreatorUser: Boolean(isCreatorUser),
+      onlyExecutorTasks: Boolean(onlyExecutorTasks),
+    });
+
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    reply.code(500).send({ error: 'Internal Server Error' });
+  }
+
+  return reply;
+})
 
     // GET /tasks/new - page for creating new task
     .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
