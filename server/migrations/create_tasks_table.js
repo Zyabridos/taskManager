@@ -5,19 +5,19 @@ export const up = (knex) =>
     table.string('name').notNullable();
     table.string('description');
     table
-      .integer('statusId') // id of a status that is connected to task
+      .integer('status_id') // id of a status that is connected to task
       .references('id')
       .inTable('statuses')
       .notNullable()
       .onDelete('CASCADE');
     table
-      .integer('authorId') // id of a task author (the person that has created task while was logged in)
+      .integer('author_id') // id of a task author (the person that has created task while was logged in)
       .references('id')
       .inTable('users')
-      // .notNullable()
+      .notNullable()
       .onDelete('CASCADE');
     table
-      .integer('executorId') // id of a person that an author set as an executor of the task
+      .integer('executor_id') // id of a person that an author set as an executor of the task
       .references('id')
       .inTable('users')
       .notNullable()

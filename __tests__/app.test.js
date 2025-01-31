@@ -1,7 +1,7 @@
 import { describe, beforeAll, it, expect } from '@jest/globals';
 
 import fastify from 'fastify';
-import init from '../server/plugin.js';
+import init from '../server/plugin/index.js';
 
 describe('requests', () => {
   let app;

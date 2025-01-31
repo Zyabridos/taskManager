@@ -76,7 +76,7 @@ export default (app) => {
         description,
         statusId: Number(statusId),
         executorId: Number(executorId),
-        // authorId: Number(authorId), // fuck it for now
+        authorId: Number(authorId), // 
       };
 
       console.log('taskData: ', taskData);

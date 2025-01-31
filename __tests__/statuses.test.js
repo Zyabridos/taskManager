@@ -2,7 +2,7 @@
 
 import fastify from 'fastify';
 
-import init from '../server/plugin/index.js';
+import init from '../server/plugin/index.js'
 import { prepareData, makeLogin } from './helpers/index.js';
 
 describe('test statuses CRUD', () => {
@@ -82,7 +82,7 @@ describe('test statuses CRUD', () => {
     const response = await app.inject({
       method: 'DELETE',
       // url: app.reverse('deleteStatus', { id: status.id }),
-      url: `/users/${statusToDelete.id}`,
+      url: `/statuses/${statusToDelete.id}`,
       payload: {
         data: params,
       },
@@ -106,7 +106,7 @@ describe('test statuses CRUD', () => {
     const response = await app.inject({
       method: 'PATCH',
       // url: app.reverse('updateStatus', { id: statusToDelete.id }),
-      url: `/users/${statusToDelete.id}`,
+      url: `/statuses/${statusToDelete.id}`,
       payload: {
         data: { name: updatedStatusName },
       },
@@ -120,11 +120,11 @@ describe('test statuses CRUD', () => {
   });
 
   afterEach(async () => {
-    // после каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {
+    await knex.destroy(); // закрыть соединение с БД
     await app.close();
   });
 });

@@ -114,8 +114,8 @@ describe('test users CRUD', () => {
   });
 
   afterEach(async () => {
-    // Логика каждого теста откатываем миграции
-    // await knex.migrate.rollback();
+    // после каждого теста откатываем миграции
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {

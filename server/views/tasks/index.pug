@@ -47,10 +47,11 @@ block content
       each task in tasks
         tr
           td= task.id
-          td= task.name
-          td= task.status
-          td= task.author
-          td= task.executor
+          td
+            a(href=`/tasks/${task.id}`)= task.name/a
+          td= task.status.name
+          td= task.author.firstName + ' ' + task.author.lastName
+          td= task.executor.firstName + ' ' + task.executor.lastName
           td= formatDate(task.createdAt)
           td
             .d-flex.flex-wrap
