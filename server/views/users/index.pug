@@ -17,6 +17,6 @@ block content
           td
             .d-flex.flex-wrap
               a.btn.btn-primary.me-1(href=`/users/${user.id}/edit`)= t('views.users.editBtn')
-              form(action=`/users/${user.id}` method='post')
-                input(type="hidden" name="_method" value="delete")
+              form(action=`/users/${user.id}` method="post")
+                input(type="hidden" name="_method" value="DELETE")
                 input.btn.btn-danger(type="submit" value=t('views.users.delete'))

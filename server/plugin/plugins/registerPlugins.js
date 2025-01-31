@@ -8,6 +8,7 @@ import fastifyFlash from '@fastify/flash';
 // import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
 import fastifyPassport from '@fastify/passport';
 import fastifySensible from '@fastify/sensible';
+import fastifyMethodOverride from 'fastify-method-override';
 import qs from 'qs';
 import dotenv from 'dotenv';
 import FormStrategy from '../../lib/passportStrategies/FormStrategy.js';
@@ -40,6 +41,12 @@ const registerPlugins = async (app) => {
   });
 
   // app.register(fastifyFlash);
+
+  await app.register(fastifyMethodOverride, {
+    methods: ['POST'], // Перехватываем только POST-запросы
+    query: '_method', // Позволяет использовать _method в URL
+    body: true, // ✅ Теперь Fastify ищет _method в body
+  });
 
   // Passport Setting
   fastifyPassport.registerUserDeserializer((user) =>

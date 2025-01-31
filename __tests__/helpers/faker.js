@@ -16,6 +16,9 @@ const generators = {
     name: faker.word.noun(),
     description: faker.lorem.sentence(),
   }),
+  label: () => ({
+    name: faker.word.noun(),
+  }),
 };
 
 export const generateData = (type, length = 3) =>
@@ -67,5 +70,18 @@ export const generateTasks = (users, statuses) => {
       delete: tasks[1],
     },
     seeds: tasks,
+  };
+};
+
+export const generateLabels = () => {
+  const newLabel = generateData('label', 1);
+  const labels = generateData('label', 2);
+  return {
+    new: newLabel[0],
+    existing: {
+      update: labels[0],
+      delete: labels[1],
+    },
+    seeds: labels,
   };
 };

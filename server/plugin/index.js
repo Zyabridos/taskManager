@@ -10,9 +10,9 @@ export default async (app) => {
   await setupLocalization();
   setUpViews(app);
   setUpStaticAssets(app);
-  console.log('Перед регистрацией маршрутов:', app.printRoutes());
+  // console.log('Перед регистрацией маршрутов:', app.printRoutes());
   await addRoutes(app);
-  console.log('После регистрации маршрутов:', app.printRoutes());
+  // console.log('После регистрации маршрутов:', app.printRoutes());
   addHooks(app);
 
   return app;
