@@ -26,6 +26,13 @@ block content
                 each executor in executors
                   option(value=executor.id selected=(String(executor.id) === String(selectedExecutor) ? true : false))= executor.firstName + ' ' + executor.lastName
 
+          .col-12.col-md
+            .input-group.mb-3
+              label.input-group-text(for="data_label")= t('views.tasks.label')
+              select.form-select(id="data_label" name="label")
+                each label in labels
+                  option(value=label.id selected=(String(label.id) === String(selectedLabel) ? true : false))= label.name
+
           //- Показать только мои задачи
           .col-12.col-md
             .mb-3.form-check

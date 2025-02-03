@@ -4,53 +4,75 @@ export default (app) => {
   app
     // GET /tasks - list of all tasks
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      // параметры фильтрации из запроса
-      const { status, executor, isCreatorUser, onlyExecutorTasks } = req.query;
-      try {
-        const statuses = await app.objection.models.status.query();
-        const executors = await app.objection.models.user.query();
+    const { status, executor, isCreatorUser, onlyExecutorTasks, label } = req.query;
 
-        // сформируем запрос учитывая фильтры
-        const query = app.objection.models.task
-          .query()
-          .withGraphFetched('[status, executor, author]');
+    try {
+      const statuses = await app.objection.models.status.query();
+      const executors = await app.objection.models.user.query();
+      const labels = await app.objection.models.label.query();
 
-        if (status && !Number.isNaN(status)) {
-          query.where('statusId', Number(status));
-        }
+      console.log(labels);
 
-        if (executor && !Number.isNaN(executor)) {
-          query.where('executorId', Number(executor));
-        }
+      // Формируем запрос с `withGraphJoined`, но без `labels`
+      const query = app.objection.models.task
+        .query()
+        .withGraphJoined('[status, executor, author]') // Загружаем только основные связи
+        .select(
+          'tasks.*',
+          'status.name as statusName',
+          'executor.firstName as executorFirstName',
+          'executor.lastName as executorLastName',
+          'author.firstName as authorFirstName',
+          'author.lastName as authorLastName',
+          'labels.id as labelId',
+          'labels.name as labelName'
+        )
+        .leftJoin('task_labels', 'task_labels.task_id', 'tasks.id')
+        .leftJoin('labels', 'task_labels.label_id', 'labels.id'); // Добавляем метки отдельно
 
-        if (isCreatorUser !== undefined) {
-          query.where('authorId', req.session.userId);
-        }
-
-        if (onlyExecutorTasks !== undefined) {
-          query.where('executorId', req.session.userId);
-        }
-
-        // отфильтрованные задачи
-        const tasks = await query;
-        reply.render('tasks/index', {
-          tasks,
-          statuses,
-          executors,
-          selectedStatus: status || '',
-          selectedExecutor: executor || '',
-          isCreatorUser: Boolean(isCreatorUser),
-          onlyExecutorTasks: Boolean(onlyExecutorTasks),
-        });
-
-        console.log('Filtered tasks: ', tasks);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-        reply.code(500).send({ error: 'Internal Server Error' });
+      if (status && !Number.isNaN(status)) {
+        query.where('tasks.status_id', Number(status));
       }
 
-      return reply;
-    })
+      if (executor && !Number.isNaN(executor)) {
+        query.where('tasks.executor_id', Number(executor));
+      }
+
+      if (isCreatorUser !== undefined) {
+        query.where('tasks.author_id', req.session.userId);
+      }
+
+      if (onlyExecutorTasks !== undefined) {
+        query.where('tasks.executor_id', req.session.userId);
+      }
+
+      if (label && !Number.isNaN(label)) {
+        query.where('labels.id', Number(label));
+      }
+
+      // Получаем отфильтрованные задачи
+      const tasks = await query;
+
+      reply.render('tasks/index', {
+        tasks,
+        statuses,
+        executors,
+        labels,
+        selectedStatus: status || '',
+        selectedExecutor: executor || '',
+        selectedLabel: label || '',
+        isCreatorUser: Boolean(isCreatorUser),
+        onlyExecutorTasks: Boolean(onlyExecutorTasks),
+      });
+
+      console.log('Filtered tasks: ', tasks);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      reply.code(500).send({ error: 'Internal Server Error' });
+    }
+
+    return reply;
+  })
 
     // GET /tasks/new - page for creating new task
     .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
@@ -71,7 +93,7 @@ export default (app) => {
         const task = await app.objection.models.task
           .query()
           .findById(taskId)
-          .withGraphFetched('[status, executor, author]'); // снова загружаем связанный с таском данные
+          .withGraphFetched('[status, executor, author, labels]') // снова загружаем связанный с таском данные
 
         reply.render('tasks/task', { task });
         return reply;
@@ -102,59 +124,61 @@ export default (app) => {
 
     // POST /tasks - create new task
     .post('/tasks', { name: 'createTask' }, async (req, reply) => {
-  console.log('Form data:', req.body);
+      console.log('Form data:', req.body);
 
-  const { name, description, statusId, executorId, labels } = req.body.data;
-  const { id: authorId } = req.user;
+      const { name, description, statusId, executorId, labels } = req.body.data;
+      const { id: authorId } = req.user;
 
-  // Преобразуем метки в массив чисел
-  const labelIds = Array.isArray(labels)
-    ? labels.map(Number)
-    : [Number(labels)].filter((id) => !Number.isNaN(id));
+      // Преобразуем метки в массив чисел
+      const labelIds = Array.isArray(labels)
+        ? labels.map(Number)
+        : [Number(labels)].filter((id) => !Number.isNaN(id));
 
-  const taskData = {
-    name,
-    description,
-    statusId: Number(statusId),
-    executorId: Number(executorId),
-    authorId: Number(authorId),
-  };
+      const taskData = {
+        name,
+        description,
+        statusId: Number(statusId),
+        executorId: Number(executorId),
+        authorId: Number(authorId),
+      };
 
-  console.log('taskData: ', taskData);
+      console.log('taskData: ', taskData);
 
-  try {
-    // Создаем задачу без labels
-    const newTask = await app.objection.models.task.query().insert(taskData);
+      try {
+        // Создаем задачу без labels
+        const newTask = await app.objection.models.task
+          .query()
+          .insert(taskData);
 
-    console.log('New Task Created:', newTask);
+        console.log('New Task Created:', newTask);
 
-    // Добавляем связи в таблицу task_labels
-    if (labelIds.length > 0) {
-      await app.objection.models.task.relatedQuery('labels')
-        .for(newTask.id)
-        .relate(labelIds);
-    }
+        // Добавляем связи в таблицу task_labels
+        if (labelIds.length > 0) {
+          await app.objection.models.task
+            .relatedQuery('labels')
+            .for(newTask.id)
+            .relate(labelIds);
+        }
 
-    req.flash('info', i18next.t('flash.tasks.create.success'));
-    reply.redirect('/tasks');
-  } catch (error) {
-    console.error('Error:', error);
-    req.flash('error', i18next.t('flash.tasks.create.error'));
-    const statuses = await app.objection.models.status.query();
-    const executors = await app.objection.models.user.query();
-    const availableLabels = await app.objection.models.label.query();
+        req.flash('info', i18next.t('flash.tasks.create.success'));
+        reply.redirect('/tasks');
+      } catch (error) {
+        console.error('Error:', error);
+        req.flash('error', i18next.t('flash.tasks.create.error'));
+        const statuses = await app.objection.models.status.query();
+        const executors = await app.objection.models.user.query();
+        const availableLabels = await app.objection.models.label.query();
 
-    reply.render('tasks/new', {
-      task: taskData,
-      statuses,
-      executors,
-      labels: availableLabels,
-      errors: error.data || {},
-    });
-  }
-  return reply;
-})
-
+        reply.render('tasks/new', {
+          task: taskData,
+          statuses,
+          executors,
+          labels: availableLabels,
+          errors: error.data || {},
+        });
+      }
+      return reply;
+    })
 
     // PATCH /tasks/:id - edit a task
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {

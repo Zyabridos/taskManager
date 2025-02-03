@@ -5,7 +5,7 @@
   "main": "./server/plugin/index.js",
   "type": "module",
   "engines": {
-    "node": ">=20.x"
+    "node": "20.17.0"
   },
   "scripts": {
     "prebuild": "rm -rf dist",
@@ -47,6 +47,7 @@
     "dotenv": "16.4.7",
     "express-session": "1.18.1",
     "fast-json-stringify": "6.0.0",
+    "fast-redact": "^3.5.0",
     "fastify": "^4.29.0",
     "fastify-cookie": "^5.6.1",
     "fastify-method-override": "^1.5.10",
