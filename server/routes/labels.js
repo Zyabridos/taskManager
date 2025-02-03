@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 export default (app) => {
   app
     // GET /labels - list of all labels
@@ -19,7 +21,7 @@ export default (app) => {
       try {
         const label = await app.objection.models.label.query().findById(id);
         if (!label) {
-          // req.flash('error', i18next.t('flash.label.edit.notFound'));
+          req.flash('error', i18next.t('flash.label.edit.notFound'));
           reply.label(404).send('label not found');
           return;
         }
@@ -27,7 +29,7 @@ export default (app) => {
         reply.render('labels/edit', { label, errors: {} });
       } catch ({ data }) {
         reply.render('labels/edit', { errors: data });
-        // req.flash('error', i18next.t('flash.labels.edit.error'));
+        req.flash('error', i18next.t('flash.labels.edit.error'));
         reply.label(500).send('Internal Server Error');
       }
       return reply;
@@ -42,10 +44,10 @@ export default (app) => {
           req.body.data
         );
         await app.objection.models.label.query().insert(validlabel);
-        // req.flash('info', i18next.t('flash.labels.create.success'));
+        req.flash('info', i18next.t('flash.labels.create.success'));
         reply.redirect('/labels');
       } catch ({ data }) {
-        // req.flash('error', i18next.t('flash.users.create.error'));
+        req.flash('error', i18next.t('flash.users.create.error'));
         reply.render('labels/new', { label, errors: data });
       }
 
@@ -59,14 +61,14 @@ export default (app) => {
       try {
         const label = await app.objection.models.label.query().findById(id);
         if (!label) {
-          // req.flash('error', i18next.t('flash.labels.edit.notFound'));
+          req.flash('error', i18next.t('flash.labels.edit.notFound'));
           return reply.label(404).send('label not found');
         }
         await label.$query().patch(updatedData);
-        // req.flash('info', i18next.t('flash.labels.edit.success'));
+        req.flash('info', i18next.t('flash.labels.edit.success'));
         reply.redirect(`/labels`);
       } catch ({ data }) {
-        // req.flash('error', i18next.t('flash.labels.edit.error'));
+        req.flash('error', i18next.t('flash.labels.edit.error'));
         reply.render('labels/edit', {
           label: { id, ...updatedData },
           errors: data,
@@ -80,14 +82,14 @@ export default (app) => {
       try {
         const label = await app.objection.models.label.query().findById(id);
         if (!label) {
-          // req.flash('error', i18next.t('flash.labels.delete.notFound'));
+          req.flash('error', i18next.t('flash.labels.delete.notFound'));
           return reply.label(404).send('label not found');
         }
         await label.$query().delete();
-        // req.flash('info', i18next.t('flash.labels.delete.success'));
+        req.flash('info', i18next.t('flash.labels.delete.success'));
         reply.redirect('/labels');
       } catch (error) {
-        // req.flash('error', i18next.t('flash.labels.delete.error'));
+        req.flash('error', i18next.t('flash.labels.delete.error'));
         return reply.label(500).send('Internal Server Error');
       }
     });

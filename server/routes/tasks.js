@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 export default (app) => {
   app
     // GET /tasks - list of all tasks
@@ -31,7 +33,6 @@ export default (app) => {
 
         // отфильтрованные задачи
         const tasks = await query;
-        console.log('Filtered tasks:', tasks);
         reply.render('tasks/index', {
           tasks,
           statuses,
@@ -54,7 +55,6 @@ export default (app) => {
       const task = new app.objection.models.task();
       const statuses = await app.objection.models.status.query();
       const executors = (await app.objection.models.user.query()) || [];
-      console.log('Executors:', executors);
       reply.render('tasks/new', { task, statuses, executors });
       return reply;
     })
@@ -84,14 +84,14 @@ export default (app) => {
           .findById(id)
           .withGraphFetched('[status, executor, author]');
         if (!task) {
-          // req.flash('error', i18next.t('flash.task.edit.notFound'));
+          req.flash('error', i18next.t('flash.task.edit.notFound'));
           reply.task(404).send('Task not found');
           return;
         }
         reply.render('tasks/edit', { task, errors: {} });
       } catch ({ data }) {
         reply.render('tasks/edit', { errors: data });
-        // req.flash('error', i18next.t('flash.tasks.edit.error'));
+        req.flash('error', i18next.t('flash.tasks.edit.error'));
         reply.task(500).send('Internal Server Error');
       }
       return reply;
@@ -120,11 +120,11 @@ export default (app) => {
         const validTask = await app.objection.models.task.fromJson(taskData);
         console.log('valid_task to insert: ', validTask);
         await app.objection.models.task.query().insert(validTask);
-        // req.flash('info', i18next.t('flash.tasks.create.success'));
+        req.flash('info', i18next.t('flash.tasks.create.success'));
 
         reply.redirect('/tasks');
       } catch (error) {
-        // req.flash('error', i18next.t('flash.tasks.create.error'));
+        req.flash('error', i18next.t('flash.tasks.create.error'));
         const statuses = await app.objection.models.status.query();
         const executors = await app.objection.models.user.query();
 
@@ -149,15 +149,15 @@ export default (app) => {
         const task = await app.objection.models.task.query().findById(id);
         task.authorId = req.session.userId;
         if (!task) {
+          req.flash('error', i18next.t('flash.tasks.edit.notFound'));
           return reply.status(404).send('Task not found');
-          // req.flash('error', i18next.t('flash.tasks.edit.notFound'));
         }
 
         await task.$query().patch(updatedData);
-        // req.flash('info', i18next.t('flash.tasks.edit.success'));
+        req.flash('info', i18next.t('flash.tasks.edit.success'));
         reply.redirect(`/tasks`);
       } catch (error) {
-        // req.flash('error', i18next.t('flash.tasks.edit.error'));
+        req.flash('error', i18next.t('flash.tasks.edit.error'));
         const statuses = await app.objection.models.status.query();
         const executors = await app.objection.models.user.query();
 
@@ -176,14 +176,14 @@ export default (app) => {
       try {
         const task = await app.objection.models.task.query().findById(id);
         if (!task) {
-          // req.flash('error', i18next.t('flash.tasks.delete.notFound'));
+          req.flash('error', i18next.t('flash.tasks.delete.notFound'));
           return reply.task(404).send('Task not found');
         }
         await task.$query().delete();
-        // req.flash('info', i18next.t('flash.tasks.delete.success'));
+        req.flash('info', i18next.t('flash.tasks.delete.success'));
         reply.redirect('/tasks');
       } catch (error) {
-        // req.flash('error', i18next.t('flash.tasks.delete.error'));
+        req.flash('error', i18next.t('flash.tasks.delete.error'));
         return reply.status(500).send('Internal Server Error');
       }
     });

@@ -25,6 +25,10 @@ describe('test statuses CRUD', () => {
     // тесты не должны зависеть друг от друга
     // перед каждым тестом выполняем миграции
     // и заполняем БД тестовыми данными
+
+    knex = app.objection.knex;
+    models = app.objection.models;
+
     await knex.migrate.latest();
     testData = await prepareData(app);
   });
@@ -120,7 +124,7 @@ describe('test statuses CRUD', () => {
   });
 
   afterEach(async () => {
-    await knex.migrate.rollback();
+    // await knex.migrate.rollback();
   });
 
   afterAll(async () => {

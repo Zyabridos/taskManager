@@ -28,9 +28,15 @@ export const prepareData = async (app) => {
   const users = await knex('users').select();
   const statuses = await knex('statuses').select();
 
+  console.log('Users in DB:', users);
+
   const tasksData = generateTasks(users, statuses);
 
   await knex('tasks').insert(tasksData.seeds);
+
+  if (!users[0]) {
+    throw new Error('generateUsers() failed to generate users.');
+  }
 
   return {
     users: usersData,
@@ -41,17 +47,35 @@ export const prepareData = async (app) => {
 };
 
 export const makeLogin = async (app, userData) => {
+  if (!userData || !userData.email || !userData.password) {
+    throw new Error('makeLogin() called with invalid user data');
+  }
+
+  console.log('Trying to login with:', userData.email);
+
+  const user = await app.objection.models.user
+    .query()
+    .findOne({ email: userData.email });
+
+  if (!user) {
+    throw new Error(`User with email ${userData.email} not found in DB`);
+  }
+
   const responseSignIn = await app.inject({
     method: 'POST',
     // url: app.reverse('session'),
     url: '/session',
-    payload: {
-      data: userData,
-    },
+    payload: { data: userData },
   });
+
+  console.log('Login response:', responseSignIn.payload);
+  console.log('Cookies:', responseSignIn.cookies);
+
+  if (!responseSignIn.cookies.length) {
+    throw new Error(`Login failed: No session cookie received.`);
+  }
+
   const [sessionCookie] = responseSignIn.cookies;
   const { name, value } = sessionCookie;
-  const cookie = { [name]: value };
-
-  return cookie;
+  return { [name]: value };
 };

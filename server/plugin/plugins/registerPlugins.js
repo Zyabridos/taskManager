@@ -45,7 +45,7 @@ const registerPlugins = async (app) => {
   await app.register(fastifyMethodOverride, {
     methods: ['POST'], // Перехватываем только POST-запросы
     query: '_method', // Позволяет использовать _method в URL
-    body: true, // ✅ Теперь Fastify ищет _method в body
+    body: true, // Теперь Fastify ищет _method в body
   });
 
   // Passport Setting
