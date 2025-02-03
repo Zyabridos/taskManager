@@ -57,7 +57,8 @@ export default (app) => {
       const task = new app.objection.models.task();
       const statuses = await app.objection.models.status.query();
       const executors = (await app.objection.models.user.query()) || [];
-      reply.render('tasks/new', { task, statuses, executors });
+      const labels = (await app.objection.models.label.query()) || [];
+      reply.render('tasks/new', { task, statuses, executors, labels });
       return reply;
     })
 
@@ -101,46 +102,59 @@ export default (app) => {
 
     // POST /tasks - create new task
     .post('/tasks', { name: 'createTask' }, async (req, reply) => {
-      const task = new app.objection.models.task();
-      console.log('Form data:', req.body);
+  console.log('Form data:', req.body);
 
-      const { name, description, statusId, executorId } = req.body.data;
+  const { name, description, statusId, executorId, labels } = req.body.data;
+  const { id: authorId } = req.user;
 
-      const { id: authorId } = req.user; // пользователь, который создает задачу, становится ее автором
+  // Преобразуем метки в массив чисел
+  const labelIds = Array.isArray(labels)
+    ? labels.map(Number)
+    : [Number(labels)].filter((id) => !Number.isNaN(id));
 
-      const taskData = {
-        name,
-        description,
-        statusId: Number(statusId),
-        executorId: Number(executorId),
-        authorId: Number(authorId), //
-      };
+  const taskData = {
+    name,
+    description,
+    statusId: Number(statusId),
+    executorId: Number(executorId),
+    authorId: Number(authorId),
+  };
 
-      console.log('taskData: ', taskData);
+  console.log('taskData: ', taskData);
 
-      try {
-        const validTask = await app.objection.models.task.fromJson(taskData);
-        console.log('valid_task to insert: ', validTask);
-        await app.objection.models.task.query().insert(validTask);
-        req.flash('info', i18next.t('flash.tasks.create.success'));
+  try {
+    // Создаем задачу без labels
+    const newTask = await app.objection.models.task.query().insert(taskData);
 
-        reply.redirect('/tasks');
-      } catch (error) {
-        req.flash('error', i18next.t('flash.tasks.create.error'));
-        const statuses = await app.objection.models.status.query();
-        const executors = await app.objection.models.user.query();
+    console.log('New Task Created:', newTask);
 
-        console.error('Error:', error);
-        reply.render('tasks/new', {
-          task,
-          statuses,
-          executors,
-          errors: error.data || {},
-        });
-      }
+    // Добавляем связи в таблицу task_labels
+    if (labelIds.length > 0) {
+      await app.objection.models.task.relatedQuery('labels')
+        .for(newTask.id)
+        .relate(labelIds);
+    }
 
-      return reply;
-    })
+    req.flash('info', i18next.t('flash.tasks.create.success'));
+    reply.redirect('/tasks');
+  } catch (error) {
+    console.error('Error:', error);
+    req.flash('error', i18next.t('flash.tasks.create.error'));
+    const statuses = await app.objection.models.status.query();
+    const executors = await app.objection.models.user.query();
+    const availableLabels = await app.objection.models.label.query();
+
+    reply.render('tasks/new', {
+      task: taskData,
+      statuses,
+      executors,
+      labels: availableLabels,
+      errors: error.data || {},
+    });
+  }
+  return reply;
+})
+
 
     // PATCH /tasks/:id - edit a task
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
