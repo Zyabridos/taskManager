@@ -54,9 +54,9 @@ block content
           td= task.id
           td
             a(href=`/tasks/${task.id}`)= task.name
-          td= task.status.name
-          td= task.author.firstName + ' ' + task.author.lastName
-          td= task.executor.firstName + ' ' + task.executor.lastName
+          td= task.status ? task.status.name : '-' 
+          td= task.author ? (task.author.firstName + ' ' + task.author.lastName) : '-' 
+          td= task.executor ? (task.executor.firstName + ' ' + task.executor.lastName) : '-' 
           td= formatDate(task.createdAt)
           td
             .d-flex.flex-wrap

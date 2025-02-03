@@ -5,17 +5,31 @@ module.exports = class Task extends BaseModel {
     return 'tasks';
   }
 
+  static modifiers = {
+    filterStatus(query, statusId) {
+      query.skipUndefined().where('statusId', statusId);
+    },
+    filterExecutor(query, executorId) {
+      query.skipUndefined().where('executorId', executorId);
+    },
+    filterLabel(query, labelId) {
+      query.skipUndefined().where('labels.id', labelId);
+    },
+    filterAuthor(query, authorId) {
+      query.skipUndefined().where('authorId', authorId);
+    },
+  };
+
   static get jsonSchema() {
     return {
       type: 'object',
-      // required: ['name', 'statusId', 'authorId'],
-      required: ['name', 'statusId'], // for now
+      required: ['name', 'statusId', 'authorId'],
       properties: {
         id: { type: 'integer' },
         name: { type: 'string', minLength: 1 },
         description: { type: 'string' },
         statusId: { type: 'integer' },
-        // authorId: { type: 'integer' },
+        authorId: { type: 'integer' },
         executor_id: { type: 'integer' },
         labels: { type: 'string' },
       },

@@ -1,4 +1,4 @@
-import i18next from "i18next";
+import i18next from 'i18next';
 
 export default (app) => {
   app
@@ -42,6 +42,8 @@ export default (app) => {
           isCreatorUser: Boolean(isCreatorUser),
           onlyExecutorTasks: Boolean(onlyExecutorTasks),
         });
+
+        console.log('Filtered tasks: ', tasks);
       } catch (error) {
         console.error('Error fetching tasks:', error);
         reply.code(500).send({ error: 'Internal Server Error' });

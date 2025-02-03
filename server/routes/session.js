@@ -1,42 +1,34 @@
+import i18next from 'i18next';
+
 export default (app) => {
   app
     .get('/session/new', { name: 'newSession' }, (req, reply) => {
       const signInForm = {};
       reply.render('session/new', { signInForm });
     })
-    .post('/session', async (req, reply) => {
-      try {
-        console.log('Received login request with data:', req.body.data);
-
-        const { email, password } = req.body.data;
-        if (!email || !password) {
-          console.log('Missing email or password');
-          return reply
-            .status(400)
-            .send({ error: 'Email and password are required' });
+    .post(
+      '/session',
+      { name: 'session' },
+      app.fp.authenticate('form', async (req, reply, err, user) => {
+        if (err) {
+          return app.httpErrors.internalServerError(err);
         }
-
-        const user = await app.objection.models.user.query().findOne({ email });
-
         if (!user) {
-          console.log(`User not found for email: ${email}`);
-          return reply.status(401).send({ error: 'Invalid email or password' });
+          const signInForm = req.body.data;
+          const errors = {
+            email: [{ message: i18next.t('error.wrongEmailOrPassword') }],
+          };
+          reply.render('session/new', { signInForm, errors });
+          return reply;
         }
-
-        if (!user.verifyPassword(password)) {
-          console.log(`Invalid password for user: ${email}`);
-          return reply.status(401).send({ error: 'Invalid email or password' });
-        }
-
-        req.session.set('userId', user.id);
-        console.log(`Session userId after login: ${req.session.get('userId')}`);
-
+        await req.logIn(user);
+        req.session.userId = user.id; // это мы так id пользователя после сохраняем
+        console.log('Session userId after login:', req.session.userId);
+        // reply.redirect(app.reverse('root'));
         reply.redirect('/');
-      } catch (error) {
-        console.error('Error in login:', error);
-        reply.status(500).send({ error: 'Internal Server Error' });
-      }
-    })
+        return reply;
+      })
+    )
 
     .delete('/session', (req, reply) => {
       req.logOut();

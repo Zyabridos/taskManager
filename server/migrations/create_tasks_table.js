@@ -22,6 +22,12 @@ export const up = (knex) =>
       .inTable('users')
       .notNullable()
       .onDelete('SET NULL');
+    table
+      .integer('label_id')
+      .references('id')
+      .inTable('labels')
+      .notNullable()
+      .onDelete('SET NULL');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
   });
