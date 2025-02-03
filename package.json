@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
-  "main": "./server/plugin.js",
+  "main": "./server/plugin/index.js",
   "type": "module",
   "engines": {
     "node": ">=20.x"
@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "node server/index.js",
+    "start": "./server/plugin/index.js",
     "test": "jest"
   },
   "jest": {
