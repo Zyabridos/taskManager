@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "./server/plugin/index.js",
+    "start": "node server/plugin/index.js",
     "test": "jest"
   },
   "jest": {
