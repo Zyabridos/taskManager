@@ -19,11 +19,11 @@ export default {
     rules: [
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        // use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
+  // plugins: [new MiniCssExtractPlugin()],
   devServer: {
     port: 5000, // Сервер бэкенда
     hot: true,
