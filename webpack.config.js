@@ -1,7 +1,11 @@
 import path from 'path';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { fileURLToPath } from 'url';
 
 const mode = process.env.NODE_ENV || 'development';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
   mode,
