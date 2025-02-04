@@ -36,7 +36,8 @@ export default (app) => {
     })
 
     // POST /users - send data for user creation
-    .post("/users", async (req, reply) => {
+    .post("/users", { name: "users" }, async (req, reply) => {
+      console.log("Handling POST /users request");
       const user = new app.objection.models.user();
 
       try {
@@ -49,7 +50,10 @@ export default (app) => {
         console.log("Flash message:", message);
         req.flash("info", message);
 
-        reply.redirect(app.reverse("root"));
+        console.log("I am going to redirect after user has been created");
+        // reply.redirect(app.reverse("root"));
+        // reply.redirect('/');
+        reply.status(302).redirect("/");
       } catch ({ data }) {
         req.flash("error", i18next.t("flash.users.create.error"));
         reply.render("users/new", { user, errors: data });
@@ -59,7 +63,7 @@ export default (app) => {
     })
 
     // PATCH /users/:id - update user
-    .patch("/users/:id", async (req, reply) => {
+    .patch("/users/:id", { name: "editUser" }, async (req, reply) => {
       const { id } = req.params;
       const updatedData = req.body.data;
       try {
@@ -81,7 +85,7 @@ export default (app) => {
     })
 
     // DELETE /users/:id - delete user
-    .delete("/users/:id", async (req, reply) => {
+    .delete("/users/:id", { name: "deleteUser" }, async (req, reply) => {
       const { id } = req.params;
       try {
         const user = await app.objection.models.user.query().findById(id);

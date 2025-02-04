@@ -26,17 +26,32 @@ export const generateData = (type, length = 3) =>
 
 export const generateUsers = () => {
   const newUser = generateData("user", 1);
-  const users = generateData("user", 3);
+  const users = generateData("user", 5);
+  // move to fixtures
+  const fixedUser = {
+    firstName: 'Alice',
+    lastName: 'Ramsey',
+    email: 'alice@example.com',
+    password: faker.internet.password(),
+  }
   const seeds = users.map((user) => ({
     ..._.omit(user, "password"),
     passwordDigest: encrypt(user.password),
   }));
+
+  // пусть пока так будет...
+  seeds.push({
+    ..._.omit(fixedUser, "password"),
+    passwordDigest: encrypt(fixedUser.password),
+  });
+
   return {
     new: newUser[0],
     existing: {
       author: users[0],
       executor: users[1],
       delete: users[2],
+      fixed: fixedUser, 
     },
     seeds,
   };

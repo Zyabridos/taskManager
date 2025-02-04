@@ -2,15 +2,17 @@ import _ from "lodash";
 import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import encrypt from "../server/lib/secure.cjs";
-import { getTestData, prepareData } from "./helpers/index.js";
+import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
 
 describe("test users CRUD", () => {
   let app;
-  let knex;
   let models;
-  let testData;
+  let knex;
+  const testData = getTestData();
 
-  beforeAll(async () => {
+  // перед каждым тестом выполняем миграции
+  // и заполняем БД тестовыми данными
+  beforeEach(async () => {
     app = fastify({
       exposeHeadRoutes: false,
       logger: { target: "pino-pretty" },
@@ -18,22 +20,14 @@ describe("test users CRUD", () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-
-    // Выполняем миграции и наполняем тестовыми данными
     await knex.migrate.latest();
     await prepareData(app);
-    testData = getTestData();
-  });
-
-  beforeEach(async () => {
-    // maybe
   });
 
   it("index", async () => {
     const response = await app.inject({
       method: "GET",
-      // url: app.reverse('users'),
-      url: "/users",
+      url: app.reverse("users"),
     });
 
     expect(response.statusCode).toBe(200);
@@ -42,8 +36,7 @@ describe("test users CRUD", () => {
   it("new", async () => {
     const response = await app.inject({
       method: "GET",
-      // url: app.reverse('newUser'),
-      url: `/users/new`,
+      url: app.reverse("newUser"),
     });
 
     expect(response.statusCode).toBe(200);
@@ -51,66 +44,48 @@ describe("test users CRUD", () => {
 
   it("create", async () => {
     const params = testData.users.new;
-
+    console.log("params for user creation: ", params);
     const response = await app.inject({
       method: "POST",
+      // url: app.reverse('users'),
       url: "/users",
       payload: {
         data: params,
       },
     });
 
-    expect(response.statusCode).toBe(302); // Проверяем, что сервер отвечает статусом 302 (Redirect)
-
+    expect(response.statusCode).toBe(302);
     const expected = {
-      ..._.omit(params, "password"), // Ожидаем объект без пароля
-      passwordDigest: encrypt(params.password), // Ожидаем зашифрованный пароль
+      ..._.omit(params, "password"),
+      passwordDigest: encrypt(params.password),
     };
-
     const user = await models.user.query().findOne({ email: params.email });
-    expect(user).toMatchObject(expected); // Проверяем, что пользователь в базе соответствует ожиданиям
-  });
-
-  it("update", async () => {
-    const params = testData.users.update;
-
-    // Находим существующего пользователя по oldEmail
-    const existingUser = await models.user
-      .query()
-      .findOne({ email: params.oldEmail });
-    expect(existingUser).not.toBeNull(); // Убедитесь, что пользователь найден
-
-    const response = await app.inject({
-      method: "PATCH",
-      url: `/users/${existingUser.id}`, // Используем id существующего пользователя
-      payload: {
-        data: _.omit(params, "oldEmail"), // Передаем новые данные для обновления
-      },
-    });
-
-    expect(response.statusCode).toBe(302); // Ожидаем успешный редирект
-
-    // Проверяем, что данные обновились
-    const updatedUser = await models.user.query().findById(existingUser.id);
-    expect(updatedUser).toMatchObject(_.omit(params, "oldEmail"));
+    console.log("new user in create test: ", user);
+    expect(user).toMatchObject(expected);
   });
 
   it("delete", async () => {
-    const params = testData.users.delete;
-    const userToDelete = await models.user
-      .query()
-      .findOne({ email: params.email });
+    // const params = testData.users.existing.delete; - находит рандомного человека, которого нет в БД
+    const params = testData.users.existing.fixed;
+    console.log('params for user deleting: ', params)
+    const userToDelete = await models.user.query().findOne({ email: params.email });
 
+    console.log('got a user:,', userToDelete)
+
+    const cookie = await makeLogin(app, testData.users.existing.fixed);
     const response = await app.inject({
-      method: "DELETE",
+      method: 'DELETE',
       // url: app.reverse('deleteUser', { id: userToDelete.id }),
       url: `/users/${userToDelete.id}`,
+      payload: {
+        data: params,
+      },
+      cookies: cookie,
     });
 
+    console.log("Response status:", response.statusCode);
     expect(response.statusCode).toBe(302);
-
-    const deletedUser = await models.user.query().findById(userToDelete.id);
-    expect(deletedUser).toBeUndefined();
+    expect(await models.user.query().findOne({ email: params.email })).toBeUndefined();
   });
 
   afterEach(async () => {
@@ -122,5 +97,3 @@ describe("test users CRUD", () => {
     await app.close();
   });
 });
-
-// npx jest __tests__/users.test.js

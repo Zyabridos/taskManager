@@ -43,5 +43,8 @@ t:
 fr:
 	cd frontend; npm run dev
 
-make db:
+db:
 	npx knex migrate:latest
+
+u:
+	npx jest __tests__/users.test.js
