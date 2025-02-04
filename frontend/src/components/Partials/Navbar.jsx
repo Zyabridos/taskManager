@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
-import NavbarButtons from '../Buttons/Buttons';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
+import NavbarButtons from "../Buttons/Buttons";
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -13,13 +13,13 @@ const Navbar = () => {
       <nav className="w-100 container mx-auto flex flex-wrap items-center justify-between py-4">
         <div className="flex items-center space-x-6">
           <Link href="/" className="text-2xl font-bold text-gray-800">
-            {t('taskManager')}
+            {t("taskManager")}
           </Link>
           <Link
             href="/users"
             className="text-lg text-gray-700 hover:text-gray-900 transition"
           >
-            {t('layouts.application.users')}
+            {t("layouts.application.users")}
           </Link>
         </div>
 

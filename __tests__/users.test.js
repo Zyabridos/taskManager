@@ -1,10 +1,10 @@
-import _ from 'lodash';
-import fastify from 'fastify';
-import init from '../server/plugin/index.js';
-import encrypt from '../server/lib/secure.cjs';
-import { getTestData, prepareData } from './helpers/index.js';
+import _ from "lodash";
+import fastify from "fastify";
+import init from "../server/plugin/index.js";
+import encrypt from "../server/lib/secure.cjs";
+import { getTestData, prepareData } from "./helpers/index.js";
 
-describe('test users CRUD', () => {
+describe("test users CRUD", () => {
   let app;
   let knex;
   let models;
@@ -13,7 +13,7 @@ describe('test users CRUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { target: "pino-pretty" },
     });
     await init(app);
     knex = app.objection.knex;
@@ -29,19 +29,19 @@ describe('test users CRUD', () => {
     // maybe
   });
 
-  it('index', async () => {
+  it("index", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('users'),
-      url: '/users',
+      url: "/users",
     });
 
     expect(response.statusCode).toBe(200);
   });
 
-  it('new', async () => {
+  it("new", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('newUser'),
       url: `/users/new`,
     });
@@ -49,12 +49,12 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it('create', async () => {
+  it("create", async () => {
     const params = testData.users.new;
 
     const response = await app.inject({
-      method: 'POST',
-      url: '/users',
+      method: "POST",
+      url: "/users",
       payload: {
         data: params,
       },
@@ -63,7 +63,7 @@ describe('test users CRUD', () => {
     expect(response.statusCode).toBe(302); // Проверяем, что сервер отвечает статусом 302 (Redirect)
 
     const expected = {
-      ..._.omit(params, 'password'), // Ожидаем объект без пароля
+      ..._.omit(params, "password"), // Ожидаем объект без пароля
       passwordDigest: encrypt(params.password), // Ожидаем зашифрованный пароль
     };
 
@@ -71,7 +71,7 @@ describe('test users CRUD', () => {
     expect(user).toMatchObject(expected); // Проверяем, что пользователь в базе соответствует ожиданиям
   });
 
-  it('update', async () => {
+  it("update", async () => {
     const params = testData.users.update;
 
     // Находим существующего пользователя по oldEmail
@@ -81,10 +81,10 @@ describe('test users CRUD', () => {
     expect(existingUser).not.toBeNull(); // Убедитесь, что пользователь найден
 
     const response = await app.inject({
-      method: 'PATCH',
+      method: "PATCH",
       url: `/users/${existingUser.id}`, // Используем id существующего пользователя
       payload: {
-        data: _.omit(params, 'oldEmail'), // Передаем новые данные для обновления
+        data: _.omit(params, "oldEmail"), // Передаем новые данные для обновления
       },
     });
 
@@ -92,17 +92,17 @@ describe('test users CRUD', () => {
 
     // Проверяем, что данные обновились
     const updatedUser = await models.user.query().findById(existingUser.id);
-    expect(updatedUser).toMatchObject(_.omit(params, 'oldEmail'));
+    expect(updatedUser).toMatchObject(_.omit(params, "oldEmail"));
   });
 
-  it('delete', async () => {
+  it("delete", async () => {
     const params = testData.users.delete;
     const userToDelete = await models.user
       .query()
       .findOne({ email: params.email });
 
     const response = await app.inject({
-      method: 'DELETE',
+      method: "DELETE",
       // url: app.reverse('deleteUser', { id: userToDelete.id }),
       url: `/users/${userToDelete.id}`,
     });

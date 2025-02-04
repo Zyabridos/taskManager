@@ -1,11 +1,11 @@
 // @ts-check
 
-import fastify from 'fastify';
+import fastify from "fastify";
 
-import init from '../server/plugin/index.js';
-import { prepareData, makeLogin } from './helpers/index.js';
+import init from "../server/plugin/index.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
 
-describe('test labels CRUD', () => {
+describe("test labels CRUD", () => {
   let app;
   let knex;
   let models;
@@ -15,7 +15,7 @@ describe('test labels CRUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { target: "pino-pretty" },
     });
     await init(app);
     knex = app.objection.knex;
@@ -33,22 +33,22 @@ describe('test labels CRUD', () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
-  it('index', async () => {
+  it("index", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('labels'),
-      url: '/labels',
+      url: "/labels",
       cookies: cookie,
     });
 
     expect(response.statusCode).toBe(200);
   });
 
-  it('new', async () => {
+  it("new", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('newLabel'),
-      url: '/labels/new',
+      url: "/labels/new",
       cookies: cookie,
     });
 
@@ -56,12 +56,12 @@ describe('test labels CRUD', () => {
   });
 
   // work under progress
-  it('create', async () => {
+  it("create", async () => {
     const params = testData.labels.new;
     const response = await app.inject({
-      method: 'POST',
+      method: "POST",
       // url: app.reverse('createLabel'),
-      url: '/labels/new',
+      url: "/labels/new",
       payload: {
         data: params,
       },
@@ -74,13 +74,13 @@ describe('test labels CRUD', () => {
   });
 
   // work under progress
-  it('delete', async () => {
+  it("delete", async () => {
     const params = testData.labels.existing.delete;
     const labelToDelete = await models.label
       .query()
       .findOne({ name: params.name });
     const response = await app.inject({
-      method: 'DELETE',
+      method: "DELETE",
       // url: app.reverse('deleteLabel', { id: label.id }),
       url: `/labels/${labelToDelete.id}`,
       payload: {
@@ -97,14 +97,14 @@ describe('test labels CRUD', () => {
   });
 
   // work under progress
-  it('update', async () => {
+  it("update", async () => {
     const params = testData.labels.existing.update;
     const labelToDelete = await models.label
       .query()
       .findOne({ name: params.name });
-    const updatedLabelName = 'updated';
+    const updatedLabelName = "updated";
     const response = await app.inject({
-      method: 'PATCH',
+      method: "PATCH",
       // url: app.reverse('updateLabel', { id: labelToDelete.id }),
       url: `/labels/${labelToDelete.id}`,
       payload: {

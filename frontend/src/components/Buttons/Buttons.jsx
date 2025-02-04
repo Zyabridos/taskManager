@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from '../LanguageSwitcher';
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 const NavbarButtons = () => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ const NavbarButtons = () => {
           href="/session/new"
           className="text-lg text-gray-700 hover:text-gray-900 transition"
         >
-          {t('layouts.application.signIn')}
+          {t("layouts.application.signIn")}
         </Link>
       </li>
       <li>
@@ -21,7 +21,7 @@ const NavbarButtons = () => {
           href="/users/new"
           className="text-lg text-gray-700 hover:text-gray-900 transition"
         >
-          {t('layouts.application.signUp')}
+          {t("layouts.application.signUp")}
         </Link>
       </li>
       <li>

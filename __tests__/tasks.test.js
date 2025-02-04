@@ -1,8 +1,8 @@
-import fastify from 'fastify';
-import init from '../server/plugin/index.js';
-import { prepareData, makeLogin } from './helpers/index.js';
+import fastify from "fastify";
+import init from "../server/plugin/index.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
 
-describe('test tasks CRUD', () => {
+describe("test tasks CRUD", () => {
   let app;
   let knex;
   let models;
@@ -12,7 +12,7 @@ describe('test tasks CRUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { target: "pino-pretty" },
     });
     await init(app);
     knex = app.objection.knex;
@@ -26,22 +26,22 @@ describe('test tasks CRUD', () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
-  it('index', async () => {
+  it("index", async () => {
     const response = await app.inject({
-      method: 'GET',
-      url: '/tasks',
+      method: "GET",
+      url: "/tasks",
       cookies: cookie,
     });
 
     expect(response.statusCode).toBe(200);
   });
 
-  it('certain task', async () => {
+  it("certain task", async () => {
     const params = testData.tasks.existing.update;
     const task = await models.task.query().findOne({ name: params.name });
 
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       url: `/tasks/${task.id}`,
       cookies: cookie,
     });
@@ -49,21 +49,21 @@ describe('test tasks CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it('new', async () => {
+  it("new", async () => {
     const response = await app.inject({
-      method: 'GET',
-      url: '/tasks/new',
+      method: "GET",
+      url: "/tasks/new",
       cookies: cookie,
     });
 
     expect(response.statusCode).toBe(200);
   });
 
-  it('create', async () => {
+  it("create", async () => {
     const params = testData.tasks.new;
     const response = await app.inject({
-      method: 'POST',
-      url: '/tasks',
+      method: "POST",
+      url: "/tasks",
       payload: {
         data: params,
       },
@@ -75,12 +75,12 @@ describe('test tasks CRUD', () => {
     expect(task).toMatchObject(params);
   });
 
-  it('delete', async () => {
+  it("delete", async () => {
     const params = testData.tasks.existing.delete;
     const task = await models.task.query().findOne({ name: params.name });
 
     const response = await app.inject({
-      method: 'DELETE',
+      method: "DELETE",
       url: `/tasks/${task.id}`,
       cookies: cookie,
     });
@@ -92,13 +92,13 @@ describe('test tasks CRUD', () => {
     expect(deletedTask).toBeNull();
   });
 
-  it('update', async () => {
+  it("update", async () => {
     const params = testData.tasks.existing.update;
     const task = await models.task.query().findOne({ name: params.name });
 
-    const updatedTaskName = 'updated';
+    const updatedTaskName = "updated";
     const response = await app.inject({
-      method: 'PATCH',
+      method: "PATCH",
       url: `/tasks/${task.id}`,
       payload: {
         data: {
@@ -116,7 +116,7 @@ describe('test tasks CRUD', () => {
   });
 
   afterEach(async () => {
-    await knex('tasks').del();
+    await knex("tasks").del();
   });
 
   afterAll(async () => {

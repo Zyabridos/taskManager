@@ -1,19 +1,22 @@
-export const up = (knex) =>
-  knex.schema.createTable('task_labels', (table) => {
-    table.increments('id').primary();
+export const up = async (knex) => {
+  await knex.schema.createTable("task_labels", (table) => {
+    table.increments("id").primary();
     table
-      .integer('task_id')
-      .references('id')
-      .inTable('tasks')
+      .integer("task_id")
       .notNullable()
-      .onDelete('CASCADE');
+      .references("id")
+      .inTable("tasks")
+      .onDelete("CASCADE");
     table
-      .integer('label_id')
-      .references('id')
-      .inTable('labels')
+      .integer("label_id")
       .notNullable()
-      .onDelete('CASCADE');
-    table.timestamp('created_at').defaultTo(knex.fn.now());
+      .references("id")
+      .inTable("labels")
+      .onDelete("CASCADE");
+    table.timestamp("created_at").defaultTo(knex.fn.now());
   });
+};
 
-export const down = (knex) => knex.schema.dropTable('task_labels');
+export const down = async (knex) => {
+  await knex.schema.dropTableIfExists("task_labels");
+};

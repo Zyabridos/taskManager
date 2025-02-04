@@ -1,11 +1,11 @@
 // @ts-check
 
-import fastify from 'fastify';
+import fastify from "fastify";
 
-import init from '../server/plugin/index.js';
-import { prepareData, makeLogin } from './helpers/index.js';
+import init from "../server/plugin/index.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
 
-describe('test statuses CRUD', () => {
+describe("test statuses CRUD", () => {
   let app;
   let knex;
   let models;
@@ -15,7 +15,7 @@ describe('test statuses CRUD', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { target: "pino-pretty" },
     });
     await init(app);
     knex = app.objection.knex;
@@ -37,22 +37,22 @@ describe('test statuses CRUD', () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
-  it('index', async () => {
+  it("index", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('statuses'),
-      url: '/statuses',
+      url: "/statuses",
       cookies: cookie,
     });
 
     expect(response.statusCode).toBe(200);
   });
 
-  it('new', async () => {
+  it("new", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('newStatus'),
-      url: '/statuses/new',
+      url: "/statuses/new",
       cookies: cookie,
     });
 
@@ -60,12 +60,12 @@ describe('test statuses CRUD', () => {
   });
 
   // work under progress
-  it('create', async () => {
+  it("create", async () => {
     const params = testData.statuses.new;
     const response = await app.inject({
-      method: 'POST',
+      method: "POST",
       // url: app.reverse('createStatus'),
-      url: '/statuses/new',
+      url: "/statuses/new",
       payload: {
         data: params,
       },
@@ -78,13 +78,13 @@ describe('test statuses CRUD', () => {
   });
 
   // work under progress
-  it('delete', async () => {
+  it("delete", async () => {
     const params = testData.statuses.existing.delete;
     const statusToDelete = await models.status
       .query()
       .findOne({ name: params.name });
     const response = await app.inject({
-      method: 'DELETE',
+      method: "DELETE",
       // url: app.reverse('deleteStatus', { id: status.id }),
       url: `/statuses/${statusToDelete.id}`,
       payload: {
@@ -101,14 +101,14 @@ describe('test statuses CRUD', () => {
   });
 
   // work under progress
-  it('update', async () => {
+  it("update", async () => {
     const params = testData.statuses.existing.update;
     const statusToDelete = await models.status
       .query()
       .findOne({ name: params.name });
-    const updatedStatusName = 'updated';
+    const updatedStatusName = "updated";
     const response = await app.inject({
-      method: 'PATCH',
+      method: "PATCH",
       // url: app.reverse('updateStatus', { id: statusToDelete.id }),
       url: `/statuses/${statusToDelete.id}`,
       payload: {

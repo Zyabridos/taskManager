@@ -1,5 +1,5 @@
-import fastify from 'fastify';
-import init from './plugin/index.js';
+import fastify from "fastify";
+import init from "./plugin/index.js";
 
 const app = fastify({ logger: true });
 const PORT = process.env.PORT || 3000;
@@ -12,7 +12,7 @@ const startServer = async () => {
     console.log(`Зарегестрированные маршруты: ${app.printRoutes()}`); // show routes
   });
 
-  app.addHook('onRequest', (req, reply, done) => {
+  app.addHook("onRequest", (req, reply, done) => {
     console.log(`Метод запроса: ${req.method}, URL: ${req.url}`);
     done();
   });
@@ -20,7 +20,7 @@ const startServer = async () => {
   app.listen(
     {
       port: PORT,
-      host: '0.0.0.0',
+      host: "0.0.0.0",
     },
     (err, address) => {
       if (err) {
@@ -28,7 +28,7 @@ const startServer = async () => {
         process.exit(1);
       }
       app.log.info(`Server is running on ${address}`);
-    }
+    },
   );
 };
 

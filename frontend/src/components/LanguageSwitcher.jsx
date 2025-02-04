@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const LanguageSwitcher = () => {
   const { i18n, t } = useTranslation();
@@ -11,13 +11,13 @@ const LanguageSwitcher = () => {
   };
 
   const languages = [
-    { code: 'en', label: 'English', flag: '🇬🇧' },
-    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
-    { code: 'no', label: 'Norsk', flag: '🇳🇴' },
+    { code: "en", label: "English", flag: "🇬🇧" },
+    { code: "ru", label: "Русский", flag: "🇷🇺" },
+    { code: "no", label: "Norsk", flag: "🇳🇴" },
   ];
 
   const selectedLanguage = languages.find(
-    (lang) => lang.code === i18n.language
+    (lang) => lang.code === i18n.language,
   );
 
   return (

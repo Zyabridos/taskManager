@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const UsersList = () => {
   const { t } = useTranslation();
@@ -11,14 +11,14 @@ const UsersList = () => {
 
   useEffect(() => {
     axios
-      .get('/api/users')
+      .get("/api/users")
       .then((response) => {
-        console.log('Users data:', response.data);
+        console.log("Users data:", response.data);
         setUsers(response.data.users);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching users:', error);
+        console.error("Error fetching users:", error);
         setLoading(false);
       });
   }, []);
@@ -26,11 +26,11 @@ const UsersList = () => {
   return (
     <div className="container mx-auto flex-grow py-10 px-4">
       <h1 className="text-4xl font-bold text-gray-800 mb-8">
-        {t('views.users.title')}
+        {t("views.users.title")}
       </h1>
       {loading ? (
         <p className="text-center text-lg text-gray-500">
-          {t('views.users.loading')}
+          {t("views.users.loading")}
         </p>
       ) : (
         <div className="overflow-x-auto bg-white shadow-lg rounded-lg">
@@ -38,19 +38,19 @@ const UsersList = () => {
             <thead className="bg-gray-800 text-white">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
-                  {t('views.users.id')}
+                  {t("views.users.id")}
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
-                  {t('views.users.fullName')}
+                  {t("views.users.fullName")}
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
-                  {t('views.users.email')}
+                  {t("views.users.email")}
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
-                  {t('views.users.createdAt')}
+                  {t("views.users.createdAt")}
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-semibold uppercase">
-                  {t('views.users.actions')}
+                  {t("views.users.actions")}
                 </th>
               </tr>
             </thead>
@@ -73,10 +73,10 @@ const UsersList = () => {
                         href={`/users/${user.id}/edit`}
                         className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm font-medium mr-2 transition duration-300"
                       >
-                        {t('views.users.edit')}
+                        {t("views.users.edit")}
                       </a>
                       <button className="text-white bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg text-sm font-medium transition duration-300">
-                        {t('views.users.delete')}
+                        {t("views.users.delete")}
                       </button>
                     </td>
                   </tr>
@@ -87,7 +87,7 @@ const UsersList = () => {
                     colSpan="5"
                     className="px-6 py-4 text-center text-gray-500"
                   >
-                    {t('views.users.noUsers')}
+                    {t("views.users.noUsers")}
                   </td>
                 </tr>
               )}

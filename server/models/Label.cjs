@@ -1,20 +1,20 @@
-const objectionUnique = require('objection-unique');
-const BaseModel = require('./BaseModel.cjs');
+const objectionUnique = require("objection-unique");
+const BaseModel = require("./BaseModel.cjs");
 
-const unique = objectionUnique({ fields: ['name'] });
+const unique = objectionUnique({ fields: ["name"] });
 
 module.exports = class Label extends unique(BaseModel) {
   static get tableName() {
-    return 'labels';
+    return "labels";
   }
 
   static get jsonSchema() {
     return {
-      type: 'object',
-      required: ['name'],
+      type: "object",
+      required: ["name"],
       properties: {
-        id: { type: 'integer' },
-        name: { type: 'string', minLength: 1 },
+        id: { type: "integer" },
+        name: { type: "string", minLength: 1 },
       },
     };
   }
@@ -24,10 +24,10 @@ module.exports = class Label extends unique(BaseModel) {
       // Labels and tasks
       tasks: {
         relation: BaseModel.HasManyRelation, // one label can have many tasks and the opposite - M2M relation
-        modelClass: 'Task.cjs',
+        modelClass: "Task.cjs",
         join: {
-          from: 'labels.id',
-          to: 'tasks.id',
+          from: "labels.id",
+          to: "tasks.id",
         },
       },
     };

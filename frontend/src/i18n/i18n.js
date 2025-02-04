@@ -1,9 +1,9 @@
-'use client';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import translationRU from './locales/ru.json';
-import translationEN from './locales/en.json';
-import translationNO from './locales/no.json';
+"use client";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import translationRU from "./locales/ru.json";
+import translationEN from "./locales/en.json";
+import translationNO from "./locales/no.json";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -17,12 +17,12 @@ i18n.use(initReactI18next).init({
       translation: translationNO,
     },
   },
-  lng: 'ru', // default lng
-  fallbackLng: 'en', // backup lng if default doesn`t work
+  lng: "ru", // default lng
+  fallbackLng: "en", // backup lng if default doesn`t work
   interpolation: {
     escapeValue: false,
   },
-  pluralSeparator: '_',
+  pluralSeparator: "_",
 });
 
 export default i18n;

@@ -3,9 +3,9 @@
 
 // export default nextConfig;
 
-import path from 'path';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from "path";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -14,13 +14,13 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': path.resolve(__dirname, 'src'),
+      "@": path.resolve(__dirname, "src"),
     };
-    config.resolve.extensions.push('.js', '.jsx');
+    config.resolve.extensions.push(".js", ".jsx");
 
     return config;
   },
-  output: 'standalone',
+  output: "standalone",
   compiler: {
     styledComponents: true,
   },
@@ -34,10 +34,10 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: "/api/:path*",
         // вот тут меняем порт, чтобы вместо next.js на 5000 порту работал бэк, который у нас на 3000
         // destination: 'http://localhost:5000/:path*',
-        destination: 'http://localhost:3000/:path*',
+        destination: "http://localhost:3000/:path*",
       },
     ];
   },

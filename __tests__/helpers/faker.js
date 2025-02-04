@@ -1,6 +1,6 @@
-import { faker } from '@faker-js/faker';
-import _ from 'lodash';
-import encrypt from '../../server/lib/secure.cjs';
+import { faker } from "@faker-js/faker";
+import _ from "lodash";
+import encrypt from "../../server/lib/secure.cjs";
 
 const generators = {
   user: () => ({
@@ -25,10 +25,10 @@ export const generateData = (type, length = 3) =>
   Array.from({ length }, () => generators[type]());
 
 export const generateUsers = () => {
-  const newUser = generateData('user', 1);
-  const users = generateData('user', 3);
+  const newUser = generateData("user", 1);
+  const users = generateData("user", 3);
   const seeds = users.map((user) => ({
-    ..._.omit(user, 'password'),
+    ..._.omit(user, "password"),
     passwordDigest: encrypt(user.password),
   }));
   return {
@@ -43,8 +43,8 @@ export const generateUsers = () => {
 };
 
 export const generateStatuses = () => {
-  const newStatus = generateData('status', 1);
-  const statuses = generateData('status', 2);
+  const newStatus = generateData("status", 1);
+  const statuses = generateData("status", 2);
   return {
     new: newStatus[0],
     existing: {
@@ -56,7 +56,7 @@ export const generateStatuses = () => {
 };
 
 export const generateTasks = (users, statuses) => {
-  const tasks = generateData('task', 3).map((task, index) => ({
+  const tasks = generateData("task", 3).map((task, index) => ({
     ...task,
     statusId: statuses[index % statuses.length].id,
     authorId: users[0].id, // первый юзер — автор
@@ -64,7 +64,7 @@ export const generateTasks = (users, statuses) => {
   }));
 
   return {
-    new: generateData('task', 1)[0],
+    new: generateData("task", 1)[0],
     existing: {
       update: tasks[0],
       delete: tasks[1],
@@ -74,8 +74,8 @@ export const generateTasks = (users, statuses) => {
 };
 
 export const generateLabels = () => {
-  const newLabel = generateData('label', 1);
-  const labels = generateData('label', 2);
+  const newLabel = generateData("label", 1);
+  const labels = generateData("label", 2);
   return {
     new: newLabel[0],
     existing: {
