@@ -1,8 +1,8 @@
-import fastify from 'fastify';
-import init from '../server/plugin/index.js';
-import { getTestData, prepareData } from './helpers/index.js';
+import fastify from "fastify";
+import init from "../server/plugin/index.js";
+import { getTestData, prepareData } from "./helpers/index.js";
 
-describe('test session', () => {
+describe("test session", () => {
   let app;
   let knex;
   let testData;
@@ -10,7 +10,7 @@ describe('test session', () => {
   beforeAll(async () => {
     app = fastify({
       exposeHeadRoutes: false,
-      logger: { target: 'pino-pretty' },
+      logger: { target: "pino-pretty" },
     });
     await init(app);
     knex = app.objection.knex; // инициализация knex`a
@@ -19,19 +19,19 @@ describe('test session', () => {
     testData = getTestData(); // загружаем зараннее подготовленные данные
   });
 
-  it('test sign in / sign out', async () => {
+  it("test sign in / sign out", async () => {
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       // url: app.reverse('newSession'),
-      url: '/session/new',
+      url: "/session/new",
     });
 
     expect(response.statusCode).toBe(200);
 
     const responseSignIn = await app.inject({
-      method: 'POST', // пытаемся авторизоваться через метод POST
+      method: "POST", // пытаемся авторизоваться через метод POST
       // url: app.reverse('session'),
-      url: '/session',
+      url: "/session",
       payload: {
         data: testData.users.existing, // передаем данные авторизации из `testData.users.existing`.
       },
@@ -46,9 +46,9 @@ describe('test session', () => {
     const cookie = { [name]: value }; // Формируем объект с именем и значением cookie для использования в последующих запросах.
 
     const responseSignOut = await app.inject({
-      method: 'DELETE',
+      method: "DELETE",
       // отправляем DELETE-запрос на маршрут для завершения сессии (выход из системы).
-      url: '/session',
+      url: "/session",
       // используем полученные ранее куки
       cookies: cookie,
     });

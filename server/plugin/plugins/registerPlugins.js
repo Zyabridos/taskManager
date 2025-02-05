@@ -5,7 +5,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyFlash from "@fastify/flash";
 // NOTE plugin doesnt work properly: throws an error about route already been registered,
 // even though the route has an unique name and hasn`t been registered before
-// import { plugin as fastifyReverseRoutes } from 'fastify-reverse-routes';
+import { plugin as fastifyReverseRoutes } from "fastify-reverse-routes";
 import fastifyPassport from "@fastify/passport";
 import fastifySensible from "@fastify/sensible";
 import fastifyMethodOverride from "fastify-method-override";

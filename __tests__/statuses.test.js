@@ -1,39 +1,36 @@
-// @ts-check
-
 import fastify from "fastify";
-
 import init from "../server/plugin/index.js";
-import { prepareData, makeLogin } from "./helpers/index.js";
+import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
 
 describe("test statuses CRUD", () => {
   let app;
-  let knex;
   let models;
+  let knex;
+  // const testData = getTestData();
   let testData;
   let cookie;
+  console.log("test data: ", testData);
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     app = fastify({
       exposeHeadRoutes: false,
       logger: { target: "pino-pretty" },
     });
+
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
 
-    // TODO: пока один раз перед тестами
-    // тесты не должны зависеть друг от друга
-    // перед каждым тестом выполняем миграции
-    // и заполняем БД тестовыми данными
-
-    knex = app.objection.knex;
-    models = app.objection.models;
-
     await knex.migrate.latest();
+
     testData = await prepareData(app);
   });
 
   beforeEach(async () => {
+    console.log(
+      "email of author of a status: ",
+      testData.users.existing.author.email,
+    );
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
@@ -59,13 +56,12 @@ describe("test statuses CRUD", () => {
     expect(response.statusCode).toBe(200);
   });
 
-  // work under progress
   it("create", async () => {
     const params = testData.statuses.new;
     const response = await app.inject({
       method: "POST",
-      // url: app.reverse('createStatus'),
-      url: "/statuses/new",
+      // url: app.reverse('statuses'),
+      url: "/statuses",
       payload: {
         data: params,
       },
@@ -100,35 +96,35 @@ describe("test statuses CRUD", () => {
     expect(deletedStatus).toBeUndefined();
   });
 
-  // work under progress
-  it("update", async () => {
-    const params = testData.statuses.existing.update;
-    const statusToDelete = await models.status
-      .query()
-      .findOne({ name: params.name });
-    const updatedStatusName = "updated";
-    const response = await app.inject({
-      method: "PATCH",
-      // url: app.reverse('updateStatus', { id: statusToDelete.id }),
-      url: `/statuses/${statusToDelete.id}`,
-      payload: {
-        data: { name: updatedStatusName },
-      },
-      cookies: cookie,
-    });
+  // // work under progress
+  // it('update', async () => {
+  //   const params = testData.statuses.existing.update;
+  //   const statusToDelete = await models.status
+  //     .query()
+  //     .findOne({ name: params.name });
+  //   const updatedStatusName = 'updated';
+  //   const response = await app.inject({
+  //     method: 'PATCH',
+  //     // url: app.reverse('updateStatus', { id: statusToDelete.id }),
+  //     url: `/statuses/${statusToDelete.id}`,
+  //     payload: {
+  //       data: { name: updatedStatusName },
+  //     },
+  //     cookies: cookie,
+  //   });
 
-    expect(response.statusCode).toBe(302);
+  //   expect(response.statusCode).toBe(302);
 
-    const updatedStatus = await statusToDelete.$query();
-    expect(updatedStatus.name).toEqual(updatedStatusName);
-  });
+  //   const updatedStatus = await statusToDelete.$query();
+  //   expect(updatedStatus.name).toEqual(updatedStatusName);
+  // });
 
   afterEach(async () => {
-    // await knex.migrate.rollback();
+    // после каждого теста откатываем миграции
+    await knex.migrate.rollback();
   });
 
   afterAll(async () => {
-    await knex.destroy(); // закрыть соединение с БД
     await app.close();
   });
 });

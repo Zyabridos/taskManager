@@ -20,8 +20,13 @@ export const prepareData = async (app) => {
   const statusesData = generateStatuses();
   const labelsData = generateLabels();
 
+  console.log("usersData.existing: ", usersData.existing);
+
   // вставляем пользователей и статусы в БД
   await knex("users").insert(usersData.seeds);
+
+  console.log("inserted users to DB:", await knex("users").select());
+
   await knex("statuses").insert(statusesData.seeds);
 
   // достаём их обратно, чтобы получить их реальные ID
@@ -47,6 +52,7 @@ export const prepareData = async (app) => {
 };
 
 export const makeLogin = async (app, userData) => {
+  console.log("userData: ", userData);
   if (!userData || !userData.email || !userData.password) {
     throw new Error("makeLogin() called with invalid user data");
   }

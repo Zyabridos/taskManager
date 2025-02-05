@@ -29,11 +29,11 @@ export const generateUsers = () => {
   const users = generateData("user", 5);
   // move to fixtures
   const fixedUser = {
-    firstName: 'Alice',
-    lastName: 'Ramsey',
-    email: 'alice@example.com',
+    firstName: "Alice",
+    lastName: "Ramsey",
+    email: "alice@example.com",
     password: faker.internet.password(),
-  }
+  };
   const seeds = users.map((user) => ({
     ..._.omit(user, "password"),
     passwordDigest: encrypt(user.password),
@@ -51,7 +51,7 @@ export const generateUsers = () => {
       author: users[0],
       executor: users[1],
       delete: users[2],
-      fixed: fixedUser, 
+      fixed: fixedUser,
     },
     seeds,
   };

@@ -67,14 +67,16 @@ describe("test users CRUD", () => {
   it("delete", async () => {
     // const params = testData.users.existing.delete; - находит рандомного человека, которого нет в БД
     const params = testData.users.existing.fixed;
-    console.log('params for user deleting: ', params)
-    const userToDelete = await models.user.query().findOne({ email: params.email });
+    console.log("params for user deleting: ", params);
+    const userToDelete = await models.user
+      .query()
+      .findOne({ email: params.email });
 
-    console.log('got a user:,', userToDelete)
+    console.log("got a user:,", userToDelete);
 
     const cookie = await makeLogin(app, testData.users.existing.fixed);
     const response = await app.inject({
-      method: 'DELETE',
+      method: "DELETE",
       // url: app.reverse('deleteUser', { id: userToDelete.id }),
       url: `/users/${userToDelete.id}`,
       payload: {
@@ -85,7 +87,9 @@ describe("test users CRUD", () => {
 
     console.log("Response status:", response.statusCode);
     expect(response.statusCode).toBe(302);
-    expect(await models.user.query().findOne({ email: params.email })).toBeUndefined();
+    expect(
+      await models.user.query().findOne({ email: params.email }),
+    ).toBeUndefined();
   });
 
   afterEach(async () => {
