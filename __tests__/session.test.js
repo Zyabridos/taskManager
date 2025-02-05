@@ -1,11 +1,12 @@
 import fastify from "fastify";
 import init from "../server/plugin/index.js";
-import { getTestData, prepareData } from "./helpers/index.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
 
 describe("test session", () => {
   let app;
   let knex;
   let testData;
+  let cookie;
 
   beforeAll(async () => {
     app = fastify({
@@ -15,41 +16,42 @@ describe("test session", () => {
     await init(app);
     knex = app.objection.knex; // инициализация knex`a
     await knex.migrate.latest(); // не забываем обновить миграции
-    await prepareData(app); // вставляем данные в БД
-    testData = getTestData(); // загружаем зараннее подготовленные данные
+    testData = await prepareData(app); // вставляем данные в БД
+  });
+
+  it("test makeLogin()", async () => {
+    const cookie = await makeLogin(app, {
+      email: testData.users.existing.author.email,
+      password: testData.users.existing.author.password,
+    });
+
+    expect(cookie).toBeDefined();
+    expect(Object.keys(cookie).length).toBeGreaterThan(0);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   it("test sign in / sign out", async () => {
     const response = await app.inject({
       method: "GET",
-      // url: app.reverse('newSession'),
       url: "/session/new",
     });
 
     expect(response.statusCode).toBe(200);
 
-    const responseSignIn = await app.inject({
-      method: "POST", // пытаемся авторизоваться через метод POST
-      // url: app.reverse('session'),
-      url: "/session",
-      payload: {
-        data: testData.users.existing, // передаем данные авторизации из `testData.users.existing`.
-      },
+    // Логинимся с помощью makeLogin
+    cookie = await makeLogin(app, {
+      email: testData.users.existing.author.email,
+      password: testData.users.existing.author.password,
     });
 
-    expect(responseSignIn.statusCode).toBe(302); // проверяем, что сервер отвечает статусом 302 (Redirect)
-    // после успешной аутентификации получаем куки из ответа,
-    // они понадобятся для выполнения запросов на маршруты требующие
-    // предварительную аутентификацию
-    const [sessionCookie] = responseSignIn.cookies;
-    const { name, value } = sessionCookie;
-    const cookie = { [name]: value }; // Формируем объект с именем и значением cookie для использования в последующих запросах.
+    expect(cookie).toBeDefined();
 
     const responseSignOut = await app.inject({
       method: "DELETE",
-      // отправляем DELETE-запрос на маршрут для завершения сессии (выход из системы).
       url: "/session",
-      // используем полученные ранее куки
       cookies: cookie,
     });
 
@@ -57,7 +59,6 @@ describe("test session", () => {
   });
 
   afterAll(async () => {
-    // await knex.migrate.rollback();
     await app.close();
   });
 });

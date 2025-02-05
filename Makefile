@@ -50,4 +50,4 @@ u:
 	npx jest __tests__/users.test.js
 
 s:
-	npx jest __tests__/statuses.test.js
+	npx jest __tests__/session.test.js
