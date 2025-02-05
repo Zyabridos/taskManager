@@ -70,24 +70,6 @@ export const generateStatuses = () => {
   };
 };
 
-export const generateTasks = (users, statuses) => {
-  const tasks = generateData("task", 3).map((task, index) => ({
-    ...task,
-    statusId: statuses[index % statuses.length].id,
-    authorId: users[0].id, // первый юзер — автор
-    executorId: users[1].id, // второй созданный нами юзер — исполнитель
-  }));
-
-  return {
-    new: generateData("task", 1)[0],
-    existing: {
-      update: tasks[0],
-      delete: tasks[1],
-    },
-    seeds: tasks,
-  };
-};
-
 export const generateLabels = () => {
   const newLabel = {
     ...generateData("label", 1)[0],
@@ -105,5 +87,36 @@ export const generateLabels = () => {
       delete: labels[1],
     },
     seeds: labels,
+  };
+};
+
+export const generateTasks = (users, statuses) => {
+  if (!statuses.length) {
+    throw new Error("generateTasks: statuses пусты!");
+  }
+  if (!users.length) {
+    throw new Error("generateTasks: users пусты!");
+  }
+
+  const tasks = generateData("task", 2).map((task, index) => ({
+    ...task,
+    id: index,
+    statusId: statuses[0]?.id || 1,
+    authorId: users[0]?.id || 1,
+    executorId: users[1]?.id || 1,
+  }));
+
+  return {
+    new: {
+      ...generateData("task", 1)[0],
+      statusId: statuses[0]?.id || 1,
+      authorId: users[0]?.id || 1,
+      executorId: users[1]?.id || 1,
+    },
+    existing: {
+      update: tasks[0],
+      delete: tasks[1],
+    },
+    seeds: tasks,
   };
 };

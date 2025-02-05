@@ -11,37 +11,34 @@ export const getTestData = () => ({
   users: generateUsers(),
   statuses: generateStatuses(),
   labels: generateLabels(),
+  tasks: generateTasks(users, statuses),
 });
 
 export const prepareData = async (app) => {
+  // TODO так как лейбел не обязательный,
+  // надо будеи сгенерировать такую таскДату, чтобы была с лейблами
+  // и проверть, что ее нельзя удалить
+  // const tasksData = generateTasks(users, statuses);
+  // const labels = await knex("labels").select();
   const { knex } = app.objection;
 
   const usersData = generateUsers();
   const statusesData = generateStatuses();
   const labelsData = generateLabels();
 
-  console.log("usersData.existing: ", usersData.existing);
-
-  // вставляем пользователей и статусы в БД
+  // вставляем все данные в БД (= INSERT INTO...)
   await knex("users").insert(usersData.seeds);
-  console.log("inserted users to DB:", await knex("users").select());
   await knex("statuses").insert(statusesData.seeds);
   await knex("labels").insert(labelsData.seeds);
-  console.log("all labelsData: ", labelsData);
 
   // достаём их обратно, чтобы получить их реальные ID
   const users = await knex("users").select();
   const statuses = await knex("statuses").select();
 
-  console.log("Users in DB:", users);
-
-  // TODO так как лейбел не обязательный,
-  // надо будеи сгенерировать такую таскДату, чтобы была с лейблами
-  // и проверть, что ее нельзя удалить
   const tasksData = generateTasks(users, statuses);
-  const labels = await knex("labels").select();
-
   await knex("tasks").insert(tasksData.seeds);
+
+  console.log("all tasks data: ", tasksData);
 
   if (!users[0]) {
     throw new Error("generateUsers() failed to generate users.");

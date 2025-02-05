@@ -29,10 +29,11 @@ test:
 	npm test -s
 
 
-
-
 a:
 	node server/startServer.js --watch
 
 p:
 	npx prettier --write .
+
+t:
+	npx jest __tests__/tasks.test.js
