@@ -36,18 +36,3 @@ a:
 
 p:
 	npx prettier --write .
-
-t:
-	npm test -s
-
-fr:
-	cd frontend; npm run dev
-
-db:
-	npx knex migrate:latest
-
-u:
-	npx jest __tests__/users.test.js
-
-s:
-	npx jest __tests__/session.test.js

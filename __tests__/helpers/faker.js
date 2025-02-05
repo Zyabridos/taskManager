@@ -89,10 +89,17 @@ export const generateTasks = (users, statuses) => {
 };
 
 export const generateLabels = () => {
-  const newLabel = generateData("label", 1);
-  const labels = generateData("label", 2);
+  const newLabel = {
+    ...generateData("label", 1)[0],
+    id: Math.round(Math.random() * 1000),
+  };
+  const labels = generateData("label", 2).map((label) => ({
+    ...label,
+    id: Math.round(Math.random() * 1000),
+  }));
+
   return {
-    new: newLabel[0],
+    new: newLabel,
     existing: {
       update: labels[0],
       delete: labels[1],

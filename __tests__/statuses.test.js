@@ -1,12 +1,11 @@
 import fastify from "fastify";
 import init from "../server/plugin/index.js";
-import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
 
 describe("test statuses CRUD", () => {
   let app;
   let models;
   let knex;
-  // const testData = getTestData();
   let testData;
   let cookie;
   console.log("test data: ", testData);
@@ -73,7 +72,6 @@ describe("test statuses CRUD", () => {
     expect(status).toMatchObject(params);
   });
 
-  // work under progress
   it("delete", async () => {
     const params = testData.statuses.existing.delete;
     const statusToDelete = await models.status
@@ -120,7 +118,6 @@ describe("test statuses CRUD", () => {
   // });
 
   afterEach(async () => {
-    // после каждого теста откатываем миграции
     await knex.migrate.rollback();
   });
 

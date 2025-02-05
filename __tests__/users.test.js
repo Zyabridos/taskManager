@@ -92,10 +92,34 @@ describe("test users CRUD", () => {
     ).toBeUndefined();
   });
 
-  afterEach(async () => {
-    // после каждого теста откатываем миграции
-    await knex.migrate.rollback();
-  });
+  // // work under progress
+  // it('update', async () => {
+  //   const params = testData.users.existing.delete;
+  //   const user = await models.user.query().findOne({ email: params.email });
+  //   const newLastName = 'Golovach';
+
+  //   const cookie = await makeLogin(app, testData.users.existing.delete);
+  //   const response = await app.inject({
+  //     method: 'PATCH',
+  //     url: app.reverse('updateUser', { id: user.id }),
+  //     payload: {
+  //       data: {
+  //         ...params,
+  //         lastName: newLastName,
+  //       },
+  //     },
+  //     cookies: cookie,
+  //   });
+
+  //   expect(response.statusCode).toBe(302);
+  //   const updatedUser = await user.$query();
+  //   expect(updatedUser.lastName).toEqual(newLastName);
+  // });
+
+  // afterEach(async () => {
+  //   // после каждого теста откатываем миграции
+  //   await knex.migrate.rollback();
+  // });
 
   afterAll(async () => {
     await app.close();

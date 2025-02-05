@@ -24,10 +24,10 @@ export const prepareData = async (app) => {
 
   // вставляем пользователей и статусы в БД
   await knex("users").insert(usersData.seeds);
-
   console.log("inserted users to DB:", await knex("users").select());
-
   await knex("statuses").insert(statusesData.seeds);
+  await knex("labels").insert(labelsData.seeds);
+  console.log("all labelsData: ", labelsData);
 
   // достаём их обратно, чтобы получить их реальные ID
   const users = await knex("users").select();
@@ -35,7 +35,11 @@ export const prepareData = async (app) => {
 
   console.log("Users in DB:", users);
 
+  // TODO так как лейбел не обязательный,
+  // надо будеи сгенерировать такую таскДату, чтобы была с лейблами
+  // и проверть, что ее нельзя удалить
   const tasksData = generateTasks(users, statuses);
+  const labels = await knex("labels").select();
 
   await knex("tasks").insert(tasksData.seeds);
 
