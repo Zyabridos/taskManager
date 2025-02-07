@@ -104,23 +104,41 @@ export default (app) => {
     // GET /tasks/:id/edit - page for editing a task
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
       const { id } = req.params;
+
       try {
         const task = await app.objection.models.task
           .query()
           .findById(id)
-          .withGraphFetched("[status, executor, author]");
+          .withGraphFetched("[status, executor, labels]");
+
         if (!task) {
-          req.flash("error", i18next.t("flash.task.edit.notFound"));
-          reply.task(404).send("Task not found");
-          return;
+          req.flash("error", i18next.t("flash.tasks.edit.notFound"));
+          return reply.status(404).send("Task not found"); // Note return, чтобы исключить двойной вызов
         }
-        reply.render("tasks/edit", { task, errors: {} });
-      } catch ({ data }) {
-        reply.render("tasks/edit", { errors: data });
+
+        const statuses = await app.objection.models.status.query();
+        const executors = await app.objection.models.user.query();
+        const labels = await app.objection.models.label.query();
+
+        console.log("Task:", task);
+        console.log("Statuses:", statuses);
+        console.log("Executors:", executors);
+        console.log("Labels:", labels);
+
+        reply.render("tasks/edit", {
+          task,
+          statuses,
+          executors,
+          labels,
+          errors: {},
+        });
+
+        return reply; // ВАЖНО: return reply, чтобы исключить двойной вызов
+      } catch (error) {
+        console.error("Error fetching task:", error);
         req.flash("error", i18next.t("flash.tasks.edit.error"));
-        reply.task(500).send("Internal Server Error");
+        return reply.status(500).send("Internal Server Error"); // ВАЖНО: return reply
       }
-      return reply;
     })
 
     // POST /tasks - create new task
@@ -186,9 +204,12 @@ export default (app) => {
       const { id } = req.params;
       const updatedData = req.body.data;
 
+      updatedData.statusId = Number(updatedData.statusId);
+      updatedData.executorId = Number(updatedData.executorId);
+
       try {
         const task = await app.objection.models.task.query().findById(id);
-        task.authorId = req.session.userId;
+
         if (!task) {
           req.flash("error", i18next.t("flash.tasks.edit.notFound"));
           return reply.status(404).send("Task not found");
@@ -196,16 +217,20 @@ export default (app) => {
 
         await task.$query().patch(updatedData);
         req.flash("info", i18next.t("flash.tasks.edit.success"));
-        reply.redirect(`/tasks`);
+        return reply.redirect(`/tasks`);
       } catch (error) {
+        console.error("Error updating task:", error);
         req.flash("error", i18next.t("flash.tasks.edit.error"));
+
         const statuses = await app.objection.models.status.query();
         const executors = await app.objection.models.user.query();
+        const labels = await app.objection.models.label.query();
 
-        reply.render("tasks/edit", {
+        return reply.render("tasks/edit", {
           task: { id, ...updatedData },
           statuses,
           executors,
+          labels,
           errors: error.data || {},
         });
       }

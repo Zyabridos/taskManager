@@ -64,7 +64,7 @@ describe("test tasks CRUD", () => {
 
   it("create", async () => {
     const params = testData.tasks.new;
-    console.log('params new task, ', params)
+    console.log("params new task, ", params);
     const response = await app.inject({
       method: "POST",
       url: "/tasks",
@@ -81,7 +81,9 @@ describe("test tasks CRUD", () => {
 
   it("delete", async () => {
     const params = testData.tasks.existing.delete;
-    const taskToDelete = await models.task.query().findOne({ name: params.name });
+    const taskToDelete = await models.task
+      .query()
+      .findOne({ name: params.name });
 
     const response = await app.inject({
       method: "DELETE",

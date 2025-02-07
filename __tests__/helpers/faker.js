@@ -92,10 +92,10 @@ export const generateLabels = () => {
 
 export const generateTasks = (users, statuses) => {
   if (!statuses.length) {
-    throw new Error("generateTasks: statuses пусты!");
+    throw new Error("generateTasks: statuses is empty!");
   }
   if (!users.length) {
-    throw new Error("generateTasks: users пусты!");
+    throw new Error("generateTasks: users is empty");
   }
 
   const tasks = generateData("task", 2).map((task, index) => ({

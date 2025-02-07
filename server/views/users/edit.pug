@@ -5,7 +5,7 @@ block content
   h1= t('views.users.edit.title')
 
   if user
-    +userForm(`/users/${user.id}`, "post", user, errors)
+    +userForm(`/users/${user.id}`, "patch", user, errors)
       input(type="hidden" name="_method" value="PATCH")
   else
     p.text-danger= t('flash.users.edit.notFound')

@@ -4,12 +4,14 @@ mixin labelForm(action, method, tasks = {}, errors = {})
       label[for="data_name"]::after {
         content: ":";
       }
-  form(action=action method=method)
+  form(action=action method="POST")
+    input(type="hidden" name="_method" value=method)
+
     .form-group
       label(for="data_name")= t('views.labels.name')
       input#data_name.form-control(type="text" name="data[name]" value=label.name placeholder= t('views.labels.name'))
       if errors && errors.name
         .text-danger= errors.name[0].message
 
-    input(type="hidden" name="_method" value=method)
     input.btn.btn-primary(type="submit" value= t('views.labels.new.submit'))
+

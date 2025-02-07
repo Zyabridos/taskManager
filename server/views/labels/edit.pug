@@ -6,7 +6,7 @@ block header
 
 block content
   if label
-    +labelForm(`/labels/${label.id}`, "post", t('views.labels.edit.submit'), label, errors)
+    +labelForm(`/labels/${label.id}`, "patch", t('views.labels.edit.submit'), label, errors)
       input(type="hidden" name="_method" value="PATCH")
   else
     p.text-danger= t('flash.labels.edit.notFound')

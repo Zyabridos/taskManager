@@ -1,15 +1,17 @@
-mixin taskForm(action, method, user = {}, errors = {})
-  form(action=action method=method)
+mixin taskForm(action, method, task = {}, errors = {}, statuses = [], executors = [], labels = [])
+  form(action=action method="POST")
+    input(type="hidden" name="_method" value=method)
+
     .mb-3
       label(for="data_name")= t('views.tasks.name')
-      input#data_name.form-control(type="text" name="data[name]" value=task.name)
-      if errors && errors.name
+      input#data_name.form-control(type="text" name="data[name]" value=(task.name || ""))
+      if errors && errors.name && errors.name.length
         .text-danger= errors.name[0].message
 
     .mb-3
       label(for="data_description")= t('views.tasks.description')
-      input#data_description.form-control(type="text" name="data[description]" value=task.description)
-      if errors && errors.description
+      input#data_description.form-control(type="text" name="data[description]" value=(task.description || ""))
+      if errors && errors.description && errors.description.length
         .text-danger= errors.description[0].message
 
     .mb-3
@@ -18,7 +20,7 @@ mixin taskForm(action, method, user = {}, errors = {})
         if statuses
           each status in statuses
             option(value=status.id selected=(task.statusId == status.id))= status.name
-        if errors && errors.statusId
+        if errors && errors.statusId && errors.statusId.length
           .text-danger= errors.statusId[0].message
 
     .mb-3
@@ -26,19 +28,19 @@ mixin taskForm(action, method, user = {}, errors = {})
       select.form-control(id="data_executorId" name="data[executorId]")
         if executors
           each executor in executors
-            option(value=executor.id)= `${executor.firstName} ${executor.lastName}`
+            option(value=executor.id selected=(task.executorId == executor.id))= `${executor.firstName} ${executor.lastName}`
         else
           option(disabled selected)= t('views.tasks.noExecutors')
-      if errors && errors.executorId
+      if errors && errors.executorId && errors.executorId.length
         .text-danger= errors.executorId[0].message
 
     .mb-3
       label(for="data_labels")= t('views.tasks.labels')
-      select.form-control(id="data_labelId" name="data[labels]")
+      select.form-control(id="data_labelId" name="data[labels]" multiple)
         if labels
           each label in labels
-            option(value=label.id selected=(task.labelId == label.id))= label.name
-        if errors && errors.statusId
-          .text-danger= errors.labelId[0].message
+            option(value=label.id selected=(task.labels && task.labels.some(l => l.id === label.id)))= label.name
+        if errors && errors.labels && errors.labels.length
+          .text-danger= errors.labels[0].message
 
     button.btn.btn-primary(type="submit")= t('views.tasks.new.submit')
