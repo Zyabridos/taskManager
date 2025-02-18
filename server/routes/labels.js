@@ -77,7 +77,7 @@ export default (app) => {
     })
 
     // DELETE /labels/:id - delete a label
-    .delete("/labels/:id", { name: "deletelabel" }, async (req, reply) => {
+    .delete("/labels/:id", { name: "deleteLabel" }, async (req, reply) => {
       const { id } = req.params;
       try {
         const label = await app.objection.models.label

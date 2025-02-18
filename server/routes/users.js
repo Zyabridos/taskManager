@@ -88,15 +88,24 @@ export default (app) => {
     .delete("/users/:id", { name: "deleteUser" }, async (req, reply) => {
       const { id } = req.params;
       try {
-        const user = await app.objection.models.user.query().findById(id);
+        const user = await app.objection.models.user
+          .query()
+          .findById(id)
+          .withGraphFetched("tasks");
         if (!user) {
           req.flash("error", i18next.t("flash.users.delete.notFound"));
           return reply.status(404).send("User not found");
+        }
+        if (user.tasks.length > 0) {
+          // deny delete of user if it is connected to a task
+          req.flash("error", i18next.t("flash.users.delete.hasTasks"));
+          return reply.redirect("/users");
         }
         await user.$query().delete();
         req.flash("info", i18next.t("flash.users.delete.success"));
         reply.redirect("/users");
       } catch (error) {
+        console.error("Error while deleting user:", error);
         req.flash("error", i18next.t("flash.users.delete.error"));
         return reply.status(500).send("Internal Server Error");
       }

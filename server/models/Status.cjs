@@ -1,4 +1,3 @@
-// TBD what kind of model it is ( O2M, M2M, M2O )
 const objectionUnique = require("objection-unique");
 const BaseModel = require("./BaseModel.cjs");
 
@@ -16,6 +15,19 @@ module.exports = class Status extends unique(BaseModel) {
       properties: {
         id: { type: "integer" },
         name: { type: "string", minLength: 1 },
+      },
+    };
+  }
+
+  static get relationMappings() {
+    return {
+      tasks: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: "Task.cjs",
+        join: {
+          from: "statuses.id",
+          to: "tasks.statusId",
+        },
       },
     };
   }

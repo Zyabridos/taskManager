@@ -89,6 +89,34 @@ describe("test statuses CRUD", () => {
     expect(deletedStatus).toBeUndefined();
   });
 
+  it("should NOT be deleted when it has a task", async () => {
+  const params = testData.statuses.existing.delete;
+  const statusToDelete = await models.status.query().findOne({ name: params.name });
+  expect(statusToDelete).toBeDefined();
+
+  const taskWithStatus = await models.task.query().insert({
+    name: "Test task with status",
+    description: "This task is linked to a status",
+    statusId: statusToDelete.id,
+    authorId: author.id,
+    executorId: executor.id,
+  });
+
+  expect(taskWithStatus).toBeDefined();
+
+  const response = await app.inject({
+    method: "DELETE",
+    url: `/statuses/${statusToDelete.id}`,
+    cookies: cookie,
+  });
+
+  expect(response.statusCode).not.toBe(302);
+
+  const deletedStatus = await models.status.query().findOne({ name: params.name });
+  expect(deletedStatus).toBeDefined();
+});
+
+
   it("update", async () => {
     const params = testData.statuses.existing.update;
     const statusToDelete = await models.status

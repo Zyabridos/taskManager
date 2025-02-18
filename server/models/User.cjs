@@ -31,6 +31,19 @@ module.exports = class User extends unique(BaseModel) {
     this.passwordDigest = encrypt(value);
   }
 
+  static get relationMappings() {
+    return {
+      tasks: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: "Task.cjs",
+        join: {
+          from: "users.id",
+          to: "tasks.author_id",
+        },
+      },
+    };
+  }
+
   // метод, проверяющий верность пароля
   verifyPassword(password) {
     return encrypt(password) === this.passwordDigest;

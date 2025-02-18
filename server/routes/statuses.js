@@ -80,14 +80,23 @@ export default (app) => {
     .delete("/statuses/:id", { name: "deleteStatus" }, async (req, reply) => {
       const { id } = req.params;
       try {
-        const status = await app.objection.models.status.query().findById(id);
+        const status = await app.objection.models.status
+          .query()
+          .findById(id)
+          .withGraphFetched("tasks");
+
         if (!status) {
           req.flash("error", i18next.t("flash.statuses.delete.notFound"));
           return reply.status(404).send("Status not found");
         }
+        if (status.tasks.length > 0) {
+          // deny delete of status if it is connected to a task
+          req.flash("error", i18next.t("flash.labels.delete.hasTasks"));
+          return reply.redirect("/labels");
+        }
         await status.$query().delete();
         req.flash("info", i18next.t("flash.statuses.delete.success"));
-        reply.redirect("/statuses");
+        return reply.redirect("/statuses");
       } catch (error) {
         req.flash("error", i18next.t("flash.statuses.delete.error"));
         return reply.status(500).send("Internal Server Error");

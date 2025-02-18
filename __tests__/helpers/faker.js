@@ -99,6 +99,8 @@ export const generateTasks = (users, statuses) => {
     executorId: users[1]?.id || 1,
   }));
 
+  console.log("Tasks:", tasks[0]);
+
   return {
     new: {
       ...generateData("task", 1)[0],
