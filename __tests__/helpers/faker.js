@@ -39,7 +39,7 @@ export const generateUsers = () => {
     passwordDigest: encrypt(user.password),
   }));
 
-  // пусть пока так будет...
+  // let it be...
   seeds.push({
     ..._.omit(fixedUser, "password"),
     passwordDigest: encrypt(fixedUser.password),
@@ -60,6 +60,7 @@ export const generateUsers = () => {
 export const generateStatuses = () => {
   const newStatus = generateData("status", 1);
   const statuses = generateData("status", 2);
+  console.log("Generated statuses in faker.js:", statuses);
   return {
     new: newStatus[0],
     existing: {

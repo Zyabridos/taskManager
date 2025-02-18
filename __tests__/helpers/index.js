@@ -7,12 +7,14 @@ import {
 
 // TODO: использовать для фикстур https://github.com/viglucci/simple-knex-fixtures
 
-export const getTestData = () => ({
-  users: generateUsers(),
-  statuses: generateStatuses(),
-  labels: generateLabels(),
-  tasks: generateTasks(users, statuses),
-});
+export const getTestData = () => {
+  const users = generateUsers();
+  const statuses = generateStatuses();
+  const labels = generateLabels();
+
+  const tasks = generateTasks(users.seeds, statuses.seeds);
+  return { users, statuses, labels, tasks };
+};
 
 export const prepareData = async (app) => {
   // TODO так как лейбел не обязательный,
@@ -38,12 +40,6 @@ export const prepareData = async (app) => {
   const tasksData = generateTasks(users, statuses);
   await knex("tasks").insert(tasksData.seeds);
 
-  console.log("all tasks data: ", tasksData);
-
-  if (!users[0]) {
-    throw new Error("generateUsers() failed to generate users.");
-  }
-
   return {
     users: usersData,
     statuses: statusesData,
@@ -53,13 +49,6 @@ export const prepareData = async (app) => {
 };
 
 export const makeLogin = async (app, userData) => {
-  console.log("userData: ", userData);
-  if (!userData || !userData.email || !userData.password) {
-    throw new Error("makeLogin() called with invalid user data");
-  }
-
-  console.log("Trying to login with:", userData.email);
-
   const user = await app.objection.models.user
     .query()
     .findOne({ email: userData.email });
@@ -75,12 +64,8 @@ export const makeLogin = async (app, userData) => {
     payload: { data: userData },
   });
 
-  console.log("Login response:", responseSignIn.payload);
-  console.log("Cookies:", responseSignIn.cookies);
-
-  if (!responseSignIn.cookies.length) {
-    throw new Error(`Login failed: No session cookie received.`);
-  }
+  // console.log("Login response:", responseSignIn.payload);
+  // console.log("Cookies:", responseSignIn.cookies);
 
   const [sessionCookie] = responseSignIn.cookies;
   const { name, value } = sessionCookie;

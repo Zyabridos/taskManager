@@ -8,10 +8,8 @@ describe("test users CRUD", () => {
   let app;
   let models;
   let knex;
-  const testData = getTestData();
+  const testData = getTestData(); // тестовые данные
 
-  // перед каждым тестом выполняем миграции
-  // и заполняем БД тестовыми данными
   beforeEach(async () => {
     app = fastify({
       exposeHeadRoutes: false,
@@ -20,8 +18,8 @@ describe("test users CRUD", () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-    await knex.migrate.latest();
-    await prepareData(app);
+    await knex.migrate.latest(); // принимаем последние миграции
+    await prepareData(app); // и заполняем БД тестовыми данными
   });
 
   it("index", async () => {
@@ -44,7 +42,6 @@ describe("test users CRUD", () => {
 
   it("create", async () => {
     const params = testData.users.new;
-    console.log("params for user creation: ", params);
     const response = await app.inject({
       method: "POST",
       // url: app.reverse('users'),
@@ -56,26 +53,23 @@ describe("test users CRUD", () => {
 
     expect(response.statusCode).toBe(302);
     const expected = {
-      ..._.omit(params, "password"),
-      passwordDigest: encrypt(params.password),
+      ..._.omit(params, "password"), // отбрасываем пароль так как он захэширован
+      passwordDigest: encrypt(params.password), // encrypt(params.password) — проверяем, что пароль действительно захеширован.
     };
     const user = await models.user.query().findOne({ email: params.email });
-    console.log("new user in create test: ", user);
     expect(user).toMatchObject(expected);
   });
 
   it("delete", async () => {
-    // const params = testData.users.existing.delete; - находит рандомного человека, которого нет в БД
     const params = testData.users.existing.fixed;
-    console.log("params for user deleting: ", params);
     const userToDelete = await models.user
       .query()
       .findOne({ email: params.email });
 
-    console.log("got a user:,", userToDelete);
 
-    const cookie = await makeLogin(app, testData.users.existing.fixed);
+    const cookie = await makeLogin(app, testData.users.existing.fixed); // логинимся
     const response = await app.inject({
+      // удаляем
       method: "DELETE",
       // url: app.reverse('deleteUser', { id: userToDelete.id }),
       url: `/users/${userToDelete.id}`,
@@ -85,41 +79,35 @@ describe("test users CRUD", () => {
       cookies: cookie,
     });
 
-    console.log("Response status:", response.statusCode);
     expect(response.statusCode).toBe(302);
     expect(
       await models.user.query().findOne({ email: params.email }),
     ).toBeUndefined();
   });
 
-  // // work under progress
-  // it('update', async () => {
-  //   const params = testData.users.existing.delete;
-  //   const user = await models.user.query().findOne({ email: params.email });
-  //   const newLastName = 'Golovach';
+  it("update", async () => {
+    const params = testData.users.existing.fixed;
+    const user = await models.user.query().findOne({ email: params.email });
+    const newLastName = "Golovach";
 
-  //   const cookie = await makeLogin(app, testData.users.existing.delete);
-  //   const response = await app.inject({
-  //     method: 'PATCH',
-  //     url: app.reverse('updateUser', { id: user.id }),
-  //     payload: {
-  //       data: {
-  //         ...params,
-  //         lastName: newLastName,
-  //       },
-  //     },
-  //     cookies: cookie,
-  //   });
+    const cookie = await makeLogin(app, testData.users.existing.fixed);
+    const response = await app.inject({
+      method: "PATCH",
+      url: `/users/${user.id}`,
+      // url: app.reverse('updateUser', { id: user.id }),
+      payload: {
+        data: {
+          ...params,
+          lastName: newLastName,
+        },
+      },
+      cookies: cookie,
+    });
 
-  //   expect(response.statusCode).toBe(302);
-  //   const updatedUser = await user.$query();
-  //   expect(updatedUser.lastName).toEqual(newLastName);
-  // });
-
-  // afterEach(async () => {
-  //   // после каждого теста откатываем миграции
-  //   await knex.migrate.rollback();
-  // });
+    expect(response.statusCode).toBe(302);
+    const updatedUser = await user.$query();
+    expect(updatedUser.lastName).toEqual(newLastName);
+  });
 
   afterAll(async () => {
     await app.close();
