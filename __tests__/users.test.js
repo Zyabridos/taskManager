@@ -66,7 +66,6 @@ describe("test users CRUD", () => {
       .query()
       .findOne({ email: params.email });
 
-
     const cookie = await makeLogin(app, testData.users.existing.fixed); // логинимся
     const response = await app.inject({
       // удаляем
@@ -111,5 +110,6 @@ describe("test users CRUD", () => {
 
   afterAll(async () => {
     await app.close();
+    await knex.destroy();
   });
 });

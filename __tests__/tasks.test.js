@@ -98,29 +98,28 @@ describe("test tasks CRUD", () => {
     expect(deletedTask).toBeUndefined();
   });
 
-  // work in progress
-  // it("update", async () => {
-  //   const params = testData.tasks.existing.update;
-  //   const task = await models.task.query().findOne({ name: params.name });
+  it("update", async () => {
+    const params = testData.tasks.existing.update;
+    const task = await models.task.query().findOne({ name: params.name });
 
-  //   const updatedTaskName = "updated";
-  //   const response = await app.inject({
-  //     method: "PATCH",
-  //     url: `/tasks/${task.id}`,
-  //     payload: {
-  //       data: {
-  //         ...params,
-  //         name: updatedTaskName,
-  //       },
-  //     },
-  //     cookies: cookie,
-  //   });
+    const updatedTaskName = "updated";
+    const response = await app.inject({
+      method: "PATCH",
+      url: `/tasks/${task.id}`,
+      payload: {
+        data: {
+          ...params,
+          name: updatedTaskName,
+        },
+      },
+      cookies: cookie,
+    });
 
-  //   expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(302);
 
-  //   const updatedTask = await models.task.query().findById(task.id);
-  //   expect(updatedTask.name).toEqual(updatedTaskName);
-  // });
+    const updatedTask = await models.task.query().findById(task.id);
+    expect(updatedTask.name).toEqual(updatedTaskName);
+  });
 
   afterEach(async () => {
     await knex("tasks").del();

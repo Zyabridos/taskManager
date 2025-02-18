@@ -60,7 +60,6 @@ export const generateUsers = () => {
 export const generateStatuses = () => {
   const newStatus = generateData("status", 1);
   const statuses = generateData("status", 2);
-  console.log("Generated statuses in faker.js:", statuses);
   return {
     new: newStatus[0],
     existing: {
@@ -92,13 +91,6 @@ export const generateLabels = () => {
 };
 
 export const generateTasks = (users, statuses) => {
-  if (!statuses.length) {
-    throw new Error("generateTasks: statuses is empty!");
-  }
-  if (!users.length) {
-    throw new Error("generateTasks: users is empty");
-  }
-
   const tasks = generateData("task", 2).map((task, index) => ({
     ...task,
     id: index,

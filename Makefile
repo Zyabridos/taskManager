@@ -35,5 +35,5 @@ a:
 p:
 	npx prettier --write .
 
-t:
-	npx jest __tests__/tasks.test.js
+u:
+	npx jest __tests__/users.test.js
