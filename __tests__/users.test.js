@@ -3,6 +3,7 @@ import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import encrypt from "../server/lib/secure.cjs";
 import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
+import { dlopen } from "process";
 
 describe("test users CRUD", () => {
   let app;
@@ -108,8 +109,39 @@ describe("test users CRUD", () => {
     expect(updatedUser.lastName).toEqual(newLastName);
   });
 
+  it("should NOT be deleted when it has a task", async () => {
+    const params = testData.users.existing.fixed;
+    const userToDelete = await models.user
+      .query()
+      .findOne({ email: params.email });
+
+    expect(userToDelete).toBeDefined();
+
+    console.log("user to delete:, ", userToDelete);
+
+    const taskWithUser = await models.task.query().insert({
+      name: "Test task with user",
+      description: "This task is linked to an user",
+      // NOTE:
+      // consider finding user in DB instead of hardcore
+      // statusId: statusToDelete.id,
+      statusId: 1,
+      authorId: userToDelete.id,
+      executorId: userToDelete.id,
+    });
+
+    expect(taskWithUser).toBeDefined();
+
+    const userNotSupposedToBeDeleted = await models.user
+      .query()
+      .findOne({ email: params.email });
+    expect(userNotSupposedToBeDeleted).toBeDefined();
+  });
+
   afterAll(async () => {
     await app.close();
     await knex.destroy();
   });
 });
+
+// npx jest __tests__/users.test.js

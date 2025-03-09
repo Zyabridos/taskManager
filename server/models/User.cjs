@@ -33,12 +33,20 @@ module.exports = class User extends unique(BaseModel) {
 
   static get relationMappings() {
     return {
-      tasks: {
+      tasksAuthored: {
         relation: BaseModel.HasManyRelation,
         modelClass: "Task.cjs",
         join: {
           from: "users.id",
-          to: "tasks.author_id",
+          to: "tasks.authorId",
+        },
+      },
+      tasksExecuted: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: "Task.cjs",
+        join: {
+          from: "users.id",
+          to: "tasks.executorId",
         },
       },
     };

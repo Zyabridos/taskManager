@@ -25,7 +25,6 @@ export default (app) => {
           reply.status(404).send("User not found");
           return;
         }
-        console.log("User data:", user); //
         reply.render("users/edit", { user, errors: {} });
       } catch ({ data }) {
         reply.render("users/edit", { errors: data });
@@ -37,7 +36,6 @@ export default (app) => {
 
     // POST /users - send data for user creation
     .post("/users", { name: "users" }, async (req, reply) => {
-      console.log("Handling POST /users request");
       const user = new app.objection.models.user();
 
       try {
@@ -47,10 +45,8 @@ export default (app) => {
         await app.objection.models.user.query().insert(validUser);
 
         const message = i18next.t("flash.users.create.success");
-        console.log("Flash message:", message);
         req.flash("info", message);
 
-        console.log("I am going to redirect after user has been created");
         // reply.redirect(app.reverse("root"));
         // reply.redirect('/');
         reply.status(302).redirect("/");
@@ -87,25 +83,30 @@ export default (app) => {
     // DELETE /users/:id - delete user
     .delete("/users/:id", { name: "deleteUser" }, async (req, reply) => {
       const { id } = req.params;
+
       try {
-        const user = await app.objection.models.user
-          .query()
-          .findById(id)
-          .withGraphFetched("tasks");
+        const user = await app.objection.models.user.query().findById(id);
         if (!user) {
           req.flash("error", i18next.t("flash.users.delete.notFound"));
           return reply.status(404).send("User not found");
         }
-        if (user.tasks.length > 0) {
-          // deny delete of user if it is connected to a task
+
+        // check ig user is an author or an executor of a task
+        const hasTasks = await app.objection.models.task
+          .query()
+          .where("authorId", id)
+          .orWhere("executorId", id)
+          .resultSize();
+
+        if (hasTasks > 0) {
           req.flash("error", i18next.t("flash.users.delete.hasTasks"));
           return reply.redirect("/users");
         }
+
         await user.$query().delete();
         req.flash("info", i18next.t("flash.users.delete.success"));
-        reply.redirect("/users");
+        return reply.redirect("/users");
       } catch (error) {
-        console.error("Error while deleting user:", error);
         req.flash("error", i18next.t("flash.users.delete.error"));
         return reply.status(500).send("Internal Server Error");
       }
