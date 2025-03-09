@@ -8,7 +8,6 @@ describe("test tasks CRUD", () => {
   let knex;
   let testData;
   let cookie;
-  console.log("test data: ", testData);
 
   beforeEach(async () => {
     app = fastify({
@@ -98,6 +97,7 @@ describe("test tasks CRUD", () => {
     expect(deletedTask).toBeUndefined();
   });
 
+  // work in progress
   it("update", async () => {
     const params = testData.tasks.existing.update;
     const task = await models.task.query().findOne({ name: params.name });

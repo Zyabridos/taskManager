@@ -48,7 +48,12 @@ export default (app) => {
         }
 
         const tasks = await query;
-        console.log(query);
+
+        // sent request as json if requiered in headers === for filtration tests
+        if (req.headers.accept === "application/json") {
+          return reply.send(tasks);
+        }
+
         reply.render("tasks/index", {
           tasks,
           statuses,
