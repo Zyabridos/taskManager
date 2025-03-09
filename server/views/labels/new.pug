@@ -1,9 +1,8 @@
 extends ../layouts/application.pug
-include ../mixins/labelForm.pug
-
-block header
-  h1= t('views.labels.new.title')
 
 block content
-  +labelForm("/labels", "post", labels, errors)
-  
+  h1.display-4.fw-bold.mt-4= t('views.labels.new.title')
+
+  +formFor()(action='/labels' method='post')
+    +floatingFormInput(label, 'name', errors, t('views.labels.new.name'))(type="text")
+    +submit(label)(value=t('views.labels.new.submit'))

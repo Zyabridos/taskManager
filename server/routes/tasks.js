@@ -12,12 +12,9 @@ export default (app) => {
         const executors = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
 
-        console.log(labels);
-
-        // Формируем запрос с `withGraphJoined`, но без `labels`
         const query = app.objection.models.task
           .query()
-          .withGraphJoined("[status, executor, author]") // Загружаем только основные связи
+          .withGraphJoined("[status, executor, author, labels]")
           .select(
             "tasks.*",
             "status.name as statusName",
@@ -25,45 +22,44 @@ export default (app) => {
             "executor.lastName as executorLastName",
             "author.firstName as authorFirstName",
             "author.lastName as authorLastName",
-            "labels.id as labelId",
-            "labels.name as labelName",
-          )
-          .leftJoin("task_labels", "task_labels.task_id", "tasks.id")
-          .leftJoin("labels", "task_labels.label_id", "labels.id"); // Добавляем метки отдельно
+          );
 
-        if (status && !Number.isNaN(status)) {
-          query.where("tasks.status_id", Number(status));
+        const statusId = Number(status);
+        if (statusId) {
+          query.where("tasks.status_id", statusId);
         }
 
-        if (executor && !Number.isNaN(executor)) {
-          query.where("tasks.executor_id", Number(executor));
+        const executorId = Number(executor);
+        if (executorId) {
+          query.where("tasks.executor_id", executorId);
         }
 
-        if (isCreatorUser !== undefined) {
+        if (isCreatorUser === "true") {
           query.where("tasks.author_id", req.session.userId);
         }
 
-        if (onlyExecutorTasks !== undefined) {
+        if (onlyExecutorTasks === "true") {
           query.where("tasks.executor_id", req.session.userId);
         }
 
-        if (label && !Number.isNaN(label)) {
-          query.where("labels.id", Number(label));
+        const labelId = Number(label);
+        if (labelId) {
+          query.where("labels.id", labelId);
         }
 
-        // Получаем отфильтрованные задачи
         const tasks = await query;
-
+        console.log(query);
         reply.render("tasks/index", {
           tasks,
           statuses,
           executors,
           labels,
+          query: req.query || {},
           selectedStatus: status || "",
           selectedExecutor: executor || "",
           selectedLabel: label || "",
-          isCreatorUser: Boolean(isCreatorUser),
-          onlyExecutorTasks: Boolean(onlyExecutorTasks),
+          isCreatorUser: isCreatorUser === "true",
+          onlyExecutorTasks: onlyExecutorTasks === "true",
         });
 
         console.log("Filtered tasks: ", tasks);
@@ -77,12 +73,26 @@ export default (app) => {
 
     // GET /tasks/new - page for creating new task
     .get("/tasks/new", { name: "newTask" }, async (req, reply) => {
-      const task = new app.objection.models.task();
-      const statuses = await app.objection.models.status.query();
-      const executors = (await app.objection.models.user.query()) || [];
-      const labels = (await app.objection.models.label.query()) || [];
-      reply.render("tasks/new", { task, statuses, executors, labels });
-      return reply;
+      try {
+        const task = new app.objection.models.task();
+        const statuses = await app.objection.models.status.query();
+        const users = await app.objection.models.user.query();
+        const labels = await app.objection.models.label.query();
+
+        reply.render("tasks/new", {
+          task,
+          statuses: statuses || [],
+          users: users || [],
+          labels: labels || [],
+          errors: {},
+        });
+
+        return reply;
+      } catch (error) {
+        console.error("Error fetching data for new task:", error);
+        req.flash("error", i18next.t("flash.tasks.create.error"));
+        return reply.status(500).send("Internal Server Error");
+      }
     })
 
     // GET /tasks/:id - view particular task
@@ -101,7 +111,6 @@ export default (app) => {
       },
     )
 
-    // GET /tasks/:id/edit - page for editing a task
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
       const { id } = req.params;
 
@@ -113,31 +122,26 @@ export default (app) => {
 
         if (!task) {
           req.flash("error", i18next.t("flash.tasks.edit.notFound"));
-          return reply.status(404).send("Task not found"); // Note return, чтобы исключить двойной вызов
+          return reply.status(404).send("Task not found");
         }
 
         const statuses = await app.objection.models.status.query();
-        const executors = await app.objection.models.user.query();
+        const users = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
-
-        console.log("Task:", task);
-        console.log("Statuses:", statuses);
-        console.log("Executors:", executors);
-        console.log("Labels:", labels);
 
         reply.render("tasks/edit", {
           task,
-          statuses,
-          executors,
-          labels,
+          statuses: statuses || [],
+          users: users || [],
+          labels: labels || [],
           errors: {},
         });
 
-        return reply; // ВАЖНО: return reply, чтобы исключить двойной вызов
+        return reply;
       } catch (error) {
         console.error("Error fetching task:", error);
         req.flash("error", i18next.t("flash.tasks.edit.error"));
-        return reply.status(500).send("Internal Server Error"); // ВАЖНО: return reply
+        return reply.status(500).send("Internal Server Error");
       }
     })
 

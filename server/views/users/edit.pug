@@ -1,11 +1,10 @@
 extends ../layouts/application.pug
-include ../mixins/userForm.pug
 
-block content
+block header
   h1= t('views.users.edit.title')
 
-  if user
-    +userForm(`/users/${user.id}`, "patch", user, errors)
-      input(type="hidden" name="_method" value="PATCH")
-  else
-    p.text-danger= t('flash.users.edit.notFound')
+block content
+  +formFor()(action=`/users/${user.id}` method='post')
+    +floatingFormInput(user, 'name', errors, t('views.users.edit.name'))(type="text")
+    input(name="_method" type="hidden" value="patch")
+    +submit(user)(value=t('views.users.edit.submit'))

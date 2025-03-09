@@ -1,9 +1,15 @@
 extends ../layouts/application.pug
-include ../mixins/taskForm.pug
 
 block header
   h1= t('views.tasks.new.title')
 
 block content
-  +taskForm("/tasks", "post", tasks, errors)
-  
+  +formFor()(action=('/tasks') method='post')
+    +floatingFormInput(task, 'name', errors, t('views.tasks.name'))(type="text")
+    .mb-3
+      label(for='data_description')= t('views.tasks.description')
+      textarea.form-control(id='data_description' name='data[description]' rows='3')
+    +select(task, 'statusId', errors, statuses, t('views.tasks.status'))
+    +select(task, 'executorId', errors, users, t('views.tasks.executor'))
+    +select(task, 'labels', errors, labels, t('views.tasks.labels'), true)
+    +submit(task)(value=t('views.tasks.new.submit'))

@@ -74,24 +74,29 @@ export default {
         new: {
           signIn: "Вход",
           submit: "Войти",
+          email: "Email",
+          password: "Пароль",
         },
       },
       users: {
+        title: "Пользователи",
         id: "ID",
+        fullName: "Полное имя",
         email: "Email",
         createdAt: "Дата создания",
         actions: "Действия",
         editBtn: "Изменить",
         delete: "Удалить",
+        firstName: "Имя",
+        lastName: "Фамилия",
+        password: "Пароль",
         new: {
+          header: "Регистрация",
           submit: "Сохранить",
           signUp: "Регистрация",
         },
         edit: {
           title: "Редактировать пользователя",
-          firstName: "Имя",
-          lastName: "Фамилия",
-          email: "Email",
           submit: "Сохранить изменения",
         },
       },
@@ -118,7 +123,7 @@ export default {
       },
       tasks: {
         title: "Задачи",
-        createStatusBtn: "Создать задачу",
+        createTaskBtn: "Создать задачу",
         id: "ID",
         name: "Наименование",
         status: "Статус",
@@ -128,13 +133,14 @@ export default {
         actions: "Действия",
         editBtn: "Изменить",
         delete: "Удалить",
+        label: "Метка",
         labels: "Метки",
         description: "Описание",
         filter: "Показать",
         tasksForm: {
           name: "Наименование",
         },
-        onlyMyTasks: "Только мои задачи",
+        isUserCreator: "Только мои задачи",
         noExecutors:
           "Список пользователей пуст, поэтому некому исполнить эту задачу :)",
         new: {

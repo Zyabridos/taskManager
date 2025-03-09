@@ -1,96 +1,51 @@
 extends ../layouts/application.pug
 
 block header
-  //- Заголовок страницы
   h1.display-4.fw-bold.mt-4= t('views.tasks.title')
-  //- Кнопка "Создать задачу"
-  a.btn.btn-primary(href="/tasks/new")= t('views.tasks.createStatusBtn')
+  a.btn.btn-primary(href="/tasks/new")= t('views.tasks.createTaskBtn')
 
 block content
-  //- Форма для фильтрации задач
-  .card-shadow
+  .card.shadow-sm
     .card-body.p-4
-      form(action="/tasks" method="get" id="taskFilterForm")
+      form(action='/tasks' method='get')
         .row
           .col-12.col-md
-            .input-group.mb-3
-              label.input-group-text(for="data_status")= t('views.tasks.status')
-              select.form-select(id="data_status" name="status")
-                each status in statuses
-                  option(value=status.id selected=(String(status.id) === String(selectedStatus) ? true : false))= status.name
+            +filterSelect('status', statuses, t('views.tasks.status'), query)
+          .col-12.col-md
+            +filterSelect('executor', users, t('views.tasks.executor'), query)
+          .col-12.col-md
+            +filterSelect('label', labels, t('views.tasks.label'), query)
+        +checkBox('isUserCreator', t('views.tasks.isUserCreator'), query)
+        input.btn.btn-primary(type='submit' value= t('views.tasks.filter'))
+            
           
-          .col-12.col-md
-            .input-group.mb-3
-              label.input-group-text(for="data_executor")= t('views.tasks.executor')
-              select.form-select(id="data_executor" name="executor")
-                each executor in executors
-                  option(value=executor.id selected=(String(executor.id) === String(selectedExecutor) ? true : false))= executor.firstName + ' ' + executor.lastName
-
-          .col-12.col-md
-            .input-group.mb-3
-              label.input-group-text(for="data_label")= t('views.tasks.label')
-              select.form-select(id="data_label" name="label")
-                each label in labels
-                  option(value=label.id selected=(String(label.id) === String(selectedLabel) ? true : false))= label.name
-
-          //- Показать только мои задачи
-          .col-12.col-md
-            .mb-3.form-check
-              input.form-check-input(type="checkbox" id="data_isCreatorUser" name="isCreatorUser" checked=isCreatorUser ? true : false)
-              label.form-check-label(for="data_isCreatorUser")= t('views.tasks.onlyMyTasks')
-
-        //- Кнопка отправки формы
-        .row
-          .col-12
-            button.btn.btn-primary(type="submit")= t('views.tasks.filter')
-
-  //- Таблица задач
-  table.table.table-striped
-    thead
-      tr
-        th= t('views.tasks.id')
-        th= t('views.tasks.name')
-        th= t('views.tasks.status')
-        th= t('views.tasks.author')
-        th= t('views.tasks.executor')
-        th= t('views.tasks.createdAt')
-        th= t('views.tasks.actions')
-    tbody
-      each task in tasks
+          
+  .table-responsive
+    table.table.table-borderless.table-striped.mt-5
+      thead
         tr
-          td= task.id
-          td
-            a(href=`/tasks/${task.id}`)= task.name
-          td= task.status ? task.status.name : '-' 
-          td= task.author ? (task.author.firstName + ' ' + task.author.lastName) : '-' 
-          td= task.executor ? (task.executor.firstName + ' ' + task.executor.lastName) : '-' 
-          td= formatDate(task.createdAt)
-          td
-            .d-flex.flex-wrap
-              a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= t('views.tasks.editBtn')
-              form(action=`/tasks/${task.id}` method='post')
-                input(type="hidden" name="_method" value="delete")
-                input.btn.btn-danger(type="submit" value=t('views.tasks.delete'))
-
-  script.
-    document.addEventListener('DOMContentLoaded', function () {
-      const isCreatorUserCheckbox = document.getElementById('data_isCreatorUser');
-      const executorSelect = document.getElementById('data_executor');
-
-      if (isCreatorUserCheckbox && executorSelect) {
-        isCreatorUserCheckbox.addEventListener('change', function () {
-          if (this.checked) {
-            executorSelect.value = "";
-            executorSelect.setAttribute("disabled", "true"); 
-          } else {
-            executorSelect.removeAttribute("disabled");
-          }
-        });
-
-        // если чекбокс уже активен, заблокировать селект
-        if (isCreatorUserCheckbox.checked) {
-          executorSelect.value = "";
-          executorSelect.setAttribute("disabled", "true");
-        }
-      }
-    });
+          th= t('views.tasks.id')
+          th= t('views.tasks.name')
+          th= t('views.tasks.status')
+          th= t('views.tasks.author')
+          th= t('views.tasks.executor')
+          th= t('views.tasks.createdAt')
+      tbody
+        each task in tasks
+          tr
+            td= task.id
+            td
+              a(href=`/tasks/${task.id}`)= task.name
+            td= task.status.name
+            td= `${task.author.firstName} ${task.author.lastName}`
+            if task.executor
+              td= `${task.executor.firstName} ${task.executor.lastName}`
+            else
+              td
+            td= formatDate(task.createdAt)
+            td
+              div.d-flex
+                a.btn.btn-primary.me-1(href=`/tasks/${task.id}/edit`)= t('views.tasks.editBtn')
+                form(action=`/tasks/${task.id}`, method='post')
+                  input(name='_method', type='hidden', value='delete')
+                  input(class='btn btn-danger' type='submit' value=t('views.tasks.delete'))

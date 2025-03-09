@@ -25,7 +25,7 @@ export default (app) => {
           reply.status(404).send("Status not found");
           return;
         }
-        console.log("Status data:", status); // Логирование данных
+        console.log("Status data:", status);
         reply.render("statuses/edit", { status, errors: {} });
       } catch ({ data }) {
         reply.render("statuses/edit", { errors: data });

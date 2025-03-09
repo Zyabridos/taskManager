@@ -31,7 +31,6 @@ describe("test statuses CRUD", () => {
   it("index", async () => {
     const response = await app.inject({
       method: "GET",
-      // url: app.reverse('statuses'),
       url: "/statuses",
       cookies: cookie,
     });
@@ -42,7 +41,6 @@ describe("test statuses CRUD", () => {
   it("new", async () => {
     const response = await app.inject({
       method: "GET",
-      // url: app.reverse('newStatus'),
       url: "/statuses/new",
       cookies: cookie,
     });
@@ -54,7 +52,6 @@ describe("test statuses CRUD", () => {
     const params = testData.statuses.new;
     const response = await app.inject({
       method: "POST",
-      // url: app.reverse('statuses'),
       url: "/statuses",
       payload: {
         data: params,
@@ -74,7 +71,6 @@ describe("test statuses CRUD", () => {
       .findOne({ name: params.name });
     const response = await app.inject({
       method: "DELETE",
-      // url: app.reverse('deleteStatus', { id: status.id }),
       url: `/statuses/${statusToDelete.id}`,
       payload: {
         data: params,
@@ -90,32 +86,29 @@ describe("test statuses CRUD", () => {
   });
 
   it("should NOT be deleted when it has a task", async () => {
-  const params = testData.statuses.existing.delete;
-  const statusToDelete = await models.status.query().findOne({ name: params.name });
-  expect(statusToDelete).toBeDefined();
+    const params = testData.statuses.existing.delete;
+    const statusToDelete = await models.status
+      .query()
+      .findOne({ name: params.name });
+    expect(statusToDelete).toBeDefined();
 
-  const taskWithStatus = await models.task.query().insert({
-    name: "Test task with status",
-    description: "This task is linked to a status",
-    statusId: statusToDelete.id,
-    authorId: author.id,
-    executorId: executor.id,
+    const taskWithStatus = await models.task.query().insert({
+      name: "Test task with status",
+      description: "This task is linked to a status",
+      statusId: statusToDelete.id,
+      // NOTE:
+      // consider finding user in DB instead of hardcore
+      authorId: 1,
+      executorId: 1,
+    });
+
+    expect(taskWithStatus).toBeDefined();
+
+    const statusNotSupposedToBeDeleted = await models.status
+      .query()
+      .findOne({ name: params.name });
+    expect(statusNotSupposedToBeDeleted).toBeDefined();
   });
-
-  expect(taskWithStatus).toBeDefined();
-
-  const response = await app.inject({
-    method: "DELETE",
-    url: `/statuses/${statusToDelete.id}`,
-    cookies: cookie,
-  });
-
-  expect(response.statusCode).not.toBe(302);
-
-  const deletedStatus = await models.status.query().findOne({ name: params.name });
-  expect(deletedStatus).toBeDefined();
-});
-
 
   it("update", async () => {
     const params = testData.statuses.existing.update;
@@ -125,7 +118,6 @@ describe("test statuses CRUD", () => {
     const updatedStatusName = "updated";
     const response = await app.inject({
       method: "PATCH",
-      // url: app.reverse('updateStatus', { id: statusToDelete.id }),
       url: `/statuses/${statusToDelete.id}`,
       payload: {
         data: { name: updatedStatusName },

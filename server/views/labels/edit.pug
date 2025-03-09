@@ -1,12 +1,10 @@
 extends ../layouts/application.pug
-include ../mixins/labelForm.pug
 
 block header
   h1= t('views.labels.edit.title')
 
 block content
-  if label
-    +labelForm(`/labels/${label.id}`, "patch", t('views.labels.edit.submit'), label, errors)
-      input(type="hidden" name="_method" value="PATCH")
-  else
-    p.text-danger= t('flash.labels.edit.notFound')
+  +formFor()(action=`/labels/${label.id}` method='post')
+    +floatingFormInput(label, 'name', errors, t('views.labels.edit.name'))(type="text")
+    input(name="_method" type="hidden" value="patch")
+    +submit(label)(value=t('views.labels.edit.submit'))

@@ -7,10 +7,10 @@ body {
 body {
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Если нужно скрыть прокрутку, можно добавить */
+  overflow: hidden;
 }
 
 main {
-  flex-grow: 1; /* Это позволит содержимому "занимать" доступное пространство */
-  overflow-y: auto; /* Если нужно, чтобы внутренний контент прокручивался */
+  flex-grow: 1;
+  overflow-y: auto;
 }
