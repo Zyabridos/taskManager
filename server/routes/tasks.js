@@ -5,7 +5,8 @@ export default (app) => {
   app
     // GET /tasks - list of all tasks
     .get("/tasks", { name: "tasks" }, async (req, reply) => {
-      const { status, executor, isCreatorUser, onlyExecutorTasks, label } = req.query;
+      const { status, executor, isCreatorUser, onlyExecutorTasks, label } =
+        req.query;
 
       try {
         const { statuses, executors, labels } = await prepareTaskViewData(app);
@@ -24,8 +25,10 @@ export default (app) => {
 
         if (status) query.where("tasks.status_id", Number(status));
         if (executor) query.where("tasks.executor_id", Number(executor));
-        if (isCreatorUser === "true") query.where("tasks.author_id", req.session.userId);
-        if (onlyExecutorTasks === "true") query.where("tasks.executor_id", req.session.userId);
+        if (isCreatorUser === "true")
+          query.where("tasks.author_id", req.session.userId);
+        if (onlyExecutorTasks === "true")
+          query.where("tasks.executor_id", req.session.userId);
         if (label) query.where("labels.id", Number(label));
 
         const tasks = await query;
@@ -59,7 +62,13 @@ export default (app) => {
         const task = new app.objection.models.task();
         const { statuses, executors, labels } = await prepareTaskViewData(app);
 
-        reply.render("tasks/new", { task, statuses, executors, labels, errors: {} });
+        reply.render("tasks/new", {
+          task,
+          statuses,
+          executors,
+          labels,
+          errors: {},
+        });
       } catch (error) {
         console.error("Error fetching data for new task:", error);
         req.flash("error", i18next.t("flash.tasks.create.error"));
@@ -82,7 +91,13 @@ export default (app) => {
         }
 
         const { statuses, executors, labels } = await prepareTaskViewData(app);
-        reply.render("tasks/edit", { task, statuses, executors, labels, errors: {} });
+        reply.render("tasks/edit", {
+          task,
+          statuses,
+          executors,
+          labels,
+          errors: {},
+        });
       } catch (error) {
         console.error("Error fetching task:", error);
         req.flash("error", i18next.t("flash.tasks.edit.error"));
@@ -108,9 +123,14 @@ export default (app) => {
       };
 
       try {
-        const newTask = await app.objection.models.task.query().insert(taskData);
+        const newTask = await app.objection.models.task
+          .query()
+          .insert(taskData);
         if (labelIds.length > 0) {
-          await app.objection.models.task.relatedQuery("labels").for(newTask.id).relate(labelIds);
+          await app.objection.models.task
+            .relatedQuery("labels")
+            .for(newTask.id)
+            .relate(labelIds);
         }
 
         req.flash("info", i18next.t("flash.tasks.create.success"));
@@ -120,19 +140,25 @@ export default (app) => {
         req.flash("error", i18next.t("flash.tasks.create.error"));
         const { statuses, executors, labels } = await prepareTaskViewData(app);
 
-        reply.render("tasks/new", { task: taskData, statuses, executors, labels, errors: error.data || {} });
+        reply.render("tasks/new", {
+          task: taskData,
+          statuses,
+          executors,
+          labels,
+          errors: error.data || {},
+        });
       }
       return reply;
     })
 
     // PATCH /tasks/:id - edit a task
     .patch("/tasks/:id", { name: "updateTask" }, async (req, reply) => {
-      try {
-        const { id } = req.params;
-        const updatedData = req.body.data;
-        updatedData.statusId = Number(updatedData.statusId);
-        updatedData.executorId = Number(updatedData.executorId);
+      const { id } = req.params;
+      const updatedData = req.body.data;
+      updatedData.statusId = Number(updatedData.statusId);
+      updatedData.executorId = Number(updatedData.executorId);
 
+      try {
         const task = await app.objection.models.task.query().findById(id);
         if (!task) {
           req.flash("error", i18next.t("flash.tasks.edit.notFound"));
@@ -141,13 +167,20 @@ export default (app) => {
 
         await task.$query().patch(updatedData);
         req.flash("info", i18next.t("flash.tasks.edit.success"));
-        reply.redirect(`/tasks`);
+        return reply.redirect(`/tasks`);
       } catch (error) {
         console.error("Error updating task:", error);
         req.flash("error", i18next.t("flash.tasks.edit.error"));
+
         const { statuses, executors, labels } = await prepareTaskViewData(app);
 
-        reply.render("tasks/edit", { task: { id, ...updatedData }, statuses, executors, labels, errors: error.data || {} });
+        return reply.render("tasks/edit", {
+          task: { id, ...updatedData },
+          statuses,
+          executors,
+          labels,
+          errors: error.data || {},
+        });
       }
     })
 

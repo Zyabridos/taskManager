@@ -40,7 +40,10 @@ export const generateUsers = () => {
     password: faker.internet.password(),
   };
 
-  const seeds = [...users.map(generateUserWithPassword), generateUserWithPassword(fixedUser)];
+  const seeds = [
+    ...users.map(generateUserWithPassword),
+    generateUserWithPassword(fixedUser),
+  ];
 
   return {
     new: newUser,
@@ -53,7 +56,6 @@ export const generateUsers = () => {
     seeds,
   };
 };
-
 
 export const generateStatuses = () => {
   const newStatus = generateData("status", 1);

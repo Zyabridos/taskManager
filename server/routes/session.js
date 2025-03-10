@@ -23,7 +23,7 @@ export default (app) => {
         }
         await req.logIn(user);
         req.session.userId = user.id;
-        req.flash('success', i18next.t('flash.session.create.success'));
+        req.flash("success", i18next.t("flash.session.create.success"));
         reply.redirect("/");
         return reply;
       }),
@@ -31,7 +31,7 @@ export default (app) => {
 
     .delete("/session", (req, reply) => {
       req.logOut();
-      req.flash('info', i18next.t('flash.session.delete.success'));
+      req.flash("info", i18next.t("flash.session.delete.success"));
       reply.redirect("/");
     });
 };
