@@ -11,11 +11,6 @@ const startServer = async () => {
     if (err) throw err;
   });
 
-  app.addHook("onRequest", (req, reply, done) => {
-    console.log(`Метод запроса: ${req.method}, URL: ${req.url}`);
-    done();
-  });
-
   app.listen(
     {
       port: PORT,

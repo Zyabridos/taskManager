@@ -84,6 +84,7 @@ export default (app) => {
 
       try {
         const user = await app.objection.models.user.query().findById(id);
+        req.flash('info', i18next.t('flash.users.delete.success'));
         if (!user) {
           req.flash("error", i18next.t("flash.users.delete.notFound"));
           return reply.status(404).send("User not found");

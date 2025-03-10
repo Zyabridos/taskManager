@@ -7,3 +7,10 @@ export const prepareTaskViewData = async (app) => {
 
   return { statuses, users, labels };
 };
+
+export const createBasicTable = (knex, tableName) => 
+  knex.schema.createTable(tableName, (table) => {
+    table.increments("id").primary();
+    table.string("name").notNullable();
+    table.timestamp("created_at").defaultTo(knex.fn.now());
+  });
