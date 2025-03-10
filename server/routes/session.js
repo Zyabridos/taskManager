@@ -23,7 +23,7 @@ export default (app) => {
         }
         await req.logIn(user);
         req.session.userId = user.id;
-        console.log("Session userId after login:", req.session.userId);
+        req.flash('success', i18next.t('flash.session.create.success'));
         reply.redirect("/");
         return reply;
       }),
