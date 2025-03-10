@@ -54,7 +54,15 @@ export const makeLogin = async (app, userData) => {
     payload: { data: userData },
   });
 
-  const [sessionCookie] = responseSignIn.cookies;
-  const { name, value } = sessionCookie;
-  return { [name]: value };
+  const setCookieHeader = responseSignIn.headers["set-cookie"];
+
+  const cookies = setCookieHeader.map((cookieString) => {
+    const [nameValue] = cookieString.split(";");
+    const [name, value] = nameValue.split("=");
+    return { [name]: value };
+  });
+
+  const sessionCookie = cookies.find((cookie) => Object.keys(cookie)[0] === "session");
+
+  return sessionCookie;
 };
