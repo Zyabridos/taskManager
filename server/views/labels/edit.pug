@@ -5,6 +5,6 @@ block header
 
 block content
   +formFor()(action=`/labels/${label.id}` method='post')
-    +floatingFormInput(label, 'name', errors, t('views.labels.edit.name'))(type="text")
+    +floatingFormInput(label, 'name', errors, t('views.labels.edit.label'))(type="text")
     input(name="_method" type="hidden" value="patch")
     +submit(label)(value=t('views.labels.edit.submit'))

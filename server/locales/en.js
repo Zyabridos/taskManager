@@ -2,6 +2,51 @@ export default {
   translation: {
     appName: "Task Manager",
     flash: {
+      labels: {
+        create: {
+          success: "Label successfully created",
+          error: "Failed to create label",
+        },
+        update: {
+          success: "Label successfully updated",
+          error: "Failed to update label",
+        },
+        delete: {
+          success: "Label successfully deleted",
+          error: "Failed to delete label",
+          hasTasks: "This label is attached to a task, so it cannot be deleted",
+        },
+      },
+      tasks: {
+        create: {
+          success: "Task successfully created",
+          error: "Failed to create task",
+        },
+        delete: {
+          success: "Task successfully deleted",
+          error: "Failed to delete task",
+          noAccess: "Only the author can delete this task",
+        },
+        update: {
+          success: "Task successfully updated",
+          error: "Failed to update task",
+        },
+      },
+      statuses: {
+        create: {
+          success: "Status successfully created",
+          error: "Failed to create status",
+        },
+        update: {
+          success: "Status successfully updated",
+          error: "Failed to update status",
+        },
+        delete: {
+          success: "Status successfully deleted",
+          error: "Failed to delete status",
+          hasTasks: "This status is attached to a task, so it cannot be deleted",
+        },
+      },
       session: {
         create: {
           success: "You are logged in",
@@ -17,44 +62,17 @@ export default {
           success: "User successfully registered",
         },
         delete: {
+          error: "Failed to delete user",
           success: "User successfully deleted",
-          error: "Error deleting user.",
-          notFound: "User not found.",
-          hasTasks: "Cannot delete user as they are assigned to a task",
+          noAccess: "You cannot edit or delete another user",
+          hasTasks: "This user has a task, so they cannot be deleted",
         },
-      },
-      statuses: {
-        create: {
-          error: "Failed to create status",
-          success: "Status successfully created",
+        update: {
+          error: "Failed to update user",
+          success: "User successfully updated",
         },
-        delete: {
-          success: "Status successfully deleted!",
-          error: "Error deleting status.",
-          notFound: "Status not found.",
-        },
-      },
-      tasks: {
-        create: {
-          error: "Failed to create task",
-          success: "Task successfully created",
-        },
-        delete: {
-          success: "Task successfully deleted!",
-          error: "Error deleting task.",
-          notFound: "Task not found.",
-        },
-      },
-      labels: {
-        create: {
-          error: "Failed to create label",
-          success: "Label successfully created",
-        },
-        delete: {
-          success: "Label successfully deleted!",
-          error: "Error deleting label.",
-          notFound: "Label not found.",
-          hasTasks: "Cannot delete label as it is used in tasks.",
+        edit: {
+          noAcess: "You cannot edit or delete another user",
         },
       },
       authError: "Access denied! Please sign in.",
@@ -68,8 +86,10 @@ export default {
         signIn: "Sign In",
         signUp: "Sign Up",
         signOut: "Sign Out",
-        language: "Change language",
+        language: "Change Language",
       },
+      english: "English",
+      russian: "Russian",
     },
     views: {
       session: {
@@ -93,7 +113,7 @@ export default {
         lastName: "Last Name",
         password: "Password",
         new: {
-          header: "Sign Up",
+          header: "Registration",
           submit: "Save",
           signUp: "Sign Up",
         },
@@ -121,7 +141,7 @@ export default {
         },
         edit: {
           title: "Edit Status",
-          submit: "Edit",
+          submit: "Update",
           label: "Enter status name",
         },
       },
@@ -145,15 +165,14 @@ export default {
           name: "Name",
         },
         isUserCreator: "Only my tasks",
-        noExecutors:
-          "The user list is empty, so there is no one to assign this task to :)",
+        noExecutors: "The user list is empty, so there's no one to assign this task to :)",
         new: {
           title: "Create Task",
           submit: "Create",
         },
         edit: {
           title: "Edit Task",
-          submit: "Edit",
+          submit: "Update",
         },
       },
       labels: {
@@ -168,16 +187,18 @@ export default {
         new: {
           title: "Create Label",
           submit: "Create",
+          label: "Enter label name",
         },
         edit: {
           title: "Edit Label",
-          submit: "Edit",
+          submit: "Update",
+          label: "Enter label name",
         },
       },
       welcome: {
         index: {
           hello: "Hello from Nina!",
-          description: "A hands-on project with Fastify",
+          description: "A practical project on Fastify",
           more: "Learn More",
         },
       },

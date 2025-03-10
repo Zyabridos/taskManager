@@ -21,7 +21,6 @@ In this project, all users have full access to all functionalities. This means t
 
 - Create, update, and delete **any** task, label, or status.
 - Edit and delete other users' tasks.
-- Manage all users, including creating and deleting them.
 
 This design makes it an open-access system where all data is shared among users.
 

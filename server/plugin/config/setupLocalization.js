@@ -4,7 +4,7 @@ import locales from "../../locales/index.js";
 import fastifyPlugin from "fastify-plugin";
 
 await i18next.use(middleware.LanguageDetector).init({
-  fallbackLng: "en",
+  fallbackLng: "ru",
   resources: locales,
   detection: {
     order: ["querystring", "cookie", "header"],
@@ -28,11 +28,6 @@ async function localizationPlugin(app) {
 
   app.get("/change-language/:lng", async (req, reply) => {
     const { lng } = req.params;
-
-    if (!i18next.hasResourceBundle(lng, "translation")) {
-      return reply.status(400).send({ error: "Language not supported" });
-    }
-
     req.i18n.changeLanguage(lng);
     reply.setCookie("i18next", lng, { path: "/", httpOnly: false });
     return reply.redirect(req.headers.referer || "/");
