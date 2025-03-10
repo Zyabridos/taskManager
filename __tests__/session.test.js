@@ -17,9 +17,9 @@ describe("test session", () => {
       logger: { target: "pino-pretty" },
     });
     await init(app);
-    knex = app.objection.knex; // инициализация knex`a
-    await knex.migrate.latest(); // не забываем обновить миграции
-    testData = await prepareData(app); // вставляем данные в БД
+    knex = app.objection.knex;
+    await knex.migrate.latest();
+    testData = await prepareData(app);
   });
 
   it("test makeLogin()", async () => {
@@ -44,7 +44,6 @@ describe("test session", () => {
 
     expect(response.statusCode).toBe(200);
 
-    // Логинимся с помощью makeLogin
     cookie = await makeLogin(app, {
       email: testData.users.existing.author.email,
       password: testData.users.existing.author.password,
@@ -65,5 +64,3 @@ describe("test session", () => {
     await app.close();
   });
 });
-
-// npx jest __tests__/session.test.js

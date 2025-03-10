@@ -91,16 +91,13 @@ describe("test labels CRUD", () => {
   });
 
   it("should NOT be deleted when it has a task", async () => {
-    // get a label to delete
     const params = testData.labels.existing.delete;
     const labelToDelete = await models.label
       .query()
       .findOne({ name: params.name });
 
-    // check that the label exists
     expect(labelToDelete).toBeDefined();
 
-    // TODO: move to fixtures
     const taskWithLabel = await models.task.query().insert({
       name: "Test Task with Label",
       description: "This task has a label",
@@ -109,7 +106,6 @@ describe("test labels CRUD", () => {
       executorId: 1,
     });
 
-    // Bond the task with the label
     await knex("task_labels").insert({
       task_id: taskWithLabel.id,
       label_id: labelToDelete.id,
@@ -118,7 +114,7 @@ describe("test labels CRUD", () => {
     const labelNotSupposedToBeDeleted = await models.label
       .query()
       .findOne({ name: params.name });
-    expect(labelNotSupposedToBeDeleted).toBeDefined(); // check that it is still in the database
+    expect(labelNotSupposedToBeDeleted).toBeDefined();
   });
 
   it("update", async () => {
@@ -129,7 +125,6 @@ describe("test labels CRUD", () => {
     const updatedLabelName = "updated";
     const response = await app.inject({
       method: "PATCH",
-      // url: app.reverse('updateLabel', { id: labelToDelete.id }),
       url: `/labels/${labelToDelete.id}`,
       payload: {
         data: { name: updatedLabelName },
@@ -148,9 +143,7 @@ describe("test labels CRUD", () => {
   });
 
   afterAll(async () => {
-    await knex.destroy(); // close knex connection
+    await knex.destroy();
     await app.close();
   });
 });
-
-// npx jest __tests__/labels.test.js

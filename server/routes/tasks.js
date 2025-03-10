@@ -49,7 +49,6 @@ export default (app) => {
 
         const tasks = await query;
 
-        // sent request as json if requiered in headers === for filtration tests
         if (req.headers.accept === "application/json") {
           return reply.send(tasks);
         }
@@ -157,7 +156,6 @@ export default (app) => {
       const { name, description, statusId, executorId, labels } = req.body.data;
       const { id: authorId } = req.user;
 
-      // Преобразуем метки в массив чисел
       const labelIds = Array.isArray(labels)
         ? labels.map(Number)
         : [Number(labels)].filter((id) => !Number.isNaN(id));
@@ -173,14 +171,12 @@ export default (app) => {
       console.log("taskData: ", taskData);
 
       try {
-        // Создаем задачу без labels
         const newTask = await app.objection.models.task
           .query()
           .insert(taskData);
 
         console.log("New Task Created:", newTask);
 
-        // Добавляем связи в таблицу task_labels
         if (labelIds.length > 0) {
           await app.objection.models.task
             .relatedQuery("labels")

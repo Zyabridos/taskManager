@@ -25,7 +25,7 @@ export default (app) => {
           reply.label(404).send("label not found");
           return;
         }
-        console.log("label data:", label); // Логирование данных
+        console.log("label data:", label);
         reply.render("labels/edit", { label, errors: {} });
       } catch ({ data }) {
         reply.render("labels/edit", { errors: data });

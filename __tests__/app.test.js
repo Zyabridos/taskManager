@@ -11,17 +11,15 @@ describe("requests", () => {
 
   beforeAll(async () => {
     app = fastify({
-      exposeHeadRoutes: false, // отключаем автоматическую регистрацию маршрутов HEAD
-      logger: { target: "pino-pretty" }, // просто логгер для красивого форматирования
+      exposeHeadRoutes: false,
+      logger: { target: "pino-pretty" },
     });
     await init(app);
   });
 
   it("GET 200", async () => {
-    // отправляем GET-запрос на корневой маршрут.
     const res = await app.inject({
       method: "GET",
-      // url: app.reverse('root'),
       url: "/",
     });
     expect(res.statusCode).toBe(200);
@@ -36,6 +34,6 @@ describe("requests", () => {
   });
 
   afterAll(async () => {
-    await app.close(); // закрываем экземпляр Fastify, чтобы освободить ресурсы.
+    await app.close();
   });
 });

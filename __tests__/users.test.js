@@ -11,7 +11,7 @@ describe("test users CRUD", () => {
   let app;
   let models;
   let knex;
-  const testData = getTestData(); // тестовые данные
+  const testData = getTestData();
 
   beforeEach(async () => {
     app = fastify({
@@ -21,8 +21,8 @@ describe("test users CRUD", () => {
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
-    await knex.migrate.latest(); // принимаем последние миграции
-    await prepareData(app); // и заполняем БД тестовыми данными
+    await knex.migrate.latest();
+    await prepareData(app);
   });
 
   it("index", async () => {
@@ -47,7 +47,6 @@ describe("test users CRUD", () => {
     const params = testData.users.new;
     const response = await app.inject({
       method: "POST",
-      // url: app.reverse('users'),
       url: "/users",
       payload: {
         data: params,
@@ -56,8 +55,8 @@ describe("test users CRUD", () => {
 
     expect(response.statusCode).toBe(302);
     const expected = {
-      ..._.omit(params, "password"), // отбрасываем пароль так как он захэширован
-      passwordDigest: encrypt(params.password), // encrypt(params.password) — проверяем, что пароль действительно захеширован.
+      ..._.omit(params, "password"),
+      passwordDigest: encrypt(params.password),
     };
     const user = await models.user.query().findOne({ email: params.email });
     expect(user).toMatchObject(expected);
@@ -69,11 +68,10 @@ describe("test users CRUD", () => {
       .query()
       .findOne({ email: params.email });
 
-    const cookie = await makeLogin(app, testData.users.existing.fixed); // логинимся
+    const cookie = await makeLogin(app, testData.users.existing.fixed);
     const response = await app.inject({
       // удаляем
       method: "DELETE",
-      // url: app.reverse('deleteUser', { id: userToDelete.id }),
       url: `/users/${userToDelete.id}`,
       payload: {
         data: params,
@@ -96,7 +94,6 @@ describe("test users CRUD", () => {
     const response = await app.inject({
       method: "PATCH",
       url: `/users/${user.id}`,
-      // url: app.reverse('updateUser', { id: user.id }),
       payload: {
         data: {
           ...params,
@@ -124,9 +121,6 @@ describe("test users CRUD", () => {
     const taskWithUser = await models.task.query().insert({
       name: "Test task with user",
       description: "This task is linked to an user",
-      // NOTE:
-      // consider finding user in DB instead of hardcore
-      // statusId: statusToDelete.id,
       statusId: 1,
       authorId: userToDelete.id,
       executorId: userToDelete.id,
@@ -145,5 +139,3 @@ describe("test users CRUD", () => {
     await knex.destroy();
   });
 });
-
-// npx jest __tests__/users.test.js

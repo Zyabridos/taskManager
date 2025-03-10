@@ -76,7 +76,6 @@ describe("test tasks CRUD", () => {
       cookies: cookie,
     });
 
-    // expect(response.statusCode).toBe(302);
     const task = await models.task.query().findOne({ name: params.name });
     expect(task).toMatchObject(params);
   });
@@ -100,7 +99,6 @@ describe("test tasks CRUD", () => {
     expect(deletedTask).toBeUndefined();
   });
 
-  // work in progress
   it("update", async () => {
     const params = testData.tasks.existing.update;
     const task = await models.task.query().findOne({ name: params.name });
@@ -133,5 +131,3 @@ describe("test tasks CRUD", () => {
     await app.close();
   });
 });
-
-// npx jest __tests__/tasks.test.js

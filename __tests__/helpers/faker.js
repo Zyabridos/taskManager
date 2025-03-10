@@ -27,7 +27,6 @@ export const generateData = (type, length = 3) =>
 export const generateUsers = () => {
   const newUser = generateData("user", 1);
   const users = generateData("user", 5);
-  // move to fixtures
   const fixedUser = {
     firstName: "Alice",
     lastName: "Ramsey",
@@ -39,7 +38,6 @@ export const generateUsers = () => {
     passwordDigest: encrypt(user.password),
   }));
 
-  // let it be...
   seeds.push({
     ..._.omit(fixedUser, "password"),
     passwordDigest: encrypt(fixedUser.password),

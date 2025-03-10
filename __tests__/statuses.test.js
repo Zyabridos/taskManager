@@ -99,8 +99,6 @@ describe("test statuses CRUD", () => {
       name: "Test task with status",
       description: "This task is linked to a status",
       statusId: statusToDelete.id,
-      // NOTE:
-      // consider finding user in DB instead of hardcore
       authorId: 1,
       executorId: 1,
     });
@@ -142,5 +140,3 @@ describe("test statuses CRUD", () => {
     await app.close();
   });
 });
-
-// npx jest __tests__/statuses.test.js
