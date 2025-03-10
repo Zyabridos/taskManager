@@ -3,6 +3,9 @@ import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import encrypt from "../server/lib/secure.cjs";
 import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.test" });
 
 describe("test users CRUD", () => {
   let app;

@@ -2,6 +2,9 @@ import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
 import { expect } from "@jest/globals";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.test" });
 
 describe("test tasks filtration by labels, status, and executor", () => {
   let app;

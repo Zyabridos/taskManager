@@ -2,6 +2,9 @@ import { describe, beforeAll, it, expect } from "@jest/globals";
 
 import fastify from "fastify";
 import init from "../server/plugin/index.js";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.test" });
 
 describe("requests", () => {
   let app;
