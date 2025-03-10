@@ -175,7 +175,7 @@ export default {
       },
     },
     errors: {
-      wrongEmailOrPassword: "Неправильный емейл или пароль",
+      wrongEmailOrPassword: "Неверный емейл или пароль",
     },
   },
 };

@@ -33,7 +33,6 @@ describe("test tasks CRUD", () => {
     await checkResponseCode(app, "GET", "/tasks/new", cookie);
   });
 
-
   it("should return a particular task", async () => {
     const params = testData.tasks.existing.update;
     const task = await models.task.query().findOne({ name: params.name });

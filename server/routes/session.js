@@ -4,34 +4,27 @@ export default (app) => {
   app
     .get("/session/new", { name: "newSession" }, (req, reply) => {
       const signInForm = {};
-      return reply.render("session/new", { signInForm });
+      reply.render("session/new", { signInForm });
     })
-
     .post(
       "/session",
       { name: "session" },
       app.fp.authenticate("form", async (req, reply, err, user) => {
         if (err) {
-          req.flash("error", i18next.t("flash.session.create.error"));
-          return reply.status(500).send({ error: "Internal Server Error" });
+          return app.httpErrors.internalServerError(err);
         }
-
         if (!user) {
           const signInForm = req.body.data;
           const errors = {
-            email: [{ message: i18next.t("error.wrongEmailOrPassword") }],
+            email: [{ message: i18next.t("errors.wrongEmailOrPassword") }],
           };
-          req.flash("error", i18next.t("flash.session.create.failure"));
-          return reply
-            .status(401)
-            .render("session/new", { signInForm, errors });
+          reply.render("session/new", { signInForm, errors });
+          return reply.status(401);
         }
-
         await req.logIn(user);
         req.session.userId = user.id;
-        req.flash("success", i18next.t("flash.session.create.success"));
-
-        return reply.redirect("/");
+        reply.redirect("/");
+        return reply;
       }),
     )
 
