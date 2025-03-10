@@ -1,8 +1,7 @@
-import fastify from "fastify";
-import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
 import dotenv from "dotenv";
 import request from "./helpers/request.js";
+import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -14,23 +13,10 @@ describe("test statuses CRUD", () => {
   let cookie;
 
   beforeEach(async () => {
-    app = fastify({
-      exposeHeadRoutes: false,
-      logger: { target: "pino-pretty" },
-    });
-
-    await init(app);
-    knex = app.objection.knex;
-    models = app.objection.models;
-
-    await knex.migrate.latest();
+    ({ app, knex, models } = await setUpTestsEnv());
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
-
-  async function findStatus(name) {
-    return models.status.query().findOne({ name });
-  }
 
   it("should return statuses list", async () => {
     const response = await request(app, "GET", "/statuses", cookie);
@@ -56,7 +42,12 @@ describe("test statuses CRUD", () => {
     const statusToDelete = await findStatus(params.name);
     expect(statusToDelete).toBeDefined();
 
-    const response = await request(app, "DELETE", `/statuses/${statusToDelete.id}`, cookie);
+    const response = await request(
+      app,
+      "DELETE",
+      `/statuses/${statusToDelete.id}`,
+      cookie,
+    );
     expect(response.statusCode).toBe(302);
 
     const deletedStatus = await findStatus(params.name);
@@ -78,7 +69,12 @@ describe("test statuses CRUD", () => {
 
     expect(taskWithStatus).toBeDefined();
 
-    const response = await request(app, "DELETE", `/statuses/${statusToDelete.id}`, cookie);
+    const response = await request(
+      app,
+      "DELETE",
+      `/statuses/${statusToDelete.id}`,
+      cookie,
+    );
     expect(response.statusCode).toBe(400);
 
     const stillExistingStatus = await findStatus(params.name);
@@ -91,7 +87,13 @@ describe("test statuses CRUD", () => {
     expect(statusToUpdate).toBeDefined();
 
     const updatedStatusName = "Updated Status";
-    const response = await request(app, "PATCH", `/statuses/${statusToUpdate.id}`, cookie, { name: updatedStatusName });
+    const response = await request(
+      app,
+      "PATCH",
+      `/statuses/${statusToUpdate.id}`,
+      cookie,
+      { name: updatedStatusName },
+    );
     expect(response.statusCode).toBe(302);
 
     const updatedStatus = await statusToUpdate.$query();

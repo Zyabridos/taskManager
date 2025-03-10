@@ -1,8 +1,7 @@
-import fastify from "fastify";
-import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
 import request from "./helpers/request.js";
 import dotenv from "dotenv";
+import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -14,16 +13,7 @@ describe("test tasks CRUD", () => {
   let cookie;
 
   beforeEach(async () => {
-    app = fastify({
-      exposeHeadRoutes: false,
-      logger: { target: "pino-pretty" },
-    });
-
-    await init(app);
-    knex = app.objection.knex;
-    models = app.objection.models;
-
-    await knex.migrate.latest();
+    ({ app, knex, models } = await setUpTestsEnv());
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
@@ -65,7 +55,12 @@ describe("test tasks CRUD", () => {
     const taskToDelete = await findTask(params.name);
     expect(taskToDelete).toBeDefined();
 
-    const response = await request(app, "DELETE", `/tasks/${taskToDelete.id}`, cookie);
+    const response = await request(
+      app,
+      "DELETE",
+      `/tasks/${taskToDelete.id}`,
+      cookie,
+    );
     expect(response.statusCode).toBe(302);
 
     const deletedTask = await findTask(params.name);
@@ -78,8 +73,9 @@ describe("test tasks CRUD", () => {
     expect(task).toBeDefined();
 
     const updatedTaskName = "Updated Task Name";
-    const response = await request(app, "PATCH", `/tasks/${task.id}`, cookie, { 
-      ...params, name: updatedTaskName 
+    const response = await request(app, "PATCH", `/tasks/${task.id}`, cookie, {
+      ...params,
+      name: updatedTaskName,
     });
 
     expect(response.statusCode).toBe(302);

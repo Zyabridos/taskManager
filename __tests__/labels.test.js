@@ -1,8 +1,7 @@
-import fastify from "fastify";
-import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
 import dotenv from "dotenv";
 import request from "./helpers/request.js";
+import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -14,16 +13,7 @@ describe("test labels CRUD", () => {
   let cookie;
 
   beforeEach(async () => {
-    app = fastify({
-      exposeHeadRoutes: false,
-      logger: { target: "pino-pretty" },
-    });
-
-    await init(app);
-    knex = app.objection.knex;
-    models = app.objection.models;
-
-    await knex.migrate.latest();
+    ({ app, knex, models } = await setUpTestsEnv());
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
@@ -56,7 +46,11 @@ describe("test labels CRUD", () => {
     const labelToDelete = await findLabel(params.name);
     expect(labelToDelete).toBeDefined();
 
-    const response = await request(app, "DELETE", `/labels/${labelToDelete.id}`);
+    const response = await request(
+      app,
+      "DELETE",
+      `/labels/${labelToDelete.id}`,
+    );
     expect(response.statusCode).toBe(302);
 
     const deletedLabel = await findLabel(params.name);
@@ -81,7 +75,11 @@ describe("test labels CRUD", () => {
       label_id: labelToDelete.id,
     });
 
-    const response = await request(app, "DELETE", `/labels/${labelToDelete.id}`);
+    const response = await request(
+      app,
+      "DELETE",
+      `/labels/${labelToDelete.id}`,
+    );
     expect(response.statusCode).toBe(400);
 
     const stillExistingLabel = await findLabel(params.name);

@@ -1,9 +1,8 @@
-import fastify from "fastify";
-import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
 import request from "./helpers/request.js";
 import { expect } from "@jest/globals";
 import dotenv from "dotenv";
+import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -22,18 +21,9 @@ describe("test tasks filtration by labels, status, and executor", () => {
   let taskWithDataFromDB;
 
   beforeEach(async () => {
-    app = fastify({
-      exposeHeadRoutes: false,
-      logger: { target: "pino-pretty" },
-    });
-
-    await init(app);
-    knex = app.objection.knex;
-    models = app.objection.models;
-
-    await knex.migrate.latest();
-
+    ({ app, knex, models } = await setUpTestsEnv());
     testData = await prepareData(app);
+    cookie = await makeLogin(app, testData.users.existing.author);
   });
 
   beforeEach(async () => {

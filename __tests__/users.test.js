@@ -5,6 +5,7 @@ import encrypt from "../server/lib/secure.cjs";
 import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
 import request from "./helpers/request.js";
 import dotenv from "dotenv";
+import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -15,16 +16,9 @@ describe("test users CRUD", () => {
   const testData = getTestData();
 
   beforeEach(async () => {
-    app = fastify({
-      exposeHeadRoutes: false,
-      logger: { target: "pino-pretty" },
-    });
-
-    await init(app);
-    knex = app.objection.knex;
-    models = app.objection.models;
-    await knex.migrate.latest();
-    await prepareData(app);
+    ({ app, knex, models } = await setUpTestsEnv());
+    testData = await prepareData(app);
+    cookie = await makeLogin(app, testData.users.existing.author);
   });
 
   async function findUser(email) {
@@ -60,7 +54,13 @@ describe("test users CRUD", () => {
     expect(userToDelete).toBeDefined();
 
     const cookie = await makeLogin(app, testData.users.existing.fixed);
-    const response = await request(app, "DELETE", `/users/${userToDelete.id}`, cookie, params);
+    const response = await request(
+      app,
+      "DELETE",
+      `/users/${userToDelete.id}`,
+      cookie,
+      params,
+    );
     expect(response.statusCode).toBe(302);
 
     const deletedUser = await findUser(params.email);
