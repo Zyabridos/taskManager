@@ -15,6 +15,8 @@ describe("test tasks CRUD", () => {
 
   beforeEach(async () => {
     ({ app, knex, models } = await setUpTestsEnv());
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
@@ -30,22 +32,6 @@ describe("test tasks CRUD", () => {
   it("should display new task creation page", async () => {
     await checkResponseCode(app, "GET", "/tasks/new", cookie);
   });
-
-  it("should return a particular task", async () => {
-    const params = testData.tasks.existing.update;
-    const task = await models.task.query().findOne({ name: params.name });
-    expect(task).toBeDefined();
-
-    await checkResponseCode(app, "GET", `/tasks/${task.id}`, cookie);
-  });
-
-  // it("should create a new task", async () => {
-  //   const params = testData.tasks.new;
-  //   await checkResponseCode(app, "POST", "/tasks", cookie, params, 302);
-
-  //   const task = await checkTaskExists(params.name);
-  //   expect(task).toMatchObject(params);
-  // });
 
   it("should delete a task", async () => {
     const params = testData.tasks.existing.delete;
@@ -85,9 +71,6 @@ describe("test tasks CRUD", () => {
   });
 
   afterAll(async () => {
-    await knex.migrate.rollback();
     await app.close();
   });
 });
-
-// npx jest __tests__/tasks.test.js

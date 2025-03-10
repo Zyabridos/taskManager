@@ -14,6 +14,8 @@ describe("test labels CRUD", () => {
 
   beforeEach(async () => {
     ({ app, knex, models } = await setUpTestsEnv());
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
@@ -100,7 +102,6 @@ describe("test labels CRUD", () => {
   });
 
   afterAll(async () => {
-    await knex.migrate.rollback();
     await app.close();
   });
 });

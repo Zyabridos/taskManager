@@ -16,6 +16,8 @@ describe("test users CRUD", () => {
 
   beforeEach(async () => {
     ({ app, knex, models } = await setUpTestsEnv());
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
@@ -109,5 +111,3 @@ describe("test users CRUD", () => {
     await knex.destroy();
   });
 });
-
-// npx jest __tests__/users.test.js
