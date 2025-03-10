@@ -1,29 +1,39 @@
-import { generateLocaleRuFlashMessages } from "../utils.js";
+import { generateLocaleFlashMessages } from "../utils.js";
 
 export default {
   translation: {
     appName: "Менеджер задач",
     flash: {
       labels: {
-        ...generateLocaleRuFlashMessages("Метка"),
+        ...generateLocaleFlashMessages("Метка", "ru"),
         delete: {
-          ...generateLocaleRuFlashMessages("Метка").delete,
+          ...generateLocaleFlashMessages("Метка", "ru").delete,
           hasTasks: "Эта метка прикреплена к задаче, поэтому её нельзя удалить",
         },
       },
       tasks: {
-        ...generateLocaleRuFlashMessages("Задача"),
+        ...generateLocaleFlashMessages("Задача", "ru"),
         delete: {
-          ...generateLocaleRuFlashMessages("Задача").delete,
+          ...generateLocaleFlashMessages("Задача", "ru").delete,
           noAccess: "Задачу может удалить только ее автор",
         },
       },
       statuses: {
-        ...generateLocaleRuFlashMessages("Статус"),
+        ...generateLocaleFlashMessages("Статус", "ru"),
         delete: {
-          ...generateLocaleRuFlashMessages("Статус").delete,
+          ...generateLocaleFlashMessages("Статус", "ru").delete,
           hasTasks:
-            "Этот статус прикреплен к задаче, поэтому его нельзя удалить",
+            "Этот статус прикреплён к задаче, поэтому его нельзя удалить",
+        },
+      },
+      users: {
+        ...generateLocaleFlashMessages("Пользователь", "ru"),
+        delete: {
+          ...generateLocaleFlashMessages("Пользователь", "ru").delete,
+          noAccess:
+            "Вы не можете редактировать или удалять другого пользователя",
+          hasTasks:
+            "У этого пользователя есть задача, поэтому его нельзя удалить",
         },
       },
       session: {
@@ -33,21 +43,6 @@ export default {
         },
         delete: {
           success: "Вы разлогинены",
-        },
-      },
-      users: {
-        ...generateLocaleRuFlashMessages("Пользователь"),
-        delete: {
-          ...generateLocaleRuFlashMessages("Пользователь").delete,
-          noAccess:
-            "Вы не можете редактировать или удалять другого пользователя",
-          hasTasks:
-            "У этого пользователя есть задача, поэтому его нельзя удалить",
-        },
-        edit: {
-          noAcess:
-            "Вы не можете редактировать или удалять другого пользователя",
-          success: "Пользователь успешно изменён",
         },
       },
       authError: "Доступ запрещён! Пожалуйста, авторизируйтесь.",

@@ -1,28 +1,36 @@
-import { generateLocaleEnFlashMessages } from "../utils.js";
+import { generateLocaleFlashMessages } from "../utils.js";
 
 export default {
   translation: {
     appName: "Task Manager",
     flash: {
       labels: {
-        ...generateLocaleEnFlashMessages("Label"),
+        ...generateLocaleFlashMessages("Label", "en"),
         delete: {
-          ...generateLocaleEnFlashMessages("Label").delete,
+          ...generateLocaleFlashMessages("Label", "en").delete,
           hasTasks: "This label is attached to a task, so it cannot be deleted",
         },
       },
       tasks: {
-        ...generateLocaleEnFlashMessages("Task"),
+        ...generateLocaleFlashMessages("Task", "en"),
         delete: {
-          ...generateLocaleEnFlashMessages("Task").delete,
+          ...generateLocaleFlashMessages("Task", "en").delete,
           noAccess: "Only the author can delete this task",
         },
       },
       statuses: {
-        ...generateLocaleEnFlashMessages("Status"),
+        ...generateLocaleFlashMessages("Status", "en"),
         delete: {
-          ...generateLocaleEnFlashMessages("Status").delete,
+          ...generateLocaleFlashMessages("Status", "en").delete,
           hasTasks: "This status is attached to a task, so it cannot be deleted",
+        },
+      },
+      users: {
+        ...generateLocaleFlashMessages("User", "en"),
+        delete: {
+          ...generateLocaleFlashMessages("User", "en").delete,
+          noAccess: "You cannot edit or delete another user",
+          hasTasks: "This user has a task, so they cannot be deleted",
         },
       },
       session: {
@@ -32,17 +40,6 @@ export default {
         },
         delete: {
           success: "You are logged out",
-        },
-      },
-      users: {
-        ...generateLocaleEnFlashMessages("User"),
-        delete: {
-          ...generateLocaleEnFlashMessages("User").delete,
-          noAccess: "You cannot edit or delete another user",
-          hasTasks: "This user has a task, so they cannot be deleted",
-        },
-        edit: {
-          noAccess: "You cannot edit or delete another user",
         },
       },
       authError: "Access denied! Please sign in.",
