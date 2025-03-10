@@ -4,11 +4,35 @@
 
 # Task Manager
 
-Task Manager is a task management system. It allows users to create tasks, assign them to team members, and update their statuses. To use the system, registration and authentication are required.
+Task Manager is a simple task management system built with **PostgreSQL** and **Fastify**. It provides basic task management functionalities, including user authentication and the ability to create, edit, and delete labels, statuses, and tasks. Tasks can also be sorted based on various criteria.
 
 ## Project Overview
 
-This project is a work in progress, and I'm actively developing it. New features and improvements are being added regularly. Currently, it includes basic task management functionalities with user authentication.
+This project is designed to be straightforward and accessible. It allows users to:
+
+- Register and log in.
+- Create, edit, and delete **labels**, **statuses**, and **tasks**.
+- Sort tasks based on different attributes.
+- View and manage tasks created by any user.
+
+### Open Access Policy
+
+In this project, all users have full access to all functionalities. This means that any user can:
+
+- Create, update, and delete **any** task, label, or status.
+- Edit and delete other users' tasks.
+- Manage all users, including creating and deleting them.
+
+This design makes it an open-access system where all data is shared among users.
+
+## Setting Up Environment Variables
+
+The project uses environment variables stored in `.env` files.
+For running tests, create a `.env.test` file by copying `.env.test.example`:
+```bash
+cp .env.test.example .env.test
+```
+Then update the values in .env.test if necessary.
 
 # Deployed version
 
