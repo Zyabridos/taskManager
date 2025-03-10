@@ -3,7 +3,6 @@ import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import dotenv from "dotenv";
 import request from "./helpers/request.js";
-import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
 

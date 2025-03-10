@@ -1,9 +1,8 @@
 import _ from "lodash";
-import fastify from "fastify";
-import init from "../server/plugin/index.js";
 import encrypt from "../server/lib/secure.cjs";
-import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
 import request from "./helpers/request.js";
+import { findEntity } from "./helpers/index.js";
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
@@ -13,17 +12,14 @@ describe("test users CRUD", () => {
   let app;
   let models;
   let knex;
-  const testData = getTestData();
+  let testData;
+  let cookie;
 
   beforeEach(async () => {
     ({ app, knex, models } = await setUpTestsEnv());
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
   });
-
-  async function findUser(email) {
-    return models.user.query().findOne({ email });
-  }
 
   it("should return users list", async () => {
     const response = await request(app, "GET", app.reverse("users"));
@@ -44,13 +40,13 @@ describe("test users CRUD", () => {
       ..._.omit(params, "password"),
       passwordDigest: encrypt(params.password),
     };
-    const user = await findUser(params.email);
+    const user = await findEntity(models.user, "email", params.email);
     expect(user).toMatchObject(expected);
   });
 
   it("should delete a user", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await findUser(params.email);
+    const userToDelete = await findEntity(models.user, "email", params.email);
     expect(userToDelete).toBeDefined();
 
     const cookie = await makeLogin(app, testData.users.existing.fixed);
@@ -63,13 +59,13 @@ describe("test users CRUD", () => {
     );
     expect(response.statusCode).toBe(302);
 
-    const deletedUser = await findUser(params.email);
+    const deletedUser = await findEntity(models.user, "email", params.email);
     expect(deletedUser).toBeUndefined();
   });
 
   it("should update a user", async () => {
     const params = testData.users.existing.fixed;
-    const user = await findUser(params.email);
+    const user = await findEntity(models.user, "email", params.email);
     expect(user).toBeDefined();
 
     const newLastName = "Golovach";
@@ -87,7 +83,7 @@ describe("test users CRUD", () => {
 
   it("should NOT be deleted when they have a task", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await findUser(params.email);
+    const userToDelete = await findEntity(models.user, "email", params.email);
     expect(userToDelete).toBeDefined();
 
     const taskWithUser = await models.task.query().insert({
@@ -100,7 +96,7 @@ describe("test users CRUD", () => {
 
     expect(taskWithUser).toBeDefined();
 
-    const userNotSupposedToBeDeleted = await findUser(params.email);
+    const userNotSupposedToBeDeleted = await findEntity(models.user, "email", params.email);
     expect(userNotSupposedToBeDeleted).toBeDefined();
   });
 

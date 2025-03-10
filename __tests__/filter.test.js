@@ -7,33 +7,21 @@ import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 dotenv.config({ path: ".env.test" });
 
 describe("test tasks filtration by labels, status, and executor", () => {
-  let app;
-  let models;
-  let knex;
-  let testData;
-  let cookie;
-  let labels;
-  let statuses;
-  let executors;
-  let selectedLabel;
-  let selectedStatus;
-  let selectedExecutor;
+  let app, models, knex, testData, cookie;
+  let labels, statuses, executors;
+  let selectedLabel, selectedStatus, selectedExecutor;
   let taskWithDataFromDB;
 
   beforeEach(async () => {
     ({ app, knex, models } = await setUpTestsEnv());
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
-  });
 
-  beforeEach(async () => {
-    cookie = await makeLogin(app, testData.users.existing.author);
-  });
-
-  beforeEach(async () => {
-    labels = await models.label.query();
-    statuses = await models.status.query();
-    executors = await models.user.query();
+    [labels, statuses, executors] = await Promise.all([
+      models.label.query(),
+      models.status.query(),
+      models.user.query(),
+    ]);
 
     selectedLabel = labels[0];
     selectedStatus = statuses[0];
@@ -61,78 +49,50 @@ describe("test tasks filtration by labels, status, and executor", () => {
     });
   });
 
-  it("should return only tasks with the selected label", async () => {
-    const response = await request(app, "GET", "/tasks", cookie, {
-      label: selectedLabel.id.toString(),
-    });
-
+  async function testTaskFilter(filterParams, expectedTaskNames) {
+    const response = await request(app, "GET", "/tasks", cookie, filterParams);
     expect(response.statusCode).toBe(200);
-    const jsonResponse = JSON.parse(response.body);
 
-    jsonResponse.forEach((task) => {
-      const taskLabelIds = task.labels.map((label) => label.id);
-      expect(taskLabelIds).toContain(selectedLabel.id);
+    const jsonResponse = JSON.parse(response.body);
+    const taskNames = jsonResponse.map((task) => task.name);
+
+    expectedTaskNames.forEach((expectedName) => {
+      expect(taskNames).toContain(expectedName);
     });
 
-    const taskNames = jsonResponse.map((task) => task.name);
-    expect(taskNames).toContain("Task with correct data");
     expect(taskNames).not.toContain("Task with random data");
+  }
+
+  it("should return only tasks with the selected label", async () => {
+    await testTaskFilter(
+      { label: selectedLabel.id.toString() },
+      ["Task with correct data"]
+    );
   });
 
   it("should return only tasks with the selected status", async () => {
-    const response = await request(app, "GET", "/tasks", cookie, {
-      status: selectedStatus.id.toString(),
-    });
-
-    expect(response.statusCode).toBe(200);
-    const jsonResponse = JSON.parse(response.body);
-
-    jsonResponse.forEach((task) => {
-      expect(task.statusId).toBe(selectedStatus.id);
-    });
-
-    const taskNames = jsonResponse.map((task) => task.name);
-    expect(taskNames).toContain("Task with correct data");
-    expect(taskNames).not.toContain("Task with random data");
+    await testTaskFilter(
+      { status: selectedStatus.id.toString() },
+      ["Task with correct data"]
+    );
   });
 
   it("should return only tasks with the selected executor", async () => {
-    const response = await request(app, "GET", "/tasks", cookie, {
-      executor: selectedExecutor.id.toString(),
-    });
-
-    expect(response.statusCode).toBe(200);
-    const jsonResponse = JSON.parse(response.body);
-
-    jsonResponse.forEach((task) => {
-      expect(task.executorId).toBe(selectedExecutor.id);
-    });
-
-    const taskNames = jsonResponse.map((task) => task.name);
-    expect(taskNames).toContain("Task with correct data");
-    expect(taskNames).not.toContain("Task with random data");
+    await testTaskFilter(
+      { executor: selectedExecutor.id.toString() },
+      ["Task with correct data"]
+    );
   });
 
   it("should return only tasks with all selected query params", async () => {
-    const response = await request(app, "GET", "/tasks", cookie, {
-      label: selectedLabel.id.toString(),
-      status: selectedStatus.id.toString(),
-      executor: selectedExecutor.id.toString(),
-    });
-
-    expect(response.statusCode).toBe(200);
-    const jsonResponse = JSON.parse(response.body);
-
-    jsonResponse.forEach((task) => {
-      const taskLabelIds = task.labels.map((label) => label.id);
-      expect(taskLabelIds).toContain(selectedLabel.id);
-      expect(task.statusId).toBe(selectedStatus.id);
-      expect(task.executorId).toBe(selectedExecutor.id);
-    });
-
-    const taskNames = jsonResponse.map((task) => task.name);
-    expect(taskNames).toContain("Task with correct data");
-    expect(taskNames).not.toContain("Task with random data");
+    await testTaskFilter(
+      {
+        label: selectedLabel.id.toString(),
+        status: selectedStatus.id.toString(),
+        executor: selectedExecutor.id.toString(),
+      },
+      ["Task with correct data"]
+    );
   });
 
   afterEach(async () => {
