@@ -21,9 +21,8 @@ module.exports = class Label extends unique(BaseModel) {
 
   static get relationMappings() {
     return {
-      // Labels and tasks
       tasks: {
-        relation: BaseModel.HasManyRelation, // one label can have many tasks and the opposite - M2M relation
+        relation: BaseModel.HasManyRelation,
         modelClass: "Task.cjs",
         join: {
           from: "labels.id",

@@ -38,30 +38,24 @@ module.exports = class Task extends BaseModel {
 
   static get relationMappings() {
     return {
-      // Tasks and states
       status: {
-        relation: BaseModel.BelongsToOneRelation, // Один статус может быть связан с многими задачами.
-        // При этом каждая задача может иметь только один статус - O2M
-        modelClass: "Status.cjs", // с этой моделью устанавливается связь
+        relation: BaseModel.BelongsToOneRelation,
+        modelClass: "Status.cjs",
         join: {
-          from: "tasks.statusId", // tasks.statusId ссылается на таблицу статусов
-          to: "statuses.id", // а это ключ, по которому tasks.statusId будет искать автора
+          from: "tasks.statusId",
+          to: "statuses.id",
         },
       },
-      // Authors and tasks
       author: {
-        relation: BaseModel.BelongsToOneRelation, // у одного автора может быть неск задач,
-        // но у задачи мб только один автор - O2M
-        modelClass: "User.cjs", // с этой моделью устанавливается связь
+        relation: BaseModel.BelongsToOneRelation,
+        modelClass: "User.cjs",
         join: {
-          from: "tasks.authorId", // tasks.authorId ссылается на таблицу юзеров
-          to: "users.id", // а это ключ, по которому tasks.authorId будет искать автора
+          from: "tasks.authorId",
+          to: "users.id",
         },
       },
-      // Executors and tasks
       executor: {
-        relation: BaseModel.BelongsToOneRelation, // у одного исполнителя может быть неск задач,
-        // но у задачи мб только один автор - O2M
+        relation: BaseModel.BelongsToOneRelation,
         modelClass: "User.cjs",
         join: {
           from: "tasks.executorId",

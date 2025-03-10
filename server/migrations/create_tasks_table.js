@@ -1,4 +1,3 @@
-// Note to myself: Don`t forget to roll migrations back and update them !!
 export const up = async (knex) => {
   await knex.schema.createTable("tasks", (table) => {
     table.increments("id").primary();

@@ -29,9 +29,11 @@ This design makes it an open-access system where all data is shared among users.
 
 The project uses environment variables stored in `.env` files.
 For running tests, create a `.env.test` file by copying `.env.test.example`:
+
 ```bash
 cp .env.test.example .env.test
 ```
+
 Then update the values in .env.test if necessary.
 
 # Deployed version

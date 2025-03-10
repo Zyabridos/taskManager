@@ -10,6 +10,3 @@ export const up = (knex) =>
   });
 
 export const down = (knex) => knex.schema.dropTableIfExists("users");
-
-// npx knex migrate:rollback --all
-// npx knex migrate:latest

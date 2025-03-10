@@ -1,11 +1,8 @@
+import fastifyPlugin from "fastify-plugin";
 import fastifyFormbody from "@fastify/formbody";
 import fastifyObjectionjs from "fastify-objectionjs";
 import fastifySecureSession from "@fastify/secure-session";
 import fastifyCors from "@fastify/cors";
-import fastifyFlash from "@fastify/flash";
-// NOTE plugin doesnt work properly: throws an error about route already been registered,
-// even though the route has an unique name and hasn`t been registered before
-import { plugin as fastifyReverseRoutes } from "fastify-reverse-routes";
 import fastifyPassport from "@fastify/passport";
 import fastifySensible from "@fastify/sensible";
 import fastifyMethodOverride from "fastify-method-override";
@@ -15,40 +12,34 @@ import FormStrategy from "../../lib/passportStrategies/FormStrategy.js";
 import * as knexConfig from "../../../knexfile.js";
 import models from "../../models/index.js";
 
-// upload const .env в process.env
 dotenv.config();
 
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
-  // fastifyCors settings
+
   app.register(fastifyCors, {
     origin: "http://localhost:3000",
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   });
 
-  // await app.register(fastifyReverseRoutes);
   await app.register(fastifyFormbody, { parser: qs.parse });
 
-  // register fastifySecureSession for secure sessions
   await app.register(fastifySecureSession, {
-    secret: process.env.SESSION_KEY, // Ключ для шифрования сессионных данных
+    secret: process.env.SESSION_KEY,
     cookie: {
-      path: "/", // дать куки доступ для всего сайта
-      httpOnly: true, // защита от XSS-атак - запрещает доступ к куки из JS
-      secure: process.env.NODE_ENV === "production", // Включает передачу куки только по HTTPS в продакшене
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
     },
   });
 
-  // app.register(fastifyFlash);
-
   await app.register(fastifyMethodOverride, {
-    methods: ["POST"], // Перехватываем только POST-запросы
-    query: "_method", // Позволяет использовать _method в URL
-    body: true, // Теперь Fastify ищет _method в body
+    methods: ["POST"],
+    query: "_method",
+    body: true,
   });
 
-  // Passport Setting
   fastifyPassport.registerUserDeserializer((user) =>
     app.objection.models.user.query().findById(user.id),
   );
@@ -65,7 +56,7 @@ const registerPlugins = async (app) => {
       failureRedirect: app.reverse("root"),
     })(...args),
   );
-  // change to fastify-reverse-routes evnt
+
   app.decorate("reverse", (routeName) => {
     const routes = {
       root: "/",
@@ -81,4 +72,4 @@ const registerPlugins = async (app) => {
   });
 };
 
-export default registerPlugins;
+export default fastifyPlugin(registerPlugins);

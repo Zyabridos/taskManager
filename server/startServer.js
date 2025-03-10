@@ -9,7 +9,6 @@ const startServer = async () => {
 
   app.ready((err) => {
     if (err) throw err;
-    // console.log(`Registrated routes: ${app.printRoutes()}`); // show routes
   });
 
   app.addHook("onRequest", (req, reply, done) => {
