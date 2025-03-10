@@ -1,51 +1,28 @@
+import { generateLocaleEnFlashMessages } from "../utils.js";
+
 export default {
   translation: {
     appName: "Task Manager",
     flash: {
       labels: {
-        create: {
-          success: "Label successfully created",
-          error: "Failed to create label",
-        },
-        update: {
-          success: "Label successfully updated",
-          error: "Failed to update label",
-        },
+        ...generateLocaleEnFlashMessages("Label"),
         delete: {
-          success: "Label successfully deleted",
-          error: "Failed to delete label",
+          ...generateLocaleEnFlashMessages("Label").delete,
           hasTasks: "This label is attached to a task, so it cannot be deleted",
         },
       },
       tasks: {
-        create: {
-          success: "Task successfully created",
-          error: "Failed to create task",
-        },
+        ...generateLocaleEnFlashMessages("Task"),
         delete: {
-          success: "Task successfully deleted",
-          error: "Failed to delete task",
+          ...generateLocaleEnFlashMessages("Task").delete,
           noAccess: "Only the author can delete this task",
-        },
-        update: {
-          success: "Task successfully updated",
-          error: "Failed to update task",
         },
       },
       statuses: {
-        create: {
-          success: "Status successfully created",
-          error: "Failed to create status",
-        },
-        update: {
-          success: "Status successfully updated",
-          error: "Failed to update status",
-        },
+        ...generateLocaleEnFlashMessages("Status"),
         delete: {
-          success: "Status successfully deleted",
-          error: "Failed to delete status",
-          hasTasks:
-            "This status is attached to a task, so it cannot be deleted",
+          ...generateLocaleEnFlashMessages("Status").delete,
+          hasTasks: "This status is attached to a task, so it cannot be deleted",
         },
       },
       session: {
@@ -58,22 +35,14 @@ export default {
         },
       },
       users: {
-        create: {
-          error: "Failed to register",
-          success: "User successfully registered",
-        },
+        ...generateLocaleEnFlashMessages("User"),
         delete: {
-          error: "Failed to delete user",
-          success: "User successfully deleted",
+          ...generateLocaleEnFlashMessages("User").delete,
           noAccess: "You cannot edit or delete another user",
           hasTasks: "This user has a task, so they cannot be deleted",
         },
-        update: {
-          error: "Failed to update user",
-          success: "User successfully updated",
-        },
         edit: {
-          noAcess: "You cannot edit or delete another user",
+          noAccess: "You cannot edit or delete another user",
         },
       },
       authError: "Access denied! Please sign in.",

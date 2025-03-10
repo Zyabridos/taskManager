@@ -1,49 +1,27 @@
+import { generateLocaleRuFlashMessages } from "../utils.js";
+
 export default {
   translation: {
     appName: "Менеджер задач",
     flash: {
       labels: {
-        create: {
-          success: "Метка успешно создана",
-          error: "Не удалось создать метку",
-        },
-        update: {
-          success: "Метка успешно изменена",
-          error: "Не удалось изменить метку",
-        },
+        ...generateLocaleRuFlashMessages("Метка"),
         delete: {
-          success: "Метка успешно удалена",
-          error: "Не удалось изменить метку",
+          ...generateLocaleRuFlashMessages("Метка").delete,
           hasTasks: "Эта метка прикреплена к задаче, поэтому её нельзя удалить",
         },
       },
       tasks: {
-        create: {
-          success: "Задача успешно создана",
-          error: "Не удалось создать задачу",
-        },
+        ...generateLocaleRuFlashMessages("Задача"),
         delete: {
-          success: "Задача успешно удалена",
-          error: "Не удалось удалить задачу",
+          ...generateLocaleRuFlashMessages("Задача").delete,
           noAccess: "Задачу может удалить только ее автор",
-        },
-        update: {
-          success: "Задача успешно изменена",
-          error: "Не удалось изменить задачу",
         },
       },
       statuses: {
-        create: {
-          success: "Статус успешно создан",
-          error: "Не удалось создать статус",
-        },
-        update: {
-          success: "Статус успешно изменён",
-          error: "Не удалось изменить статус",
-        },
+        ...generateLocaleRuFlashMessages("Статус"),
         delete: {
-          success: "Статус успешно удалён",
-          error: "Не удалось удалить статус",
+          ...generateLocaleRuFlashMessages("Статус").delete,
           hasTasks:
             "Этот статус прикреплен к задаче, поэтому его нельзя удалить",
         },
@@ -58,21 +36,13 @@ export default {
         },
       },
       users: {
-        create: {
-          error: "Не удалось зарегистрировать",
-          success: "Пользователь успешно зарегистрирован",
-        },
+        ...generateLocaleRuFlashMessages("Пользователь"),
         delete: {
-          error: "Не удалось удалить пользователя",
-          success: "Пользователь успешно удалён",
+          ...generateLocaleRuFlashMessages("Пользователь").delete,
           noAccess:
             "Вы не можете редактировать или удалять другого пользователя",
           hasTasks:
             "У этого пользователя есть задача, поэтому его нельзя удалить",
-        },
-        update: {
-          error: "Не удалось изменить пользователя",
-          success: "Пользователь успешно изменён",
         },
         edit: {
           noAcess:
@@ -191,14 +161,14 @@ export default {
         editBtn: "Изменить",
         delete: "Удалить",
         new: {
-          title: "Создать статус",
+          title: "Создать метку",
           submit: "Создать",
-          label: "Создать статус",
+          label: "Создать метку",
         },
         edit: {
-          title: "Изменить статус",
+          title: "Изменить метку",
           submit: "Изменить",
-          label: "Изменить статус",
+          label: "Изменить метку",
         },
       },
       welcome: {
