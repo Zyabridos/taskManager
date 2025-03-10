@@ -2,6 +2,8 @@
 
 [![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)
 
+[![Maintainability](https://codeclimate.com/github/Zyabridos/taskManager/maintainability)](https://api.codeclimate.com/v1/badges/dd3b0c8de30f780cffa1/maintainability)
+
 # Task Manager
 
 Task Manager is a simple task management system built with **PostgreSQL** and **Fastify**. It provides basic task management functionalities, including user authentication and the ability to create, edit, and delete labels, statuses, and tasks. Tasks can also be sorted based on various criteria.
@@ -27,10 +29,10 @@ This design makes it an open-access system where all data is shared among users.
 ## Setting Up Environment Variables
 
 The project uses environment variables stored in `.env` files.
-For running tests, create a `.env.test` file by copying `.env.test.example`:
+For running tests, create a `.env.test` file by copying `.env.example`:
 
 ```bash
-cp .env.test.example .env.test
+cp .env.example .env.test
 ```
 
 Then update the values in .env.test if necessary.

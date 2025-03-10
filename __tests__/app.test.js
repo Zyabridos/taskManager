@@ -1,8 +1,8 @@
 import { describe, beforeAll, it, expect } from "@jest/globals";
-
 import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import dotenv from "dotenv";
+import request from "./helpers/request.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -17,19 +17,13 @@ describe("requests", () => {
     await init(app);
   });
 
-  it("GET 200", async () => {
-    const res = await app.inject({
-      method: "GET",
-      url: "/",
-    });
+  it("GET / should return 200", async () => {
+    const res = await request(app, "GET", "/");
     expect(res.statusCode).toBe(200);
   });
 
-  it("GET 404", async () => {
-    const res = await app.inject({
-      method: "GET",
-      url: "/wrong-path",
-    });
+  it("GET /wrong-path should return 404", async () => {
+    const res = await request(app, "GET", "/wrong-path");
     expect(res.statusCode).toBe(404);
   });
 

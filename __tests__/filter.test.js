@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
+import request from "./helpers/request.js";
 import { expect } from "@jest/globals";
 import dotenv from "dotenv";
 
@@ -71,12 +72,8 @@ describe("test tasks filtration by labels, status, and executor", () => {
   });
 
   it("should return only tasks with the selected label", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/tasks",
-      query: { label: selectedLabel.id.toString() },
-      cookies: cookie,
-      headers: { Accept: "application/json" },
+    const response = await request(app, "GET", "/tasks", cookie, {
+      label: selectedLabel.id.toString(),
     });
 
     expect(response.statusCode).toBe(200);
@@ -93,12 +90,8 @@ describe("test tasks filtration by labels, status, and executor", () => {
   });
 
   it("should return only tasks with the selected status", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/tasks",
-      query: { status: selectedStatus.id.toString() },
-      cookies: cookie,
-      headers: { Accept: "application/json" },
+    const response = await request(app, "GET", "/tasks", cookie, {
+      status: selectedStatus.id.toString(),
     });
 
     expect(response.statusCode).toBe(200);
@@ -114,12 +107,8 @@ describe("test tasks filtration by labels, status, and executor", () => {
   });
 
   it("should return only tasks with the selected executor", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/tasks",
-      query: { executor: selectedExecutor.id.toString() },
-      cookies: cookie,
-      headers: { Accept: "application/json" },
+    const response = await request(app, "GET", "/tasks", cookie, {
+      executor: selectedExecutor.id.toString(),
     });
 
     expect(response.statusCode).toBe(200);
@@ -134,17 +123,11 @@ describe("test tasks filtration by labels, status, and executor", () => {
     expect(taskNames).not.toContain("Task with random data");
   });
 
-  it("should return only tasks with the all selected query params", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/tasks",
-      query: {
-        label: selectedLabel.id.toString(),
-        status: selectedStatus.id.toString(),
-        executor: selectedExecutor.id.toString(),
-      },
-      cookies: cookie,
-      headers: { Accept: "application/json" },
+  it("should return only tasks with all selected query params", async () => {
+    const response = await request(app, "GET", "/tasks", cookie, {
+      label: selectedLabel.id.toString(),
+      status: selectedStatus.id.toString(),
+      executor: selectedExecutor.id.toString(),
     });
 
     expect(response.statusCode).toBe(200);
@@ -171,5 +154,3 @@ describe("test tasks filtration by labels, status, and executor", () => {
     await app.close();
   });
 });
-
-// npx jest __tests__/filter.test.js

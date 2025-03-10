@@ -1,8 +1,8 @@
 import fastify from "fastify";
-
 import init from "../server/plugin/index.js";
 import { prepareData, makeLogin } from "./helpers/index.js";
 import dotenv from "dotenv";
+import request from "./helpers/request.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -24,78 +24,48 @@ describe("test labels CRUD", () => {
     models = app.objection.models;
 
     await knex.migrate.latest();
-
     testData = await prepareData(app);
-  });
-
-  beforeEach(async () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
-  it("index", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/labels",
-      cookies: cookie,
-    });
+  async function findLabel(name) {
+    return models.label.query().findOne({ name });
+  }
 
+  it("should show a list of labels", async () => {
+    const response = await request(app, "GET", "/labels");
     expect(response.statusCode).toBe(200);
   });
 
-  it("new", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: "/labels/new",
-      cookies: cookie,
-    });
-
+  it("should new", async () => {
+    const response = await request(app, "GET", "/labels/new");
     expect(response.statusCode).toBe(200);
   });
 
-  it("create", async () => {
+  it("should create a new label", async () => {
     const params = testData.labels.new;
-    const response = await app.inject({
-      method: "POST",
-      url: "/labels",
-      payload: {
-        data: params,
-      },
-      cookies: cookie,
-    });
-
+    const response = await request(app, "POST", "/labels", params);
     expect(response.statusCode).toBe(302);
-    const label = await models.label.query().findOne({ name: params.name });
+
+    const label = await findLabel(params.name);
     expect(label).toMatchObject(params);
   });
 
-  it("delete", async () => {
+  it("should delete a label", async () => {
     const params = testData.labels.existing.delete;
-    const labelToDelete = await models.label
-      .query()
-      .findOne({ name: params.name });
+    const labelToDelete = await findLabel(params.name);
+    expect(labelToDelete).toBeDefined();
 
-    const response = await app.inject({
-      method: "DELETE",
-      url: `/labels/${labelToDelete.id}`,
-      payload: {
-        data: params,
-      },
-      cookies: cookie,
-    });
-
+    const response = await request(app, "DELETE", `/labels/${labelToDelete.id}`);
     expect(response.statusCode).toBe(302);
-    const deletedLabel = await models.label
-      .query()
-      .findOne({ name: params.name });
+
+    const deletedLabel = await findLabel(params.name);
     expect(deletedLabel).toBeUndefined();
   });
 
-  it("should NOT be deleted when it has a task", async () => {
+  it("should NOT delete label if it's linked to a task", async () => {
     const params = testData.labels.existing.delete;
-    const labelToDelete = await models.label
-      .query()
-      .findOne({ name: params.name });
-
+    const labelToDelete = await findLabel(params.name);
     expect(labelToDelete).toBeDefined();
 
     const taskWithLabel = await models.task.query().insert({
@@ -111,31 +81,26 @@ describe("test labels CRUD", () => {
       label_id: labelToDelete.id,
     });
 
-    const labelNotSupposedToBeDeleted = await models.label
-      .query()
-      .findOne({ name: params.name });
-    expect(labelNotSupposedToBeDeleted).toBeDefined();
+    const response = await request(app, "DELETE", `/labels/${labelToDelete.id}`);
+    expect(response.statusCode).toBe(400);
+
+    const stillExistingLabel = await findLabel(params.name);
+    expect(stillExistingLabel).toBeDefined();
   });
 
-  it("update", async () => {
+  it("should update a label", async () => {
     const params = testData.labels.existing.update;
-    const labelToDelete = await models.label
-      .query()
-      .findOne({ name: params.name });
-    const updatedLabelName = "updated";
-    const response = await app.inject({
-      method: "PATCH",
-      url: `/labels/${labelToDelete.id}`,
-      payload: {
-        data: { name: updatedLabelName },
-      },
-      cookies: cookie,
-    });
+    const label = await findLabel(params.name);
+    expect(label).toBeDefined();
 
+    const updatedName = "Updated Label";
+    const response = await request(app, "PATCH", `/labels/${label.id}`, {
+      name: updatedName,
+    });
     expect(response.statusCode).toBe(302);
 
-    const updatedLabel = await labelToDelete.$query();
-    expect(updatedLabel.name).toEqual(updatedLabelName);
+    const updatedLabel = await label.$query();
+    expect(updatedLabel.name).toEqual(updatedName);
   });
 
   afterEach(async () => {

@@ -3,6 +3,7 @@ import fastify from "fastify";
 import init from "../server/plugin/index.js";
 import encrypt from "../server/lib/secure.cjs";
 import { getTestData, prepareData, makeLogin } from "./helpers/index.js";
+import request from "./helpers/request.js";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.test" });
@@ -18,6 +19,7 @@ describe("test users CRUD", () => {
       exposeHeadRoutes: false,
       logger: { target: "pino-pretty" },
     });
+
     await init(app);
     knex = app.objection.knex;
     models = app.objection.models;
@@ -25,102 +27,72 @@ describe("test users CRUD", () => {
     await prepareData(app);
   });
 
-  it("index", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: app.reverse("users"),
-    });
+  async function findUser(email) {
+    return models.user.query().findOne({ email });
+  }
 
+  it("should return users list", async () => {
+    const response = await request(app, "GET", app.reverse("users"));
     expect(response.statusCode).toBe(200);
   });
 
-  it("new", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: app.reverse("newUser"),
-    });
-
+  it("should return new user registration page", async () => {
+    const response = await request(app, "GET", app.reverse("newUser"));
     expect(response.statusCode).toBe(200);
   });
 
-  it("create", async () => {
+  it("should create a new user", async () => {
     const params = testData.users.new;
-    const response = await app.inject({
-      method: "POST",
-      url: "/users",
-      payload: {
-        data: params,
-      },
-    });
-
+    const response = await request(app, "POST", "/users", null, params);
     expect(response.statusCode).toBe(302);
+
     const expected = {
       ..._.omit(params, "password"),
       passwordDigest: encrypt(params.password),
     };
-    const user = await models.user.query().findOne({ email: params.email });
+    const user = await findUser(params.email);
     expect(user).toMatchObject(expected);
   });
 
-  it("delete", async () => {
+  it("should delete a user", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await models.user
-      .query()
-      .findOne({ email: params.email });
+    const userToDelete = await findUser(params.email);
+    expect(userToDelete).toBeDefined();
 
     const cookie = await makeLogin(app, testData.users.existing.fixed);
-    const response = await app.inject({
-      // удаляем
-      method: "DELETE",
-      url: `/users/${userToDelete.id}`,
-      payload: {
-        data: params,
-      },
-      cookies: cookie,
-    });
-
+    const response = await request(app, "DELETE", `/users/${userToDelete.id}`, cookie, params);
     expect(response.statusCode).toBe(302);
-    expect(
-      await models.user.query().findOne({ email: params.email }),
-    ).toBeUndefined();
+
+    const deletedUser = await findUser(params.email);
+    expect(deletedUser).toBeUndefined();
   });
 
-  it("update", async () => {
+  it("should update a user", async () => {
     const params = testData.users.existing.fixed;
-    const user = await models.user.query().findOne({ email: params.email });
-    const newLastName = "Golovach";
+    const user = await findUser(params.email);
+    expect(user).toBeDefined();
 
+    const newLastName = "Golovach";
     const cookie = await makeLogin(app, testData.users.existing.fixed);
-    const response = await app.inject({
-      method: "PATCH",
-      url: `/users/${user.id}`,
-      payload: {
-        data: {
-          ...params,
-          lastName: newLastName,
-        },
-      },
-      cookies: cookie,
+    const response = await request(app, "PATCH", `/users/${user.id}`, cookie, {
+      ...params,
+      lastName: newLastName,
     });
 
     expect(response.statusCode).toBe(302);
+
     const updatedUser = await user.$query();
     expect(updatedUser.lastName).toEqual(newLastName);
   });
 
-  it("should NOT be deleted when it has a task", async () => {
+  it("should NOT be deleted when they have a task", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await models.user
-      .query()
-      .findOne({ email: params.email });
-
+    const userToDelete = await findUser(params.email);
     expect(userToDelete).toBeDefined();
-
-    console.log("user to delete:, ", userToDelete);
 
     const taskWithUser = await models.task.query().insert({
       name: "Test task with user",
-      description: "This task is linked to an user",
+      description: "This task is linked to a user",
       statusId: 1,
       authorId: userToDelete.id,
       executorId: userToDelete.id,
@@ -128,9 +100,7 @@ describe("test users CRUD", () => {
 
     expect(taskWithUser).toBeDefined();
 
-    const userNotSupposedToBeDeleted = await models.user
-      .query()
-      .findOne({ email: params.email });
+    const userNotSupposedToBeDeleted = await findUser(params.email);
     expect(userNotSupposedToBeDeleted).toBeDefined();
   });
 
