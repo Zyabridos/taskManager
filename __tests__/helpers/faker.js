@@ -24,27 +24,26 @@ const generators = {
 export const generateData = (type, length = 3) =>
   Array.from({ length }, () => generators[type]());
 
+const generateUserWithPassword = (user) => ({
+  ..._.omit(user, "password"),
+  passwordDigest: encrypt(user.password),
+});
+
 export const generateUsers = () => {
-  const newUser = generateData("user", 1);
+  const newUser = generateData("user", 1)[0];
   const users = generateData("user", 5);
+
   const fixedUser = {
     firstName: "Alice",
     lastName: "Ramsey",
     email: "alice@example.com",
     password: faker.internet.password(),
   };
-  const seeds = users.map((user) => ({
-    ..._.omit(user, "password"),
-    passwordDigest: encrypt(user.password),
-  }));
 
-  seeds.push({
-    ..._.omit(fixedUser, "password"),
-    passwordDigest: encrypt(fixedUser.password),
-  });
+  const seeds = [...users.map(generateUserWithPassword), generateUserWithPassword(fixedUser)];
 
   return {
-    new: newUser[0],
+    new: newUser,
     existing: {
       author: users[0],
       executor: users[1],
@@ -54,6 +53,7 @@ export const generateUsers = () => {
     seeds,
   };
 };
+
 
 export const generateStatuses = () => {
   const newStatus = generateData("status", 1);
@@ -96,8 +96,6 @@ export const generateTasks = (users, statuses) => {
     authorId: users[0]?.id || 1,
     executorId: users[1]?.id || 1,
   }));
-
-  console.log("Tasks:", tasks[0]);
 
   return {
     new: {

@@ -123,7 +123,7 @@ export default {
         },
         edit: {
           title: "Редактировать пользователя",
-          submit: "Сохранить изменения",
+          submit: "Изменить",
         },
       },
       statuses: {
