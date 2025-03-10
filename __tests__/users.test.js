@@ -1,10 +1,10 @@
 import _ from "lodash";
 import encrypt from "../server/lib/secure.cjs";
 import { prepareData, makeLogin } from "./helpers/index.js";
-import request from "./helpers/request.js";
 import { findEntity } from "./helpers/index.js";
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -21,61 +21,67 @@ describe("test users CRUD", () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
+  async function checkUserExists(email) {
+    return findEntity(models.user, "email", email);
+  }
+
   it("should return users list", async () => {
-    const response = await request(app, "GET", app.reverse("users"));
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", app.reverse("users"));
   });
 
   it("should return new user registration page", async () => {
-    const response = await request(app, "GET", app.reverse("newUser"));
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", app.reverse("newUser"));
   });
 
   it("should create a new user", async () => {
     const params = testData.users.new;
-    const response = await request(app, "POST", "/users", null, params);
-    expect(response.statusCode).toBe(302);
+    await checkResponseCode(app, "POST", "/users", null, params, 302);
 
     const expected = {
       ..._.omit(params, "password"),
       passwordDigest: encrypt(params.password),
     };
-    const user = await findEntity(models.user, "email", params.email);
+    const user = await checkUserExists(params.email);
     expect(user).toMatchObject(expected);
   });
 
   it("should delete a user", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await findEntity(models.user, "email", params.email);
+    const userToDelete = await checkUserExists(params.email);
     expect(userToDelete).toBeDefined();
 
     const cookie = await makeLogin(app, testData.users.existing.fixed);
-    const response = await request(
+    await checkResponseCode(
       app,
       "DELETE",
       `/users/${userToDelete.id}`,
       cookie,
       params,
+      302,
     );
-    expect(response.statusCode).toBe(302);
 
-    const deletedUser = await findEntity(models.user, "email", params.email);
+    const deletedUser = await checkUserExists(params.email);
     expect(deletedUser).toBeUndefined();
   });
 
   it("should update a user", async () => {
     const params = testData.users.existing.fixed;
-    const user = await findEntity(models.user, "email", params.email);
+    const user = await checkUserExists(params.email);
     expect(user).toBeDefined();
 
     const newLastName = "Golovach";
     const cookie = await makeLogin(app, testData.users.existing.fixed);
-    const response = await request(app, "PATCH", `/users/${user.id}`, cookie, {
-      ...params,
-      lastName: newLastName,
-    });
-
-    expect(response.statusCode).toBe(302);
+    await checkResponseCode(
+      app,
+      "PATCH",
+      `/users/${user.id}`,
+      cookie,
+      {
+        ...params,
+        lastName: newLastName,
+      },
+      302,
+    );
 
     const updatedUser = await user.$query();
     expect(updatedUser.lastName).toEqual(newLastName);
@@ -83,7 +89,7 @@ describe("test users CRUD", () => {
 
   it("should NOT be deleted when they have a task", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await findEntity(models.user, "email", params.email);
+    const userToDelete = await checkUserExists(params.email);
     expect(userToDelete).toBeDefined();
 
     const taskWithUser = await models.task.query().insert({
@@ -96,7 +102,7 @@ describe("test users CRUD", () => {
 
     expect(taskWithUser).toBeDefined();
 
-    const userNotSupposedToBeDeleted = await findEntity(models.user, "email", params.email);
+    const userNotSupposedToBeDeleted = await checkUserExists(params.email);
     expect(userNotSupposedToBeDeleted).toBeDefined();
   });
 

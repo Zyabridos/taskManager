@@ -8,7 +8,6 @@ dotenv.config({ path: ".env.test" });
 
 describe("test tasks filtration by labels, status, and executor", () => {
   let app, models, knex, testData, cookie;
-  let labels, statuses, executors;
   let selectedLabel, selectedStatus, selectedExecutor;
   let taskWithDataFromDB;
 
@@ -17,7 +16,7 @@ describe("test tasks filtration by labels, status, and executor", () => {
     testData = await prepareData(app);
     cookie = await makeLogin(app, testData.users.existing.author);
 
-    [labels, statuses, executors] = await Promise.all([
+    const [labels, statuses, executors] = await Promise.all([
       models.label.query(),
       models.status.query(),
       models.user.query(),
@@ -49,51 +48,41 @@ describe("test tasks filtration by labels, status, and executor", () => {
     });
   });
 
-  async function testTaskFilter(filterParams, expectedTaskNames) {
+  async function testTaskFilter(filterParams) {
     const response = await request(app, "GET", "/tasks", cookie, filterParams);
     expect(response.statusCode).toBe(200);
 
     const jsonResponse = JSON.parse(response.body);
     const taskNames = jsonResponse.map((task) => task.name);
 
-    expectedTaskNames.forEach((expectedName) => {
-      expect(taskNames).toContain(expectedName);
-    });
-
-    expect(taskNames).not.toContain("Task with random data");
+    return taskNames;
   }
 
-  it("should return only tasks with the selected label", async () => {
-    await testTaskFilter(
-      { label: selectedLabel.id.toString() },
-      ["Task with correct data"]
-    );
-  });
-
-  it("should return only tasks with the selected status", async () => {
-    await testTaskFilter(
-      { status: selectedStatus.id.toString() },
-      ["Task with correct data"]
-    );
-  });
-
-  it("should return only tasks with the selected executor", async () => {
-    await testTaskFilter(
-      { executor: selectedExecutor.id.toString() },
-      ["Task with correct data"]
-    );
-  });
-
-  it("should return only tasks with all selected query params", async () => {
-    await testTaskFilter(
+  it.each([
+    [{ label: () => selectedLabel.id.toString() }, "label"],
+    [{ status: () => selectedStatus.id.toString() }, "status"],
+    [{ executor: () => selectedExecutor.id.toString() }, "executor"],
+    [
       {
-        label: selectedLabel.id.toString(),
-        status: selectedStatus.id.toString(),
-        executor: selectedExecutor.id.toString(),
+        label: () => selectedLabel.id.toString(),
+        status: () => selectedStatus.id.toString(),
+        executor: () => selectedExecutor.id.toString(),
       },
-      ["Task with correct data"]
-    );
-  });
+      "all filters",
+    ],
+  ])(
+    "should return only tasks with the selected %s",
+    async (filterParams, filterType) => {
+      const resolvedFilters = Object.fromEntries(
+        Object.entries(filterParams).map(([key, value]) => [key, value()]),
+      );
+
+      const taskNames = await testTaskFilter(resolvedFilters);
+
+      expect(taskNames).toContain("Task with correct data");
+      expect(taskNames).not.toContain("Task with random data");
+    },
+  );
 
   afterEach(async () => {
     await knex("tasks").del();

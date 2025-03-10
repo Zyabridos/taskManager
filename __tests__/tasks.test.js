@@ -1,8 +1,8 @@
 import { prepareData, makeLogin } from "./helpers/index.js";
-import request from "./helpers/request.js";
 import { findEntity } from "./helpers/index.js";
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -19,63 +19,69 @@ describe("test tasks CRUD", () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
+  async function checkTaskExists(name) {
+    return findEntity(models.task, "name", name);
+  }
+
   it("should return tasks list", async () => {
-    const response = await request(app, "GET", "/tasks", cookie);
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", "/tasks", cookie);
   });
 
   it("should return new task creation page", async () => {
-    const response = await request(app, "GET", "/tasks/new", cookie);
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", "/tasks/new", cookie);
   });
 
   it("should return a particular task", async () => {
     const params = testData.tasks.existing.update;
-    const task = await findEntity(models.task, "name", params.name);
+    const task = await checkTaskExists(params.name);
     expect(task).toBeDefined();
 
-    const response = await request(app, "GET", `/tasks/${task.id}`, cookie);
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", `/tasks/${task.id}`, cookie);
   });
 
   it("should create a new task", async () => {
     const params = testData.tasks.new;
-    const response = await request(app, "POST", "/tasks", cookie, params);
-    expect(response.statusCode).toBe(302);
+    await checkResponseCode(app, "POST", "/tasks", cookie, params, 302);
 
-    const task = await findEntity(models.task, "name", params.name);
+    const task = await checkTaskExists(params.name);
     expect(task).toMatchObject(params);
   });
 
   it("should delete a task", async () => {
     const params = testData.tasks.existing.delete;
-    const taskToDelete = await findEntity(models.task, "name", params.name);
+    const taskToDelete = await checkTaskExists(params.name);
     expect(taskToDelete).toBeDefined();
 
-    const response = await request(
+    await checkResponseCode(
       app,
       "DELETE",
       `/tasks/${taskToDelete.id}`,
       cookie,
+      null,
+      302,
     );
-    expect(response.statusCode).toBe(302);
 
-    const deletedTask = await findEntity(models.task, "name", params.name);
+    const deletedTask = await checkTaskExists(params.name);
     expect(deletedTask).toBeUndefined();
   });
 
   it("should update a task", async () => {
     const params = testData.tasks.existing.update;
-    const task = await findEntity(models.task, "name", params.name);
+    const task = await checkTaskExists(params.name);
     expect(task).toBeDefined();
 
     const updatedTaskName = "Updated Task Name";
-    const response = await request(app, "PATCH", `/tasks/${task.id}`, cookie, {
-      ...params,
-      name: updatedTaskName,
-    });
-
-    expect(response.statusCode).toBe(302);
+    await checkResponseCode(
+      app,
+      "PATCH",
+      `/tasks/${task.id}`,
+      cookie,
+      {
+        ...params,
+        name: updatedTaskName,
+      },
+      302,
+    );
 
     const updatedTask = await models.task.query().findById(task.id);
     expect(updatedTask.name).toEqual(updatedTaskName);

@@ -58,7 +58,3 @@ export const makeLogin = async (app, userData) => {
   const { name, value } = sessionCookie;
   return { [name]: value };
 };
-
-export async function findEntity(model, fieldName, value) {
-  return model.query().findOne({ [fieldName]: value });
-}

@@ -1,6 +1,7 @@
 import { prepareData, makeLogin } from "./helpers/index.js";
 import dotenv from "dotenv";
-import request from "./helpers/request.js";
+import { findEntity } from "./helpers/index.js";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
@@ -18,45 +19,47 @@ describe("test statuses CRUD", () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
+  async function checkStatusExists(name) {
+    return findEntity(models.status, "name", name);
+  }
+
   it("should return statuses list", async () => {
-    const response = await request(app, "GET", "/statuses", cookie);
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", "/statuses", cookie);
   });
 
   it("should return new status creation page", async () => {
-    const response = await request(app, "GET", "/statuses/new", cookie);
-    expect(response.statusCode).toBe(200);
+    await checkResponseCode(app, "GET", "/statuses/new", cookie);
   });
 
   it("should create a new status", async () => {
     const params = testData.statuses.new;
-    const response = await request(app, "POST", "/statuses", cookie, params);
-    expect(response.statusCode).toBe(302);
+    await checkResponseCode(app, "POST", "/statuses", cookie, params, 302);
 
-    const status = await findStatus(params.name);
+    const status = await checkStatusExists(params.name);
     expect(status).toMatchObject(params);
   });
 
   it("should delete a status", async () => {
     const params = testData.statuses.existing.delete;
-    const statusToDelete = await findStatus(params.name);
+    const statusToDelete = await checkStatusExists(params.name);
     expect(statusToDelete).toBeDefined();
 
-    const response = await request(
+    await checkResponseCode(
       app,
       "DELETE",
       `/statuses/${statusToDelete.id}`,
       cookie,
+      null,
+      302,
     );
-    expect(response.statusCode).toBe(302);
 
-    const deletedStatus = await findStatus(params.name);
+    const deletedStatus = await checkStatusExists(params.name);
     expect(deletedStatus).toBeUndefined();
   });
 
-  it("should NOT delete status if it's linked to a task", async () => {
+  it("should NOT delete a status if it's linked to a task", async () => {
     const params = testData.statuses.existing.delete;
-    const statusToDelete = await findStatus(params.name);
+    const statusToDelete = await checkStatusExists(params.name);
     expect(statusToDelete).toBeDefined();
 
     const taskWithStatus = await models.task.query().insert({
@@ -69,32 +72,33 @@ describe("test statuses CRUD", () => {
 
     expect(taskWithStatus).toBeDefined();
 
-    const response = await request(
+    await checkResponseCode(
       app,
       "DELETE",
       `/statuses/${statusToDelete.id}`,
       cookie,
+      null,
+      400,
     );
-    expect(response.statusCode).toBe(400);
 
-    const stillExistingStatus = await findStatus(params.name);
+    const stillExistingStatus = await checkStatusExists(params.name);
     expect(stillExistingStatus).toBeDefined();
   });
 
   it("should update a status", async () => {
     const params = testData.statuses.existing.update;
-    const statusToUpdate = await findStatus(params.name);
+    const statusToUpdate = await checkStatusExists(params.name);
     expect(statusToUpdate).toBeDefined();
 
     const updatedStatusName = "Updated Status";
-    const response = await request(
+    await checkResponseCode(
       app,
       "PATCH",
       `/statuses/${statusToUpdate.id}`,
       cookie,
       { name: updatedStatusName },
+      302,
     );
-    expect(response.statusCode).toBe(302);
 
     const updatedStatus = await statusToUpdate.$query();
     expect(updatedStatus.name).toEqual(updatedStatusName);
