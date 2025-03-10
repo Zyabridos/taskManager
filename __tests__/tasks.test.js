@@ -33,6 +33,23 @@ describe("test tasks CRUD", () => {
     await checkResponseCode(app, "GET", "/tasks/new", cookie);
   });
 
+
+  it("should return a particular task", async () => {
+    const params = testData.tasks.existing.update;
+    const task = await models.task.query().findOne({ name: params.name });
+    expect(task).toBeDefined();
+
+    await checkResponseCode(app, "GET", `/tasks/${task.id}`, cookie);
+  });
+
+  it("should create a new task", async () => {
+    const params = testData.tasks.new;
+    await checkResponseCode(app, "POST", "/tasks", cookie, params, 302);
+
+    const task = await checkTaskExists(params.name);
+    expect(task).toMatchObject(params);
+  });
+
   it("should delete a task", async () => {
     const params = testData.tasks.existing.delete;
     const taskToDelete = await checkTaskExists(params.name);

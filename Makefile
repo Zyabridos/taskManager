@@ -2,7 +2,7 @@ setup:
 	prepare install db-migrate
 
 install: 
-	npm install
+	npm ci
 
 db-migrate:
 	npx knex migrate:latest

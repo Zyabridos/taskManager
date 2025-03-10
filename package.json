@@ -11,6 +11,7 @@
     "prebuild": "rm -rf dist",
     "build": "webpack",
     "start": "node server/plugin/index.js",
+    "setup": "npm install && npm start",
     "test": "jest"
   },
   "jest": {
