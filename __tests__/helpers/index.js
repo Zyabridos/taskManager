@@ -62,7 +62,9 @@ export const makeLogin = async (app, userData) => {
     return { [name]: value };
   });
 
-  const sessionCookie = cookies.find((cookie) => Object.keys(cookie)[0] === "session");
+  const sessionCookie = cookies.find(
+    (cookie) => Object.keys(cookie)[0] === "session",
+  );
 
   return sessionCookie;
 };

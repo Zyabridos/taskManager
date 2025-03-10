@@ -1,12 +1,27 @@
-import request from "./request.js";
-
-export function checkResponseCode(app, cookie, entity, path) {
-  it(`should return new ${entity} creation page`, async () => {
-    const response = await request(app, "GET", path, cookie);
-    expect(response.statusCode).toBe(200);
+export async function checkResponseCode(
+  app,
+  method,
+  url,
+  cookie = null,
+  payload = null,
+  expectedStatus = 200,
+) {
+  const response = await app.inject({
+    method,
+    url,
+    ...(payload && { payload: { data: payload } }),
+    ...(cookie && { cookies: cookie }),
   });
+  console.log(
+    `Response from ${method} ${url}:`,
+    response.statusCode,
+    response.body,
+  );
+
+  expect(response.statusCode).toBe(expectedStatus);
+  return response;
 }
 
-export async function findEntity(model, fieldName, value) {
+export const findEntity = async (model, fieldName, value) => {
   return model.query().findOne({ [fieldName]: value });
-}
+};

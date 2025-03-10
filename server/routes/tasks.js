@@ -1,6 +1,5 @@
 import i18next from "i18next";
 import { prepareTaskViewData } from "../utils.js";
-
 export default (app) => {
   app
     // GET /tasks - list of all tasks
@@ -60,15 +59,19 @@ export default (app) => {
     .get("/tasks/new", { name: "newTask" }, async (req, reply) => {
       try {
         const task = new app.objection.models.task();
-        const { statuses, executors, labels } = await prepareTaskViewData(app);
+        const statuses = await app.objection.models.status.query();
+        const users = await app.objection.models.user.query();
+        const labels = await app.objection.models.label.query();
 
         reply.render("tasks/new", {
           task,
-          statuses,
-          executors,
-          labels,
+          statuses: statuses || [],
+          users: users || [],
+          labels: labels || [],
           errors: {},
         });
+
+        return reply;
       } catch (error) {
         console.error("Error fetching data for new task:", error);
         req.flash("error", i18next.t("flash.tasks.create.error"));
@@ -150,6 +153,22 @@ export default (app) => {
       }
       return reply;
     })
+
+    // GET /tasks/:id - view particular task
+    .get(
+      "/tasks/:id",
+      { name: "task", preValidation: app.authenticate },
+      async (req, reply) => {
+        const taskId = Number(req.params.id);
+        const task = await app.objection.models.task
+          .query()
+          .findById(taskId)
+          .withGraphFetched("[status, executor, author, labels]");
+
+        reply.render("tasks/task", { task });
+        return reply;
+      },
+    )
 
     // PATCH /tasks/:id - edit a task
     .patch("/tasks/:id", { name: "updateTask" }, async (req, reply) => {

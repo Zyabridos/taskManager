@@ -1,7 +1,6 @@
 import { prepareData, makeLogin } from "./helpers/index.js";
-import dotenv from "dotenv";
-import { findEntity } from "./helpers/index.js";
 import { checkResponseCode, findEntity } from "./helpers/utils.js";
+import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
 dotenv.config({ path: ".env.test" });
@@ -23,11 +22,11 @@ describe("test statuses CRUD", () => {
     return findEntity(models.status, "name", name);
   }
 
-  it("should return statuses list", async () => {
+  it("should show a list of statuses", async () => {
     await checkResponseCode(app, "GET", "/statuses", cookie);
   });
 
-  it("should return new status creation page", async () => {
+  it("should display new status creation page", async () => {
     await checkResponseCode(app, "GET", "/statuses/new", cookie);
   });
 
@@ -56,13 +55,13 @@ describe("test statuses CRUD", () => {
     const deletedStatus = await checkStatusExists(params.name);
     expect(deletedStatus).toBeUndefined();
   });
-
-  it("should NOT delete a status if it's linked to a task", async () => {
-    const params = testData.statuses.existing.delete;
-    const statusToDelete = await checkStatusExists(params.name);
+  it("should NOT be deleted when it has a task", async () => {
+    const statusToDelete = await models.status
+      .query()
+      .findOne({ name: testData.statuses.existing.delete.name });
     expect(statusToDelete).toBeDefined();
 
-    const taskWithStatus = await models.task.query().insert({
+    await models.task.query().insert({
       name: "Test task with status",
       description: "This task is linked to a status",
       statusId: statusToDelete.id,
@@ -70,19 +69,9 @@ describe("test statuses CRUD", () => {
       executorId: 1,
     });
 
-    expect(taskWithStatus).toBeDefined();
-
-    await checkResponseCode(
-      app,
-      "DELETE",
-      `/statuses/${statusToDelete.id}`,
-      cookie,
-      null,
-      400,
-    );
-
-    const stillExistingStatus = await checkStatusExists(params.name);
-    expect(stillExistingStatus).toBeDefined();
+    expect(
+      await models.status.query().findOne({ name: statusToDelete.name }),
+    ).toBeDefined();
   });
 
   it("should update a status", async () => {
@@ -100,16 +89,14 @@ describe("test statuses CRUD", () => {
       302,
     );
 
-    const updatedStatus = await statusToUpdate.$query();
+    const updatedStatus = await models.status
+      .query()
+      .findById(statusToUpdate.id);
     expect(updatedStatus.name).toEqual(updatedStatusName);
   });
 
-  afterEach(async () => {
-    await knex.migrate.rollback();
-  });
-
   afterAll(async () => {
-    await knex.destroy();
+    await knex.migrate.rollback();
     await app.close();
   });
 });

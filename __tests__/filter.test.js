@@ -1,5 +1,4 @@
 import { prepareData, makeLogin } from "./helpers/index.js";
-import request from "./helpers/request.js";
 import { expect } from "@jest/globals";
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
@@ -49,7 +48,14 @@ describe("test tasks filtration by labels, status, and executor", () => {
   });
 
   async function testTaskFilter(filterParams) {
-    const response = await request(app, "GET", "/tasks", cookie, filterParams);
+    const response = await app.inject({
+      method: "GET",
+      url: "/tasks",
+      cookies: cookie,
+      query: filterParams,
+      headers: { accept: "application/json" },
+    });
+
     expect(response.statusCode).toBe(200);
 
     const jsonResponse = JSON.parse(response.body);
@@ -71,7 +77,7 @@ describe("test tasks filtration by labels, status, and executor", () => {
       "all filters",
     ],
   ])(
-    "should return only tasks with the selected %s",
+    "should return only tasks with the selected",
     async (filterParams, filterType) => {
       const resolvedFilters = Object.fromEntries(
         Object.entries(filterParams).map(([key, value]) => [key, value()]),

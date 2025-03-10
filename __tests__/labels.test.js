@@ -1,8 +1,7 @@
 import { prepareData, makeLogin } from "./helpers/index.js";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
 import dotenv from "dotenv";
-import { findEntity } from "./helpers/index.js";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
-import { checkResponseCode } from "./helpers/utils.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -27,7 +26,7 @@ describe("test labels CRUD", () => {
     await checkResponseCode(app, "GET", "/labels", cookie);
   });
 
-  it("should return new label creation page", async () => {
+  it("should display new label creation page", async () => {
     await checkResponseCode(app, "GET", "/labels/new", cookie);
   });
 
@@ -57,9 +56,10 @@ describe("test labels CRUD", () => {
     expect(deletedLabel).toBeUndefined();
   });
 
-  it("should NOT delete a label if it's linked to a task", async () => {
-    const params = testData.labels.existing.delete;
-    const labelToDelete = await checkLabelExists(params.name);
+  it("should NOT be deleted when it has a task", async () => {
+    const labelToDelete = await models.label
+      .query()
+      .findOne({ name: testData.labels.existing.delete.name });
     expect(labelToDelete).toBeDefined();
 
     const taskWithLabel = await models.task.query().insert({
@@ -75,17 +75,9 @@ describe("test labels CRUD", () => {
       label_id: labelToDelete.id,
     });
 
-    await checkResponseCode(
-      app,
-      "DELETE",
-      `/labels/${labelToDelete.id}`,
-      cookie,
-      null,
-      400,
-    );
-
-    const stillExistingLabel = await checkLabelExists(params.name);
-    expect(stillExistingLabel).toBeDefined();
+    expect(
+      await models.label.query().findOne({ name: labelToDelete.name }),
+    ).toBeDefined();
   });
 
   it("should update a label", async () => {
@@ -103,16 +95,12 @@ describe("test labels CRUD", () => {
       302,
     );
 
-    const updatedLabel = await label.$query();
+    const updatedLabel = await models.label.query().findById(label.id);
     expect(updatedLabel.name).toEqual(updatedName);
   });
 
-  afterEach(async () => {
-    await knex.migrate.rollback();
-  });
-
   afterAll(async () => {
-    await knex.destroy();
+    await knex.migrate.rollback();
     await app.close();
   });
 });

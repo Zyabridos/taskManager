@@ -22,7 +22,8 @@ export default {
         ...generateLocaleFlashMessages("Status", "en"),
         delete: {
           ...generateLocaleFlashMessages("Status", "en").delete,
-          hasTasks: "This status is attached to a task, so it cannot be deleted",
+          hasTasks:
+            "This status is attached to a task, so it cannot be deleted",
         },
       },
       users: {

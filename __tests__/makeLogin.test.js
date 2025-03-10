@@ -35,7 +35,10 @@ describe("makeLogin function", () => {
 
   it("should return 401 for wrong password", async () => {
     const existingUser = testData.users.existing.author;
-    const wrongPasswordData = { email: existingUser.email, password: "wrongpassword" };
+    const wrongPasswordData = {
+      email: existingUser.email,
+      password: "wrongpassword",
+    };
 
     const responseSignIn = await app.inject({
       method: "POST",
@@ -58,6 +61,8 @@ describe("makeLogin function", () => {
 
     const setCookieHeader = responseSignIn.headers["set-cookie"];
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader.some((cookie) => cookie.startsWith("session="))).toBe(true);
+    expect(
+      setCookieHeader.some((cookie) => cookie.startsWith("session=")),
+    ).toBe(true);
   });
 });

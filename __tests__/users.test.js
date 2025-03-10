@@ -1,10 +1,9 @@
 import _ from "lodash";
 import encrypt from "../server/lib/secure.cjs";
 import { prepareData, makeLogin } from "./helpers/index.js";
-import { findEntity } from "./helpers/index.js";
+import { checkResponseCode } from "./helpers/utils.js";
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
-import { checkResponseCode, findEntity } from "./helpers/utils.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -21,15 +20,11 @@ describe("test users CRUD", () => {
     cookie = await makeLogin(app, testData.users.existing.author);
   });
 
-  async function checkUserExists(email) {
-    return findEntity(models.user, "email", email);
-  }
-
-  it("should return users list", async () => {
+  it("should show a list of users", async () => {
     await checkResponseCode(app, "GET", app.reverse("users"));
   });
 
-  it("should return new user registration page", async () => {
+  it("should display new user creation page", async () => {
     await checkResponseCode(app, "GET", app.reverse("newUser"));
   });
 
@@ -41,14 +36,15 @@ describe("test users CRUD", () => {
       ..._.omit(params, "password"),
       passwordDigest: encrypt(params.password),
     };
-    const user = await checkUserExists(params.email);
+    const user = await models.user.query().findOne({ email: params.email });
     expect(user).toMatchObject(expected);
   });
 
   it("should delete a user", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await checkUserExists(params.email);
-    expect(userToDelete).toBeDefined();
+    const userToDelete = await models.user
+      .query()
+      .findOne({ email: params.email });
 
     const cookie = await makeLogin(app, testData.users.existing.fixed);
     await checkResponseCode(
@@ -60,26 +56,23 @@ describe("test users CRUD", () => {
       302,
     );
 
-    const deletedUser = await checkUserExists(params.email);
-    expect(deletedUser).toBeUndefined();
+    expect(
+      await models.user.query().findOne({ email: params.email }),
+    ).toBeUndefined();
   });
 
   it("should update a user", async () => {
     const params = testData.users.existing.fixed;
-    const user = await checkUserExists(params.email);
-    expect(user).toBeDefined();
-
+    const user = await models.user.query().findOne({ email: params.email });
     const newLastName = "Golovach";
+
     const cookie = await makeLogin(app, testData.users.existing.fixed);
     await checkResponseCode(
       app,
       "PATCH",
       `/users/${user.id}`,
       cookie,
-      {
-        ...params,
-        lastName: newLastName,
-      },
+      { ...params, lastName: newLastName },
       302,
     );
 
@@ -87,9 +80,12 @@ describe("test users CRUD", () => {
     expect(updatedUser.lastName).toEqual(newLastName);
   });
 
-  it("should NOT be deleted when they have a task", async () => {
+  it("should NOT be deleted when it has a task", async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await checkUserExists(params.email);
+    const userToDelete = await models.user
+      .query()
+      .findOne({ email: params.email });
+
     expect(userToDelete).toBeDefined();
 
     const taskWithUser = await models.task.query().insert({
@@ -102,7 +98,9 @@ describe("test users CRUD", () => {
 
     expect(taskWithUser).toBeDefined();
 
-    const userNotSupposedToBeDeleted = await checkUserExists(params.email);
+    const userNotSupposedToBeDeleted = await models.user
+      .query()
+      .findOne({ email: params.email });
     expect(userNotSupposedToBeDeleted).toBeDefined();
   });
 
@@ -111,3 +109,5 @@ describe("test users CRUD", () => {
     await knex.destroy();
   });
 });
+
+// npx jest __tests__/users.test.js

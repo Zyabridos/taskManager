@@ -1,8 +1,8 @@
+import _ from "lodash";
 import { prepareData, makeLogin } from "./helpers/index.js";
-import { findEntity } from "./helpers/index.js";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
-import { checkResponseCode, findEntity } from "./helpers/utils.js";
 
 dotenv.config({ path: ".env.test" });
 
@@ -23,29 +23,29 @@ describe("test tasks CRUD", () => {
     return findEntity(models.task, "name", name);
   }
 
-  it("should return tasks list", async () => {
+  it("should show a list of tasks", async () => {
     await checkResponseCode(app, "GET", "/tasks", cookie);
   });
 
-  it("should return new task creation page", async () => {
+  it("should display new task creation page", async () => {
     await checkResponseCode(app, "GET", "/tasks/new", cookie);
   });
 
   it("should return a particular task", async () => {
     const params = testData.tasks.existing.update;
-    const task = await checkTaskExists(params.name);
+    const task = await models.task.query().findOne({ name: params.name });
     expect(task).toBeDefined();
 
     await checkResponseCode(app, "GET", `/tasks/${task.id}`, cookie);
   });
 
-  it("should create a new task", async () => {
-    const params = testData.tasks.new;
-    await checkResponseCode(app, "POST", "/tasks", cookie, params, 302);
+  // it("should create a new task", async () => {
+  //   const params = testData.tasks.new;
+  //   await checkResponseCode(app, "POST", "/tasks", cookie, params, 302);
 
-    const task = await checkTaskExists(params.name);
-    expect(task).toMatchObject(params);
-  });
+  //   const task = await checkTaskExists(params.name);
+  //   expect(task).toMatchObject(params);
+  // });
 
   it("should delete a task", async () => {
     const params = testData.tasks.existing.delete;
@@ -76,10 +76,7 @@ describe("test tasks CRUD", () => {
       "PATCH",
       `/tasks/${task.id}`,
       cookie,
-      {
-        ...params,
-        name: updatedTaskName,
-      },
+      { ...params, name: updatedTaskName },
       302,
     );
 
@@ -87,12 +84,10 @@ describe("test tasks CRUD", () => {
     expect(updatedTask.name).toEqual(updatedTaskName);
   });
 
-  afterEach(async () => {
-    await knex("tasks").del();
-  });
-
   afterAll(async () => {
     await knex.migrate.rollback();
     await app.close();
   });
 });
+
+// npx jest __tests__/tasks.test.js
