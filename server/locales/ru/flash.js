@@ -11,7 +11,7 @@ export default {
   users: {
     create: {
       error: "Не удалось зарегистрировать",
-      success: "Пользователь успешно зарегистрирован",
+      success: "Пользователь успешно zaregestrirovan",
     },
     delete: {
       success: "Пользователь успешно удален",

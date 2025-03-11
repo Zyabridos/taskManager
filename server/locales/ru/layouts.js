@@ -7,5 +7,8 @@ export default {
     signIn: "Вход",
     signUp: "Регистрация",
     signOut: "Выход",
+    language: "Change language",
+    english: "English",
+    russian: "Русский",
   },
 };

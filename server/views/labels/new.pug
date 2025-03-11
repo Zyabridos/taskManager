@@ -4,5 +4,5 @@ block content
   h1.display-4.fw-bold.mt-4= t('views.labels.new.title')
 
   +formFor()(action='/labels' method='post')
-    +floatingFormInput(label, 'name', errors, t('views.labels.new.name'))(type="text")
+    +floatingFormInput(label, 'name', errors, t('views.labels.new.label'))(type="text")
     +submit(label)(value=t('views.labels.new.submit'))

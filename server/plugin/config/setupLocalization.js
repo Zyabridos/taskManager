@@ -1,11 +1,15 @@
 import i18next from "i18next";
 import middleware from "i18next-http-middleware";
-import locales from "../../locales/index.js";
+import ru from "../../locales/ru/index.js";
+import en from "../../locales/en/index.js";
 import fastifyPlugin from "fastify-plugin";
 
 await i18next.use(middleware.LanguageDetector).init({
   fallbackLng: "ru",
-  resources: locales,
+  resources: {
+    ru,
+    en,
+  },
   detection: {
     order: ["querystring", "cookie", "header"],
     caches: ["cookie"],
