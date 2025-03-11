@@ -1,19 +1,28 @@
+//- users/new.pug
 extends ../layouts/application.pug
 
-block header
-  h1.display-4.fw-bold= t('views.users.new.header')
-  
 block content
-  .row.justify-content-center
-    .col-12.col-md-8
-      .card.shadow-sm
-        .card-body.row.p-5
-          .col-12.col-md-6.d-flex.align-items-center.justify-content-center
-            img.rounded-circle(src=assetPath('assets/images/avatar.jpg'))
-          .col-12.col-md-6.mt-3.mt-mb-0
-            +formFor()(action="/users" method="post")
-              +floatingFormInput(user, 'firstName', errors, t('views.users.firstName'))(type="text")
-              +floatingFormInput(user, 'lastName', errors, t('views.users.lastName'))(type="text")
-              +floatingFormInput(user, 'email', errors, t('views.users.email'))(type="text")
-              +floatingFormInput(user, 'password', errors, t('views.users.password'))(type="password")
-              +submit(user)(value=t('views.users.new.submit'))
+  h1 Регистрация пользователя
+  form(method="POST", action="/users")
+    .form-group
+      label(for="first_name") First Name
+      input#first_name.form-control(name="data[first_name]", value=user.first_name)
+      if errors && errors.first_name
+        ul
+          each err in errors.first_name
+            li.text-danger= err.message
+    .form-group
+      label(for="last_name") Last Name
+      input#last_name.form-control(name="data[last_name]", value=user.last_name)
+      if errors && errors.last_name
+        ul
+          each err in errors.last_name
+            li.text-danger= err.message
+    .form-group
+      label(for="email") Email
+      input#email.form-control(name="data[email]", value=user.email)
+      if errors && errors.email
+        ul
+          each err in errors.email
+            li.text-danger= err.message
+    button.btn.btn-primary(type="submit") Зарегистрироваться
