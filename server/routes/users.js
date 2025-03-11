@@ -49,7 +49,6 @@ export default (app) => {
 
         reply.status(302).redirect("/");
       } catch ({ data }) {
-        console.log(data);
         req.flash("error", i18next.t("flash.users.create.error"));
         reply.render("users/new", { user, errors: data });
       }
