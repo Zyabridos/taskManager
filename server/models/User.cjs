@@ -18,7 +18,7 @@ module.exports = class User extends unique(BaseModel) {
         first_name: { type: "string", minLength: 1 },
         last_name: { type: "string", minLength: 1 },
         email: { type: "string", minLength: 1 },
-        password_digest: { type: "string", minLength: 3 },
+        password: { type: 'string', minLength: 3 },
       },
     };
   }
