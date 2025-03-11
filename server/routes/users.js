@@ -63,9 +63,9 @@ export default (app) => {
       try {
         const user = await app.objection.models.user.query().findById(id);
         if (!user) {
-  req.flash("error", i18next.t("flash.users.edit.notFound"));
-  return reply.redirect("/users");
-}
+          req.flash("error", i18next.t("flash.users.edit.notFound"));
+          return reply.redirect("/users");
+        }
         await user.$query().patch(updatedData);
         req.flash("info", i18next.t("flash.users.edit.success"));
         reply.redirect(`/users`);
@@ -101,12 +101,17 @@ export default (app) => {
           return reply.redirect("/users");
         }
 
+        if (req.session.userId === user.id) {
+          await req.logOut();
+          req.session.userId = null;
+        }
+
         await user.$query().delete();
         req.flash("info", i18next.t("flash.users.delete.success"));
         return reply.redirect("/users");
       } catch (error) {
         req.flash("error", i18next.t("flash.users.delete.error"));
-return reply.redirect("/users");
+        return reply.redirect("/users");
       }
     });
 };
