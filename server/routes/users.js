@@ -63,15 +63,15 @@ export default (app) => {
       try {
         const user = await app.objection.models.user.query().findById(id);
         if (!user) {
-          req.flash("error", i18next.t("flash.users.edit.notFound"));
-          return reply.status(404).send("User not found");
-        }
+  req.flash("error", i18next.t("flash.users.edit.notFound"));
+  return reply.redirect("/users");
+}
         await user.$query().patch(updatedData);
         req.flash("info", i18next.t("flash.users.edit.success"));
         reply.redirect(`/users`);
       } catch ({ data }) {
         req.flash("error", i18next.t("flash.users.edit.error"));
-        reply.render("users/edit", {
+        return reply.render("users/edit", {
           user: { id, ...updatedData },
           errors: data,
         });
@@ -84,7 +84,6 @@ export default (app) => {
 
       try {
         const user = await app.objection.models.user.query().findById(id);
-        req.flash("info", i18next.t("flash.users.delete.success"));
         if (!user) {
           req.flash("error", i18next.t("flash.users.delete.notFound"));
           return reply.status(404).send("User not found");
@@ -107,7 +106,7 @@ export default (app) => {
         return reply.redirect("/users");
       } catch (error) {
         req.flash("error", i18next.t("flash.users.delete.error"));
-        return reply.status(500).send("Internal Server Error");
+return reply.redirect("/users");
       }
     });
 };
