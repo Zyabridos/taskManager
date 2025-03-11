@@ -1,0 +1,46 @@
+mixin taskForm(action, method, task = {}, errors = {}, statuses = [], executors = [], labels = [])
+  form(action=action method="POST")
+    input(type="hidden" name="_method" value=method)
+
+    .mb-3
+      label(for="data_name")= t('views.tasks.name')
+      input#data_name.form-control(type="text" name="data[name]" value=(task.name || ""))
+      if errors && errors.name && errors.name.length
+        .text-danger= errors.name[0].message
+
+    .mb-3
+      label(for="data_description")= t('views.tasks.description')
+      input#data_description.form-control(type="text" name="data[description]" value=(task.description || ""))
+      if errors && errors.description && errors.description.length
+        .text-danger= errors.description[0].message
+
+    .mb-3
+      label(for="data_statusId")= t('views.tasks.status')
+      select.form-control(id="data_statusId" name="data[statusId]")
+        if statuses
+          each status in statuses
+ selected=(task.statusId == status.id))= status.name
+        if errors && errors.statusId && errors.statusId.length
+          .text-danger= errors.statusId[0].message
+
+    .mb-3
+      label(for="data_executorId")= t('views.tasks.executor')
+      select.form-control(id="data_executorId" name="data[executorId]")
+        if executors
+          each executor in executors
+            option(value=executor.id selected=(task.executorId == executor.id))= `${executor.firstName} ${executor.lastName}`
+        else
+          option(disabled selected)= t('views.tasks.noExecutors')
+      if errors && errors.executorId && errors.executorId.length
+        .text-danger= errors.executorId[0].message
+
+    .mb-3
+      label(for="data_labels")= t('views.tasks.labels')
+      select.form-control(id="data_labelId" name="data[labels]" multiple)
+        if labels
+          each label in labels
+            option(value=label.id selected=(task.labels && task.labels.some(l => l.id === label.id)))= label.name
+        if errors && errors.labels && errors.labels.length
+          .text-danger= errors.labels[0].message
+
+    button.btn.btn-primary(type="submit")= t('views.tasks.new.submit')
