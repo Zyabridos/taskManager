@@ -1,28 +1,36 @@
-//- users/new.pug
 extends ../layouts/application.pug
 
+block header
+  h1.display-4.fw-bold= t('views.users.new.header')
+
 block content
-  h1 Регистрация пользователя
   form(method="POST", action="/users")
     .form-group
-      label(for="first_name") First Name
+      label(for="first_name")= t('views.users.firstName')
       input#first_name.form-control(name="data[first_name]", value=user.first_name)
       if errors && errors.first_name
         ul
           each err in errors.first_name
             li.text-danger= err.message
     .form-group
-      label(for="last_name") Last Name
+      label(for="last_name")= t('views.users.lastName')
       input#last_name.form-control(name="data[last_name]", value=user.last_name)
       if errors && errors.last_name
         ul
           each err in errors.last_name
             li.text-danger= err.message
     .form-group
-      label(for="email") Email
+      label(for="email")= t('views.users.email')
       input#email.form-control(name="data[email]", value=user.email)
       if errors && errors.email
         ul
           each err in errors.email
             li.text-danger= err.message
-    button.btn.btn-primary(type="submit") Зарегистрироваться
+    .form-group
+      label(for="email")= t('views.users.password')
+      input#password.form-control(name="data[password]", value=user.password)
+      if errors && errors.password
+        ul
+          each err in errors.password
+            li.text-danger= err.message
+    button.btn.btn-primary(type="submit")= t('views.users.new.submit')
