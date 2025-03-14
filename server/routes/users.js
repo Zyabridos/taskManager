@@ -47,7 +47,7 @@ export default (app) => {
         const message = i18next.t("flash.users.create.success");
         req.flash("info", message);
 
-        reply.status(302).redirect("/statuses");
+        reply.status(302).redirect("/");
       } catch ({ data }) {
         req.flash("error", i18next.t("flash.users.create.error"));
         reply.render("users/new", { user, errors: data });
