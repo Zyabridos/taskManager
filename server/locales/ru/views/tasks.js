@@ -27,5 +27,6 @@ export default {
   edit: {
     title: "Изменить задачу",
     submit: "Изменить",
+    
   },
 };

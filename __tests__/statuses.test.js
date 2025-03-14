@@ -101,3 +101,5 @@ describe("test statuses CRUD", () => {
     await app.close();
   });
 });
+
+// npx jest __tests__/statuses.test.js 

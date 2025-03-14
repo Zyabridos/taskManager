@@ -7,7 +7,6 @@ dotenv.config({ path: ".env.test" });
 
 describe("test session", () => {
   let app;
-  let knex;
   let testData;
   let cookie;
 

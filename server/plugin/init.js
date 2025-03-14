@@ -5,7 +5,7 @@ import addRoutes from "../routes/index.js";
 import localizationPlugin from "./config/setupLocalization.js";
 import addHooks from "./middlewares/addHooks.js";
 
-export default async (app) => {
+const init = async (app) => {
   await registerPlugins(app);
   await app.register(localizationPlugin);
   setUpViews(app);
@@ -15,3 +15,5 @@ export default async (app) => {
 
   return app;
 };
+
+export default init;
