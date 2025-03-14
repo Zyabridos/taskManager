@@ -38,12 +38,29 @@ describe("test tasks CRUD", () => {
     const task = await models.task.query().findOne({ name: params.name });
     expect(task).toBeDefined();
 
-    await checkResponseCode(app, "GET", `/tasks/${task.id}`, cookie);
+    const response = await app.inject({
+      method: "GET",
+      url: `/tasks/${task.id}`,
+      headers: { cookie: `session=${cookie.session}` },
+    });
+
+    expect(response.statusCode).toBe(200);
   });
 
   it("should create a new task", async () => {
     const params = testData.tasks.new;
-    await checkResponseCode(app, "POST", "/tasks", cookie, params, 302);
+    cookie = await makeLogin(app, testData.users.existing.author);
+
+    const taskData = { data: params };
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/tasks",
+      headers: { cookie: `session=${cookie.session}` },
+      payload: taskData,
+    });
+
+    expect(response.statusCode).toBe(302);
 
     const task = await checkTaskExists(params.name);
     expect(task).toMatchObject(params);
@@ -91,4 +108,4 @@ describe("test tasks CRUD", () => {
   });
 });
 
-//  npx jest __tests__/tasks.test.js 
+//  npx jest __tests__/tasks.test.js
