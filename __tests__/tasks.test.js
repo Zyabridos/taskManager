@@ -90,3 +90,5 @@ describe("test tasks CRUD", () => {
     await app.close();
   });
 });
+
+//  npx jest __tests__/tasks.test.js 
