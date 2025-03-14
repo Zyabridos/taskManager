@@ -30,7 +30,10 @@ lint:
 	npx eslint .
 
 test:
-	npm test -s
+	npm test -- --runInBand
 
 a:
 	node server/startServer.js --watch
+
+t:
+	npx jest __tests__/tasks.test.js 

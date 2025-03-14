@@ -13,9 +13,11 @@ export default {
   new: {
     title: "Создать статус",
     submit: "Создать",
+    label: "Наименование",
   },
   edit: {
     title: "Изменить статус",
     submit: "Изменить",
+    label: "Наименование",
   },
 };

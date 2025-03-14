@@ -13,9 +13,11 @@ export default {
   new: {
     title: "Create Status",
     submit: "Create",
+    label: "Name",
   },
   edit: {
     title: "Edit Status",
     submit: "Update",
+    label: "Name",
   },
 };
