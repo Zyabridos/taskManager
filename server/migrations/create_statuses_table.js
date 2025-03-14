@@ -1,5 +1,9 @@
-import { createBasicTable } from "../utils.js";
+export const up = (knex) =>
+  knex.schema.createTable("statuses", (table) => {
+    table.increments("id").primary();
+    table.string("name").notNullable();
+    table.timestamp("created_at").defaultTo(knex.fn.now());
+    table.timestamp("updated_at").defaultTo(knex.fn.now());
+  });
 
-export const up = (knex) => createBasicTable(knex, "statuses");
-
-export const down = (knex) => knex.schema.dropTable("statuses");
+export const down = (knex) => knex.schema.dropTableIfExists("statuses");
