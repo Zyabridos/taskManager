@@ -13,7 +13,7 @@
     "start": "node server/plugin/index.js",
     "setup": "npm install && npm start",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
   },
   "jest": {
     "modulePathIgnorePatterns": [
