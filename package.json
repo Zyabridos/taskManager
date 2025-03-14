@@ -12,7 +12,8 @@
     "build": "webpack",
     "start": "node server/plugin/index.js",
     "setup": "npm install && npm start",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky install"
   },
   "jest": {
     "modulePathIgnorePatterns": [
@@ -84,6 +85,7 @@
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jest": "^26.8.7",
     "globals": "^15.14.0",
+    "husky": "^9.1.7",
     "jest": "29.7.0",
     "mini-css-extract-plugin": "2.6.1",
     "prettier": "^3.4.2",

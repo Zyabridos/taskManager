@@ -34,9 +34,3 @@ test:
 
 a:
 	node server/startServer.js --watch
-
-p:
-	npx prettier --write .
-
-s:
-	npx jest __tests__/statuses.test.js
