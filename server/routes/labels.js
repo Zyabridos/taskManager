@@ -91,7 +91,6 @@ export default (app) => {
         }
 
         if (label.tasks.length > 0) {
-          // deny delete of label if it is connected to a task
           req.flash("error", i18next.t("flash.labels.delete.hasTasks"));
           return reply.redirect("/labels");
         }

@@ -90,9 +90,8 @@ export default (app) => {
           return reply.status(404).send("Status not found");
         }
         if (status.tasks.length > 0) {
-          // deny delete of status if it is connected to a task
           req.flash("error", i18next.t("flash.labels.delete.hasTasks"));
-          return reply.redirect("/labels");
+          return reply.redirect("/statuses");
         }
         await status.$query().delete();
         req.flash("info", i18next.t("flash.statuses.delete.success"));

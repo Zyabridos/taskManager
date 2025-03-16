@@ -90,7 +90,6 @@ export default (app) => {
           return reply.status(404).send("User not found");
         }
 
-        // check ig user is an author or an executor of a task
         const hasTasks = await app.objection.models.task
           .query()
           .where("authorId", id)
