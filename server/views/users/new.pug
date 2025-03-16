@@ -34,7 +34,7 @@ block content
                     each err in errors.email
                       li.text-danger= err.message
               .form-group
-                label(for="email")= t('views.users.password')
+                label(for="password")= t('views.users.password')
                 input#password.form-control(name="data[password]", value=user.password)
                 if errors && errors.password
                   ul
