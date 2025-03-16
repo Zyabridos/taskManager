@@ -10,9 +10,11 @@ export default {
   new: {
     title: "Создать метку",
     submit: "Создать",
+    label: "Наименование",
   },
   edit: {
     title: "Изменить метку",
     submit: "Изменить",
+    label: "Наименование",
   },
 };
