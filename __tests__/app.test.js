@@ -1,6 +1,6 @@
 import { describe, beforeAll, it } from "@jest/globals";
 import fastify from "fastify";
-import init from '../server/index.js'
+import init from '../server/plugin/init.js'
 import dotenv from "dotenv";
 import setUpTestsEnv from "./helpers/setUpTestsEnv.js";
 
