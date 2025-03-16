@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
-  "main": "./server/index.js",
+  "main": "./server/plugin/init.js",
   "type": "module",
   "engines": {
     "node": "20.17.0"
@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "node server/index.js",
+    "start": "node server/plugin/init.js",
     "setup": "npm install && npm start",
     "test": "jest",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
