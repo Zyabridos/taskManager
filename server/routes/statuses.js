@@ -44,7 +44,7 @@ export default (app) => {
           req.body.data,
         );
         await app.objection.models.status.query().insert(validStatus);
-        req.flash("info", i18next.t("flash.statuss.create.success"));
+        req.flash("info", i18next.t("flash.statuses.create.success"));
         reply.redirect("/statuses");
       } catch ({ data }) {
         req.flash("error", i18next.t("flash.users.create.error"));
