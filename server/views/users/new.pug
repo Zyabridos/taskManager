@@ -11,29 +11,33 @@ block content
           .col-12.col-md-6.d-flex.align-items-center.justify-content-center
             img.rounded-circle(src=assetPath('images/avatar.jpg') alt="SignUp picture")
           .col-12.col-md-6.mt-3.mt-md-0
-            form(method="POST", action="/users")
-              .form-group
+            +formFor()(action='/users', method='POST')
+              .form-floating.mb-3
+                input#first_name.form-control(type="text", name="data[first_name]", placeholder=t('views.users.firstName'), value=user.first_name, class=errors && errors.first_name ? 'is-invalid' : '')
                 label(for="first_name")= t('views.users.firstName')
-                input#first_name.form-control(name="data[first_name]", value=user.first_name, class=errors && errors.first_name ? 'is-invalid' : '')
                 if errors && errors.first_name
                   each err in errors.first_name
                     div.invalid-feedback= err.message
-              .form-group
+
+              .form-floating.mb-3
+                input#last_name.form-control(type="text", name="data[last_name]", placeholder=t('views.users.lastName'), value=user.last_name, class=errors && errors.last_name ? 'is-invalid' : '')
                 label(for="last_name")= t('views.users.lastName')
-                input#last_name.form-control(name="data[last_name]", value=user.last_name, class=errors && errors.last_name ? 'is-invalid' : '')
                 if errors && errors.last_name
                   each err in errors.last_name
                     div.invalid-feedback= err.message
-              .form-group
+
+              .form-floating.mb-3
+                input#email.form-control(type="email", name="data[email]", placeholder=t('views.users.email'), value=user.email, class=errors && errors.email ? 'is-invalid' : '')
                 label(for="email")= t('views.users.email')
-                input#email.form-control(name="data[email]", value=user.email, class=errors && errors.email ? 'is-invalid' : '')
                 if errors && errors.email
                   each err in errors.email
                     div.invalid-feedback= err.message
-              .form-group
+
+              .form-floating.mb-3
+                input#password.form-control(type="password", name="data[password]", placeholder=t('views.users.password'), value="", class=errors && errors.password ? 'is-invalid' : '')
                 label(for="password")= t('views.users.password')
-                input#password.form-control(type="password", name="data[password]", value="", class=errors && errors.password ? 'is-invalid' : '')
                 if errors && errors.password
                   each err in errors.password
                     div.invalid-feedback= err.message
+
               button.btn.btn-primary(type="submit")= t('views.users.new.submit')
