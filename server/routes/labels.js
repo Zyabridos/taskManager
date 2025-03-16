@@ -47,7 +47,7 @@ export default (app) => {
         req.flash("info", i18next.t("flash.labels.create.success"));
         reply.redirect("/labels");
       } catch ({ data }) {
-        req.flash("error", i18next.t("flash.users.create.error"));
+        req.flash("error", i18next.t("flash.labels.create.error"));
         reply.render("labels/new", { label, errors: data });
       }
 
