@@ -33,7 +33,4 @@ test:
 	npm test -s
 
 a:
-	node server/startServer.js --watch
-
-t:
-	npx jest __tests__/tasks.test.js 
+	node server/index.js --watch
