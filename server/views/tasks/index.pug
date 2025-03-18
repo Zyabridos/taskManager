@@ -43,7 +43,7 @@ block content
             td= task.id
             td
               a(href=`/tasks/${task.id}`)= task.name
-            td= task.status.name
+            td= task.status ? task.status.name : ''
             td= `${task.author.firstName} ${task.author.lastName}`
             if task.executor
               td= `${task.executor.firstName} ${task.executor.lastName}`

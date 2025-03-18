@@ -57,27 +57,27 @@ export default (app) => {
 
     // GET /tasks/new - page for creating new task
     .get("/tasks/new", { name: "newTask" }, async (req, reply) => {
-      try {
-        const task = new app.objection.models.task();
-        const statuses = await app.objection.models.status.query();
-        const users = await app.objection.models.user.query();
-        const labels = await app.objection.models.label.query();
+  try {
+    const task = new app.objection.models.task();
+    const statuses = (await app.objection.models.status.query())
+    const users = (await app.objection.models.user.query())
+    const labels = (await app.objection.models.label.query())
 
-        reply.render("tasks/new", {
-          task,
-          statuses: statuses || [],
-          users: users || [],
-          labels: labels || [],
-          errors: {},
-        });
+    reply.render("tasks/new", {
+      task,
+      statuses,
+      users,
+      labels,
+      errors: {},
+    });
+    return reply;
+  } catch (error) {
+    console.error("Error fetching data for new task:", error);
+    req.flash("error", i18next.t("flash.tasks.create.error"));
+    return reply.status(500).send("Internal Server Error");
+  }
+})
 
-        return reply;
-      } catch (error) {
-        console.error("Error fetching data for new task:", error);
-        req.flash("error", i18next.t("flash.tasks.create.error"));
-        return reply.status(500).send("Internal Server Error");
-      }
-    })
 
     // GET /tasks/:id/edit - edit task page
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {

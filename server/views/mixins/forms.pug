@@ -6,9 +6,11 @@ mixin formFor(entity = null)
     block
 
 mixin input(entity, propertyName, errors = {})
-  - propertyErrors = _.get(errors, propertyName)
-  - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
-  - inputId = getInputId(propertyName)
+  - items = items || []
+  - const propertyErrors = errors[propertyName] || []
+  - const isErrorsEmpty = propertyErrors.length === 0
+  - const classLine = 'form-control' + (isErrorsEmpty ? '' : ' is-invalid')
+  - const inputId = getInputId(propertyName)
   .mb-3(class=(errors[propertyName] && 'has-danger'))
     label(
       for= inputId
@@ -67,7 +69,7 @@ mixin select(entity, propertyName, errors = {}, items, label, isMultiple = false
     )&attributes(attributes)
       if !isMultiple
         option
-      each item in items
+      each item in (items || [])
         - isSelected = _.includes(selectedOptions, item.id)
         if propertyName === 'executorId'
           option(value= item.id selected= isSelected)= `${item.firstName} ${item.lastName}`
@@ -84,7 +86,7 @@ mixin filterSelect(propertyName, items=[], labelName, query)
     label.input-group-text(for=inputId)= labelName
     select.form-select(id=inputId name=propertyName)
       option
-      each item in items
+      each item in (items || [])
         - isSelected = query[propertyName] == item.id
         if propertyName !== 'executor'
           option(value=item.id selected= isSelected)= item.name

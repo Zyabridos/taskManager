@@ -5,5 +5,5 @@ export const prepareTaskViewData = async (app) => {
     app.objection.models.label.query(),
   ]);
 
-  return { statuses, users, labels };
+  return { statuses: statuses || [], executors: users || [], labels: labels || [] };
 };
