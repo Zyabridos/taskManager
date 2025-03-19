@@ -102,4 +102,4 @@ describe("test statuses CRUD", () => {
   });
 });
 
-// npx jest __tests__/statuses.test.js 
+// npx jest __tests__/statuses.test.js

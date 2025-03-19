@@ -1,6 +1,5 @@
 import fastify from "fastify";
-// import init from '../../server/index.js'
-import init from '../../server/plugin/init.js'
+import init from "../../server/plugin/init.js";
 import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.test" });

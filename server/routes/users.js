@@ -70,7 +70,6 @@ export default (app) => {
         req.flash("info", i18next.t("flash.users.edit.success"));
         reply.redirect(`/users`);
       } catch ({ data }) {
-        console.log(data);
         req.flash("error", i18next.t("flash.users.edit.error"));
         return reply.render("users/edit", {
           user: { id, ...updatedData },

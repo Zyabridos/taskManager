@@ -69,7 +69,7 @@ mixin select(entity, propertyName, errors = {}, items, label, isMultiple = false
     )&attributes(attributes)
       if !isMultiple
         option
-      each item in (items || [])
+      each item in items
         - isSelected = _.includes(selectedOptions, item.id)
         if propertyName === 'executorId'
           option(value= item.id selected= isSelected)= `${item.firstName} ${item.lastName}`
@@ -86,7 +86,7 @@ mixin filterSelect(propertyName, items=[], labelName, query)
     label.input-group-text(for=inputId)= labelName
     select.form-select(id=inputId name=propertyName)
       option
-      each item in (items || [])
+      each item in items
         - isSelected = query[propertyName] == item.id
         if propertyName !== 'executor'
           option(value=item.id selected= isSelected)= item.name

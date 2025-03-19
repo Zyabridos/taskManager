@@ -1,5 +1,5 @@
 import i18next from "i18next";
-import { prepareTaskViewData } from "../utils.js";
+import prepareTaskViewData from "../utils/prepareTaskViewData.js";
 export default (app) => {
   app
     // GET /tasks - list of all tasks
@@ -57,27 +57,26 @@ export default (app) => {
 
     // GET /tasks/new - page for creating new task
     .get("/tasks/new", { name: "newTask" }, async (req, reply) => {
-  try {
-    const task = new app.objection.models.task();
-    const statuses = (await app.objection.models.status.query())
-    const users = (await app.objection.models.user.query())
-    const labels = (await app.objection.models.label.query())
+      try {
+        const task = new app.objection.models.task();
+        const statuses = await app.objection.models.status.query();
+        const users = await app.objection.models.user.query();
+        const labels = await app.objection.models.label.query();
 
-    reply.render("tasks/new", {
-      task,
-      statuses,
-      users,
-      labels,
-      errors: {},
-    });
-    return reply;
-  } catch (error) {
-    console.error("Error fetching data for new task:", error);
-    req.flash("error", i18next.t("flash.tasks.create.error"));
-    return reply.status(500).send("Internal Server Error");
-  }
-})
-
+        reply.render("tasks/new", {
+          task,
+          statuses,
+          users,
+          labels,
+          errors: {},
+        });
+        return reply;
+      } catch (error) {
+        console.error("Error fetching data for new task:", error);
+        req.flash("error", i18next.t("flash.tasks.create.error"));
+        return reply.status(500).send("Internal Server Error");
+      }
+    })
 
     // GET /tasks/:id/edit - edit task page
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
@@ -126,21 +125,35 @@ export default (app) => {
       };
 
       try {
-        const newTask = await app.objection.models.task
-          .query()
-          .insert(taskData);
-        if (labelIds.length > 0) {
-          await app.objection.models.task
-            .relatedQuery("labels")
-            .for(newTask.id)
-            .relate(labelIds);
-        }
+        const newTask = await app.objection.models.task.transaction(
+          async (trx) => {
+            // Получаем полные объекты лейблов
+            const labelObjects =
+              labelIds.length > 0
+                ? await app.objection.models.label
+                    .query(trx)
+                    .whereIn("id", labelIds)
+                : [];
+
+            // Формируем данные задачи, включая лейблы
+            const taskWithLabels = {
+              ...taskData,
+              labels: labelObjects, // передаем объекты вместо id
+            };
+
+            // Вставляем задачу и связываем с лейблами
+            return app.objection.models.task
+              .query(trx)
+              .insertGraph(taskWithLabels, { relate: ["labels"] });
+          },
+        );
 
         req.flash("info", i18next.t("flash.tasks.create.success"));
         reply.redirect("/tasks");
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error during task creation:", error);
         req.flash("error", i18next.t("flash.tasks.create.error"));
+
         const { statuses, executors, labels } = await prepareTaskViewData(app);
 
         reply.render("tasks/new", {
@@ -151,6 +164,7 @@ export default (app) => {
           errors: error.data || {},
         });
       }
+
       return reply;
     })
 
