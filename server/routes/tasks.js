@@ -125,9 +125,8 @@ export default (app) => {
       };
 
       try {
-        const newTask = await app.objection.models.task.transaction(
+        await app.objection.models.task.transaction(
           async (trx) => {
-            // Получаем полные объекты лейблов
             const labelObjects =
               labelIds.length > 0
                 ? await app.objection.models.label
@@ -135,13 +134,11 @@ export default (app) => {
                     .whereIn("id", labelIds)
                 : [];
 
-            // Формируем данные задачи, включая лейблы
             const taskWithLabels = {
               ...taskData,
-              labels: labelObjects, // передаем объекты вместо id
+              labels: labelObjects,
             };
 
-            // Вставляем задачу и связываем с лейблами
             return app.objection.models.task
               .query(trx)
               .insertGraph(taskWithLabels, { relate: ["labels"] });
