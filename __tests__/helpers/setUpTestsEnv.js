@@ -1,13 +1,13 @@
-import fastify from "fastify";
-import init from "../../server/plugin/init.js";
-import dotenv from "dotenv";
+import fastify from 'fastify';
+import init from '../../server/plugin/init.js';
+import dotenv from 'dotenv';
 
-dotenv.config({ path: ".env.test" });
+dotenv.config({ path: '.env.test' });
 
 export default async function setUpTestsEnv() {
   const app = fastify({
     exposeHeadRoutes: false,
-    logger: { target: "pino-pretty" },
+    logger: { target: 'pino-pretty' },
   });
 
   await init(app);

@@ -17,6 +17,7 @@ export default [
     },
     rules: {
       quotes: ['error', 'single'],
+      'object-curly-newline': ['error', { multiline: true, consistent: true }],
     },
   },
   js.configs.recommended,
