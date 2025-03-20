@@ -82,14 +82,12 @@ export default (app) => {
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
   try {
     const { id } = req.params;
-    console.log('task id:', id);
     
     const task = await app.objection.models.task
       .query()
       .findById(id)
       .withGraphFetched("[status, executor, labels]");
 
-    console.log('task data:', task);
 
     if (!task) {
       console.log('task not found');
@@ -98,10 +96,6 @@ export default (app) => {
     }
 
     const { statuses, executors, labels } = await prepareTaskViewData(app);
-
-    console.log("executors:", executors);
-    console.log("statuses:", statuses);
-    console.log("labels:", labels);
 
     await reply.render("tasks/edit", {
       task,
@@ -210,7 +204,7 @@ export default (app) => {
 
         await task.$query().patch(updatedData);
         req.flash("info", i18next.t("flash.tasks.edit.success"));
-        return reply.redirect(`/tasks`);
+        reply.redirect(`/tasks`);
       } catch (error) {
         console.error("Error updating task:", error);
         req.flash("error", i18next.t("flash.tasks.edit.error"));
