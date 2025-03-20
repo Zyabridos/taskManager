@@ -103,7 +103,6 @@ export default (app) => {
     console.log("statuses:", statuses);
     console.log("labels:", labels);
 
-    // Разделяем вызов метода и возврат `reply`
     await reply.render("tasks/edit", {
       task,
       statuses,
