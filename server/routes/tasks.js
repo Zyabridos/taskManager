@@ -195,8 +195,12 @@ export default (app) => {
 
   try {
     const prevTask = await app.objection.models.task.query()
-      .withGraphJoined('[status, author, executor, labels]')
+      .withGraphJoined("[status, author, executor, labels]")
       .findById(taskId);
+
+  console.log("Full Request body:", req.body);
+  console.log("Labels list:", labelsList);
+
 
     if (!prevTask) {
       req.flash("error", i18next.t("flash.tasks.edit.notFound"));
@@ -215,18 +219,17 @@ export default (app) => {
     const labelIds = labelsList.map((labelId) => ({ id: Number(labelId) }));
 
     await app.objection.models.task.transaction(async (trx) => {
-      await app.objection.models.task.query(trx)
-        .upsertGraph(
-          {
-            ...updatedData,
-            labels: labelIds,
-          },
-          { relate: true, unrelate: true }
-        );
+      await app.objection.models.task.query(trx).upsertGraph(
+        {
+          ...updatedData,
+          labels: labelIds,
+        },
+        { relate: true, unrelate: true }
+      );
     });
 
     req.flash("info", i18next.t("flash.tasks.edit.success"));
-    return reply.redirect(app.reverse("tasks"));
+    return reply.redirect("/tasks");
   } catch (error) {
     console.error("Error updating task:", error);
     req.flash("error", i18next.t("flash.tasks.edit.error"));
