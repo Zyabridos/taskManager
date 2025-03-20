@@ -1,16 +1,16 @@
-import fastifyPlugin from "fastify-plugin";
-import fastifyFormbody from "@fastify/formbody";
-import fastifyObjectionjs from "fastify-objectionjs";
-import fastifySecureSession from "@fastify/secure-session";
-import fastifyCors from "@fastify/cors";
-import fastifyPassport from "@fastify/passport";
-import fastifySensible from "@fastify/sensible";
-import fastifyMethodOverride from "fastify-method-override";
-import qs from "qs";
-import dotenv from "dotenv";
-import FormStrategy from "../../lib/passportStrategies/FormStrategy.js";
-import * as knexConfig from "../../../knexfile.js";
-import models from "../../models/index.js";
+import fastifyPlugin from 'fastify-plugin';
+import fastifyFormbody from '@fastify/formbody';
+import fastifyObjectionjs from 'fastify-objectionjs';
+import fastifySecureSession from '@fastify/secure-session';
+import fastifyCors from '@fastify/cors';
+import fastifyPassport from '@fastify/passport';
+import fastifySensible from '@fastify/sensible';
+import fastifyMethodOverride from 'fastify-method-override';
+import qs from 'qs';
+import dotenv from 'dotenv';
+import FormStrategy from '../../lib/passportStrategies/FormStrategy.js';
+import * as knexConfig from '../../../knexfile.js';
+import models from '../../models/index.js';
 
 dotenv.config();
 
@@ -18,8 +18,8 @@ const registerPlugins = async (app) => {
   await app.register(fastifySensible);
 
   app.register(fastifyCors, {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PATCH", "DELETE"],
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
   });
 
@@ -28,15 +28,15 @@ const registerPlugins = async (app) => {
   await app.register(fastifySecureSession, {
     secret: process.env.SESSION_KEY,
     cookie: {
-      path: "/",
+      path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
     },
   });
 
   await app.register(fastifyMethodOverride, {
-    methods: ["POST"],
-    query: "_method",
+    methods: ['POST'],
+    query: '_method',
     body: true,
   });
 
@@ -44,30 +44,30 @@ const registerPlugins = async (app) => {
     app.objection.models.user.query().findById(user.id),
   );
   fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
-  fastifyPassport.use(new FormStrategy("form", app));
+  fastifyPassport.use(new FormStrategy('form', app));
 
   await app.register(fastifyPassport.initialize());
   await app.register(fastifyPassport.secureSession());
 
   // decorators
-  app.decorate("fp", fastifyPassport);
-  app.decorate("authenticate", (...args) =>
-    fastifyPassport.authenticate("form", {
-      failureRedirect: app.reverse("root"),
+  app.decorate('fp', fastifyPassport);
+  app.decorate('authenticate', (...args) =>
+    fastifyPassport.authenticate('form', {
+      failureRedirect: app.reverse('root'),
     })(...args),
   );
 
-  app.decorate("reverse", (routeName) => {
+  app.decorate('reverse', (routeName) => {
     const routes = {
-      root: "/",
-      newUser: "/users/new",
-      newSession: "/session/new",
+      root: '/',
+      newUser: '/users/new',
+      newSession: '/session/new',
     };
-    return routes[routeName] || "/";
+    return routes[routeName] || '/';
   });
 
   await app.register(fastifyObjectionjs, {
-    knexConfig: knexConfig[process.env.NODE_ENV || "development"],
+    knexConfig: knexConfig[process.env.NODE_ENV || 'development'],
     models,
   });
 };
