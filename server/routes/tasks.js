@@ -80,32 +80,46 @@ export default (app) => {
 
     // GET /tasks/:id/edit - edit task page
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
-      try {
-        const { id } = req.params;
-        const task = await app.objection.models.task
-          .query()
-          .findById(id)
-          .withGraphFetched("[status, executor, labels]");
+  try {
+    const { id } = req.params;
+    console.log('task id:', id);
+    
+    const task = await app.objection.models.task
+      .query()
+      .findById(id)
+      .withGraphFetched("[status, executor, labels]");
 
-        if (!task) {
-          req.flash("error", i18next.t("flash.tasks.edit.notFound"));
-          return reply.status(404).send("Task not found");
-        }
+    console.log('task data:', task);
 
-        const { statuses, executors, labels } = await prepareTaskViewData(app);
-        reply.render("tasks/edit", {
-          task,
-          statuses,
-          executors,
-          labels,
-          errors: {},
-        });
-      } catch (error) {
-        console.error("Error fetching task:", error);
-        req.flash("error", i18next.t("flash.tasks.edit.error"));
-        return reply.status(500).send("Internal Server Error");
-      }
-    })
+    if (!task) {
+      console.log('task not found');
+      req.flash("error", i18next.t("flash.tasks.edit.notFound"));
+      return reply.redirect("/tasks");
+    }
+
+    const { statuses, executors, labels } = await prepareTaskViewData(app);
+
+    console.log("executors:", executors);
+    console.log("statuses:", statuses);
+    console.log("labels:", labels);
+
+    // Разделяем вызов метода и возврат `reply`
+    await reply.render("tasks/edit", {
+      task,
+      statuses,
+      executors,
+      labels,
+      errors: {},
+    });
+
+    return reply;
+
+  } catch (error) {
+    console.error("Error fetching task:", error);
+    req.flash("error", i18next.t("flash.tasks.edit.error"));
+    return reply.redirect("/tasks");
+  }
+})
 
     // POST /tasks - create new task
     .post("/tasks", { name: "createTask" }, async (req, reply) => {

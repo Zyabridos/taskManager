@@ -53,6 +53,7 @@ mixin floatingFormInput(entity, propertyName, errors = {}, propertyPlaceholder)
 
 
 mixin select(entity, propertyName, errors = {}, items, label, isMultiple = false, selectedLabel)
+  - items = items || []
   - propertyErrors = _.get(errors, propertyName)
   - classLine = 'form-control' + (_.isEmpty(propertyErrors) ? '' : ' is-invalid')
   - inputId = getInputId(propertyName)
