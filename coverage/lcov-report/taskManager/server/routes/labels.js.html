@@ -275,45 +275,45 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from "i18next";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from 'i18next';
 &nbsp;
 export default (app) =&gt; {
   app
     // GET /labels - list of all labels
-    .get("/labels", { name: "labels" }, async (req, reply) =&gt; {
+    .get('/labels', { name: 'labels' }, async (req, reply) =&gt; {
       const labels = await app.objection.models.label.query();
-      reply.render("labels/index", { labels });
+      reply.render('labels/index', { labels });
       return reply;
     })
 &nbsp;
     // GET /labels/new - page for creating new label
-    .get("/labels/new", { name: "newLabel" }, (req, reply) =&gt; {
+    .get('/labels/new', { name: 'newLabel' }, (req, reply) =&gt; {
       const label = new app.objection.models.label();
-      reply.render("labels/new", { label });
+      reply.render('labels/new', { label });
     })
 &nbsp;
     // GET /labels/:id/edit - page for editing a label
-    .get("/labels/:id/edit", { name: "editlabel" }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
+    .get('/labels/:id/edit', { name: 'editlabel' }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
       const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span>
 <span class="cstat-no" title="statement not covered" >      try {</span>
         const label = <span class="cstat-no" title="statement not covered" >await app.objection.models.label.query().findById(id);</span>
 <span class="cstat-no" title="statement not covered" >        if (!label) {</span>
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.label.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          reply.label(404).send("label not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.label.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          reply.label(404).send('label not found');</span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
         }
-<span class="cstat-no" title="statement not covered" >        console.log("label data:", label);</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("labels/edit", { label, errors: {} });</span>
+<span class="cstat-no" title="statement not covered" >        console.log('label data:', label);</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('labels/edit', { label, errors: {} });</span>
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        reply.render("labels/edit", { errors: data });</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.labels.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.label(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('labels/edit', { errors: data });</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.labels.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.label(500).send('Internal Server Error');</span>
       }
 <span class="cstat-no" title="statement not covered" >      return reply;</span>
     })
 &nbsp;
     // POST /labels - create new label
-    .post("/labels", { name: "createlabel" }, async (req, reply) =&gt; {
+    .post('/labels', { name: 'createlabel' }, async (req, reply) =&gt; {
       const label = new app.objection.models.label();
 &nbsp;
       try {
@@ -321,32 +321,32 @@ export default (app) =&gt; {
           req.body.data,
         );
         await app.objection.models.label.query().insert(validlabel);
-        req.flash("info", i18next.t("flash.labels.create.success"));
-        reply.redirect("/labels");
+        req.flash('info', i18next.t('flash.labels.create.success'));
+        reply.redirect('/labels');
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.labels.create.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("labels/new", { label, errors: data });</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.labels.create.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('labels/new', { label, errors: data });</span>
       }
 &nbsp;
       return reply;
     })
 &nbsp;
     // PATCH /labels/:id - edit a label
-    .patch("/labels/:id", { name: "updatelabel" }, async (req, reply) =&gt; {
+    .patch('/labels/:id', { name: 'updatelabel' }, async (req, reply) =&gt; {
       const { id } = req.params;
       const updatedData = req.body.data;
       try {
         const label = await app.objection.models.label.query().findById(id);
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!label) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.labels.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.label(404).send("label not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.labels.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.label(404).send('label not found');</span>
         }
         await label.$query().patch(updatedData);
-        req.flash("info", i18next.t("flash.labels.edit.success"));
-        reply.redirect(`/labels`);
+        req.flash('info', i18next.t('flash.labels.edit.success'));
+        reply.redirect('/labels');
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.labels.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("labels/edit", {</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.labels.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('labels/edit', {</span>
           label: { id, ...updatedData },
           errors: data,
         });
@@ -354,30 +354,30 @@ export default (app) =&gt; {
     })
 &nbsp;
     // DELETE /labels/:id - delete a label
-    .delete("/labels/:id", { name: "deleteLabel" }, async (req, reply) =&gt; {
+    .delete('/labels/:id', { name: 'deleteLabel' }, async (req, reply) =&gt; {
       const { id } = req.params;
       try {
         const label = await app.objection.models.label
           .query()
           .findById(id)
-          .withGraphFetched("tasks");
+          .withGraphFetched('tasks');
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!label) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.labels.delete.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.status(404).send("Label not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.labels.delete.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.status(404).send('Label not found');</span>
         }
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (label.tasks.length &gt; 0) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.labels.delete.hasTasks"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.redirect("/labels");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.labels.delete.hasTasks'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.redirect('/labels');</span>
         }
 &nbsp;
         await label.$query().delete();
-        req.flash("info", i18next.t("flash.labels.delete.success"));
-        return reply.redirect("/labels");
+        req.flash('info', i18next.t('flash.labels.delete.success'));
+        return reply.redirect('/labels');
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.labels.delete.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.status(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.labels.delete.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.status(500).send('Internal Server Error');</span>
       }
     });
 };
@@ -388,7 +388,7 @@ export default (app) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-20T20:39:28.979Z
+                at 2025-03-20T20:52:28.290Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

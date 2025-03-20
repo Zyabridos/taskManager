@@ -623,12 +623,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from "i18next";
-import prepareTaskViewData from "../utils/prepareTaskViewData.js";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from 'i18next';
+import prepareTaskViewData from '../utils/prepareTaskViewData.js';
 export default (app) =&gt; {
   app
     // GET /tasks - list of all tasks
-    .get("/tasks", { name: "tasks" }, async (req, reply) =&gt; {
+    .get('/tasks', { name: 'tasks' }, async (req, reply) =&gt; {
       const { status, executor, isCreatorUser, onlyExecutorTasks, label } =
         req.query;
 &nbsp;
@@ -637,58 +637,58 @@ export default (app) =&gt; {
 &nbsp;
         const query = app.objection.models.task
           .query()
-          .withGraphJoined("[status, executor, author, labels]")
+          .withGraphJoined('[status, executor, author, labels]')
           .select(
-            "tasks.*",
-            "status.name as statusName",
-            "executor.firstName as executorFirstName",
-            "executor.lastName as executorLastName",
-            "author.firstName as authorFirstName",
-            "author.lastName as authorLastName",
+            'tasks.*',
+            'status.name as statusName',
+            'executor.firstName as executorFirstName',
+            'executor.lastName as executorLastName',
+            'author.firstName as authorFirstName',
+            'author.lastName as authorLastName',
           );
 &nbsp;
-        if (status) query.where("tasks.status_id", Number(status));
-        if (executor) query.where("tasks.executor_id", Number(executor));
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (isCreatorUser === "true")
-<span class="cstat-no" title="statement not covered" >          query.where("tasks.author_id", req.session.userId);</span>
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (onlyExecutorTasks === "true")
-<span class="cstat-no" title="statement not covered" >          query.where("tasks.executor_id", req.session.userId);</span>
-        if (label) query.where("labels.id", Number(label));
+        if (status) query.where('tasks.status_id', Number(status));
+        if (executor) query.where('tasks.executor_id', Number(executor));
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (isCreatorUser === 'true')
+<span class="cstat-no" title="statement not covered" >          query.where('tasks.author_id', req.session.userId);</span>
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (onlyExecutorTasks === 'true')
+<span class="cstat-no" title="statement not covered" >          query.where('tasks.executor_id', req.session.userId);</span>
+        if (label) query.where('labels.id', Number(label));
 &nbsp;
         const tasks = await query;
 &nbsp;
-        if (req.headers.accept === "application/json") {
+        if (req.headers.accept === 'application/json') {
           return reply.send(tasks);
         }
 &nbsp;
-        reply.render("tasks/index", {
+        reply.render('tasks/index', {
           tasks,
           statuses,
           executors,
           labels,
           query: req.query || <span class="branch-1 cbranch-no" title="branch not covered" >{},</span>
-          selectedStatus: status || "",
-          selectedExecutor: executor || "",
-          selectedLabel: label || "",
-          isCreatorUser: isCreatorUser === "true",
-          onlyExecutorTasks: onlyExecutorTasks === "true",
+          selectedStatus: status || '',
+          selectedExecutor: executor || '',
+          selectedLabel: label || '',
+          isCreatorUser: isCreatorUser === 'true',
+          onlyExecutorTasks: onlyExecutorTasks === 'true',
         });
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Error fetching tasks:", error);</span>
-<span class="cstat-no" title="statement not covered" >        reply.code(500).send({ error: "Internal Server Error" });</span>
+<span class="cstat-no" title="statement not covered" >        console.error('Error fetching tasks:', error);</span>
+<span class="cstat-no" title="statement not covered" >        reply.code(500).send({ error: 'Internal Server Error' });</span>
       }
       return reply;
     })
 &nbsp;
     // GET /tasks/new - page for creating new task
-    .get("/tasks/new", { name: "newTask" }, async (req, reply) =&gt; {
+    .get('/tasks/new', { name: 'newTask' }, async (req, reply) =&gt; {
       try {
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
 &nbsp;
-        reply.render("tasks/new", {
+        reply.render('tasks/new', {
           task,
           statuses,
           users,
@@ -697,31 +697,31 @@ export default (app) =&gt; {
         });
         return reply;
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Error fetching data for new task:", error);</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.tasks.create.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.status(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        console.error('Error fetching data for new task:', error);</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.tasks.create.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.status(500).send('Internal Server Error');</span>
       }
     })
 &nbsp;
     // GET /tasks/:id/edit - edit task page
-    .get("/tasks/:id/edit", { name: "editTask" }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
+    .get('/tasks/:id/edit', { name: 'editTask' }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
 <span class="cstat-no" title="statement not covered" >      try {</span>
         const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span>
 &nbsp;
         const task = <span class="cstat-no" title="statement not covered" >await app.objection.models.task</span>
           .query()
           .findById(id)
-          .withGraphFetched("[status, executor, labels]");
+          .withGraphFetched('[status, executor, labels]');
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        if (!task) {</span>
-<span class="cstat-no" title="statement not covered" >          console.log("task not found");</span>
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.tasks.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.redirect("/tasks");</span>
+<span class="cstat-no" title="statement not covered" >          console.log('task not found');</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.tasks.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.redirect('/tasks');</span>
         }
 &nbsp;
         const { statuses, executors, labels } = <span class="cstat-no" title="statement not covered" >await prepareTaskViewData(app);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        await reply.render("tasks/edit", {</span>
+<span class="cstat-no" title="statement not covered" >        await reply.render('tasks/edit', {</span>
           task,
           statuses,
           executors,
@@ -731,14 +731,14 @@ export default (app) =&gt; {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        return reply;</span>
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Error fetching task:", error);</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.tasks.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.redirect("/tasks");</span>
+<span class="cstat-no" title="statement not covered" >        console.error('Error fetching task:', error);</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.tasks.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.redirect('/tasks');</span>
       }
     })
 &nbsp;
     // POST /tasks - create new task
-    .post("/tasks", { name: "createTask" }, async (req, reply) =&gt; {
+    .post('/tasks', { name: 'createTask' }, async (req, reply) =&gt; {
       const { name, description, statusId, executorId, labels } = req.body.data;
       const { id: authorId } = req.user;
 &nbsp;
@@ -760,7 +760,7 @@ export default (app) =&gt; {
             labelIds.length &gt; 0
               ? <span class="branch-0 cbranch-no" title="branch not covered" >await app.objection.models.label</span>
                   .query(trx)
-                  .whereIn("id", labelIds)
+                  .whereIn('id', labelIds)
               : [];
 &nbsp;
           const taskWithLabels = {
@@ -770,18 +770,18 @@ export default (app) =&gt; {
 &nbsp;
           return app.objection.models.task
             .query(trx)
-            .insertGraph(taskWithLabels, { relate: ["labels"] });
+            .insertGraph(taskWithLabels, { relate: ['labels'] });
         });
 &nbsp;
-        req.flash("info", i18next.t("flash.tasks.create.success"));
-        reply.redirect("/tasks");
+        req.flash('info', i18next.t('flash.tasks.create.success'));
+        reply.redirect('/tasks');
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Error during task creation:", error);</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.tasks.create.error"));</span>
+<span class="cstat-no" title="statement not covered" >        console.error('Error during task creation:', error);</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.tasks.create.error'));</span>
 &nbsp;
         const { statuses, executors, labels } = <span class="cstat-no" title="statement not covered" >await prepareTaskViewData(app);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        reply.render("tasks/new", {</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('tasks/new', {</span>
           task: taskData,
           statuses,
           executors,
@@ -795,22 +795,22 @@ export default (app) =&gt; {
 &nbsp;
     // GET /tasks/:id - view particular task
     .get(
-      "/tasks/:id",
-      { name: "task", preValidation: app.authenticate },
+      '/tasks/:id',
+      { name: 'task', preValidation: app.authenticate },
       async (req, reply) =&gt; {
         const taskId = Number(req.params.id);
         const task = await app.objection.models.task
           .query()
           .findById(taskId)
-          .withGraphFetched("[status, executor, author, labels]");
+          .withGraphFetched('[status, executor, author, labels]');
 &nbsp;
-        reply.render("tasks/task", { task });
+        reply.render('tasks/task', { task });
         return reply;
       },
     )
 &nbsp;
     // PATCH /tasks/:id - edit a task
-    .patch("/tasks/:id", { name: "updateTask" }, async (req, reply) =&gt; {
+    .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) =&gt; {
       const taskId = Number(req.params.id);
       const {
         name,
@@ -823,15 +823,15 @@ export default (app) =&gt; {
       try {
         const prevTask = await app.objection.models.task
           .query()
-          .withGraphJoined("[status, author, executor, labels]")
+          .withGraphJoined('[status, author, executor, labels]')
           .findById(taskId);
 &nbsp;
-        console.log("Full Request body:", req.body);
-        console.log("Labels list:", labelsList);
+        console.log('Full Request body:', req.body);
+        console.log('Labels list:', labelsList);
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!prevTask) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.tasks.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.status(404).send("Task not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.tasks.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.status(404).send('Task not found');</span>
         }
 &nbsp;
         const updatedData = {
@@ -855,11 +855,11 @@ export default (app) =&gt; {
           );
         });
 &nbsp;
-        req.flash("info", i18next.t("flash.tasks.edit.success"));
-        return reply.redirect("/tasks");
+        req.flash('info', i18next.t('flash.tasks.edit.success'));
+        return reply.redirect('/tasks');
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Error updating task:", error);</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.tasks.edit.error"));</span>
+<span class="cstat-no" title="statement not covered" >        console.error('Error updating task:', error);</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.tasks.edit.error'));</span>
 &nbsp;
         const [statuses, executors, labels] = <span class="cstat-no" title="statement not covered" >await Promise.all([</span>
           app.objection.models.status.query(),
@@ -867,7 +867,7 @@ export default (app) =&gt; {
           app.objection.models.label.query(),
         ]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        return reply.render("tasks/edit", {</span>
+<span class="cstat-no" title="statement not covered" >        return reply.render('tasks/edit', {</span>
           task: {
             id: taskId,
             name,
@@ -885,21 +885,21 @@ export default (app) =&gt; {
     })
 &nbsp;
     // DELETE /tasks/:id - delete a task
-    .delete("/tasks/:id", { name: "deleteTask" }, async (req, reply) =&gt; {
+    .delete('/tasks/:id', { name: 'deleteTask' }, async (req, reply) =&gt; {
       try {
         const { id } = req.params;
         const task = await app.objection.models.task.query().findById(id);
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!task) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.tasks.delete.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.status(404).send("Task not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.tasks.delete.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.status(404).send('Task not found');</span>
         }
 &nbsp;
         await task.$query().delete();
-        req.flash("info", i18next.t("flash.tasks.delete.success"));
-        reply.redirect("/tasks");
+        req.flash('info', i18next.t('flash.tasks.delete.success'));
+        reply.redirect('/tasks');
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.tasks.delete.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.status(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.tasks.delete.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.status(500).send('Internal Server Error');</span>
       }
     });
 };
@@ -910,7 +910,7 @@ export default (app) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-20T20:39:28.979Z
+                at 2025-03-20T20:52:28.290Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

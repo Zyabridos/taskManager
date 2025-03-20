@@ -295,44 +295,44 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from "i18next";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from 'i18next';
 &nbsp;
 export default (app) =&gt; {
   app
     // GET /users - list of all users
-    .get("/users", { name: "users" }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
+    .get('/users', { name: 'users' }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
       const users = <span class="cstat-no" title="statement not covered" >await app.objection.models.user.query();</span>
-<span class="cstat-no" title="statement not covered" >      reply.render("users/index", { users });</span>
+<span class="cstat-no" title="statement not covered" >      reply.render('users/index', { users });</span>
 <span class="cstat-no" title="statement not covered" >      return reply;</span>
     })
 &nbsp;
     // GET /users/new - get page for user creation
-    .get("/users/new", { name: "newUser" }, (req, reply) =&gt; {
+    .get('/users/new', { name: 'newUser' }, (req, reply) =&gt; {
       const user = new app.objection.models.user();
-      reply.render("users/new", { user });
+      reply.render('users/new', { user });
     })
 &nbsp;
     // GET /users/:id/edit - page for editing user
-    .get("/users/:id/edit", { name: "editUser" }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
+    .get('/users/:id/edit', { name: 'editUser' }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
       const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span>
 <span class="cstat-no" title="statement not covered" >      try {</span>
         const user = <span class="cstat-no" title="statement not covered" >await app.objection.models.user.query().findById(id);</span>
 <span class="cstat-no" title="statement not covered" >        if (!user) {</span>
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.users.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          reply.status(404).send("User not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.users.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          reply.status(404).send('User not found');</span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
         }
-<span class="cstat-no" title="statement not covered" >        reply.render("users/edit", { user, errors: {} });</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('users/edit', { user, errors: {} });</span>
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        reply.render("users/edit", { errors: data });</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.users.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.status(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('users/edit', { errors: data });</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.users.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.status(500).send('Internal Server Error');</span>
       }
 <span class="cstat-no" title="statement not covered" >      return reply;</span>
     })
 &nbsp;
     // POST /users - send data for user creation
-    .post("/users", { name: "users" }, async (req, reply) =&gt; {
+    .post('/users', { name: 'users' }, async (req, reply) =&gt; {
       const user = new app.objection.models.user();
 &nbsp;
       try {
@@ -341,34 +341,34 @@ export default (app) =&gt; {
         );
         await app.objection.models.user.query().insert(validUser);
 &nbsp;
-        const message = i18next.t("flash.users.create.success");
-        req.flash("info", message);
+        const message = i18next.t('flash.users.create.success');
+        req.flash('info', message);
 &nbsp;
-        reply.status(302).redirect("/");
+        reply.status(302).redirect('/');
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.users.create.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("users/new", { user, errors: data });</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.users.create.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('users/new', { user, errors: data });</span>
       }
 &nbsp;
       return reply;
     })
 &nbsp;
     // PATCH /users/:id - update user
-    .patch("/users/:id", { name: "editUser" }, async (req, reply) =&gt; {
+    .patch('/users/:id', { name: 'editUser' }, async (req, reply) =&gt; {
       const { id } = req.params;
       const updatedData = req.body.data;
       try {
         const user = await app.objection.models.user.query().findById(id);
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!user) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.users.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.redirect("/users");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.users.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.redirect('/users');</span>
         }
         await user.$query().patch(updatedData);
-        req.flash("info", i18next.t("flash.users.edit.success"));
-        reply.redirect(`/users`);
+        req.flash('info', i18next.t('flash.users.edit.success'));
+        reply.redirect('/users');
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.users.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.render("users/edit", {</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.users.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.render('users/edit', {</span>
           user: { id, ...updatedData },
           errors: data,
         });
@@ -376,25 +376,25 @@ export default (app) =&gt; {
     })
 &nbsp;
     // DELETE /users/:id - delete user
-    .delete("/users/:id", { name: "deleteUser" }, async (req, reply) =&gt; {
+    .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) =&gt; {
       const { id } = req.params;
 &nbsp;
       try {
         const user = await app.objection.models.user.query().findById(id);
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!user) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.users.delete.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.status(404).send("User not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.users.delete.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.status(404).send('User not found');</span>
         }
 &nbsp;
         const hasTasks = await app.objection.models.task
           .query()
-          .where("authorId", id)
-          .orWhere("executorId", id)
+          .where('authorId', id)
+          .orWhere('executorId', id)
           .resultSize();
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (hasTasks &gt; 0) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.users.delete.hasTasks"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.redirect("/users");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.users.delete.hasTasks'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.redirect('/users');</span>
         }
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (req.session.userId === user.id) {
@@ -403,11 +403,11 @@ export default (app) =&gt; {
         }
 &nbsp;
         await user.$query().delete();
-        req.flash("info", i18next.t("flash.users.delete.success"));
-        return reply.redirect("/users");
+        req.flash('info', i18next.t('flash.users.delete.success'));
+        return reply.redirect('/users');
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.users.delete.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.redirect("/users");</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.users.delete.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.redirect('/users');</span>
       }
     });
 };
@@ -418,7 +418,7 @@ export default (app) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-20T20:39:28.979Z
+                at 2025-03-20T20:52:28.290Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

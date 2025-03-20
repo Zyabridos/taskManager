@@ -271,45 +271,45 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from "i18next";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import i18next from 'i18next';
 &nbsp;
 export default (app) =&gt; {
   app
     // GET /statuses - list of all statuses
-    .get("/statuses", { name: "statuses" }, async (req, reply) =&gt; {
+    .get('/statuses', { name: 'statuses' }, async (req, reply) =&gt; {
       const statuses = await app.objection.models.status.query();
-      reply.render("statuses/index", { statuses });
+      reply.render('statuses/index', { statuses });
       return reply;
     })
 &nbsp;
     // GET /statuses/new - page for creating new status
-    .get("/statuses/new", { name: "newStatus" }, (req, reply) =&gt; {
+    .get('/statuses/new', { name: 'newStatus' }, (req, reply) =&gt; {
       const status = new app.objection.models.status();
-      reply.render("statuses/new", { status });
+      reply.render('statuses/new', { status });
     })
 &nbsp;
     // GET /statuses/:id/edit - page for editing a status
-    .get("/statuses/:id/edit", { name: "editStatus" }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
+    .get('/statuses/:id/edit', { name: 'editStatus' }, <span class="fstat-no" title="function not covered" >as</span>ync (req, reply) =&gt; {
       const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span>
 <span class="cstat-no" title="statement not covered" >      try {</span>
         const status = <span class="cstat-no" title="statement not covered" >await app.objection.models.status.query().findById(id);</span>
 <span class="cstat-no" title="statement not covered" >        if (!status) {</span>
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.status.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          reply.status(404).send("Status not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.status.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          reply.status(404).send('Status not found');</span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
         }
-<span class="cstat-no" title="statement not covered" >        console.log("Status data:", status);</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("statuses/edit", { status, errors: {} });</span>
+<span class="cstat-no" title="statement not covered" >        console.log('Status data:', status);</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('statuses/edit', { status, errors: {} });</span>
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        reply.render("statuses/edit", { errors: data });</span>
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.statuses.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.status(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('statuses/edit', { errors: data });</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.statuses.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.status(500).send('Internal Server Error');</span>
       }
 <span class="cstat-no" title="statement not covered" >      return reply;</span>
     })
 &nbsp;
     // POST /statuses - create new status
-    .post("/statuses", { name: "createStatus" }, async (req, reply) =&gt; {
+    .post('/statuses', { name: 'createStatus' }, async (req, reply) =&gt; {
       const status = new app.objection.models.status();
 &nbsp;
       try {
@@ -317,32 +317,32 @@ export default (app) =&gt; {
           req.body.data,
         );
         await app.objection.models.status.query().insert(validStatus);
-        req.flash("info", i18next.t("flash.statuses.create.success"));
-        reply.redirect("/statuses");
+        req.flash('info', i18next.t('flash.statuses.create.success'));
+        reply.redirect('/statuses');
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.statuses.create.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("statuses/new", { status, errors: data });</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.statuses.create.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('statuses/new', { status, errors: data });</span>
       }
 &nbsp;
       return reply;
     })
 &nbsp;
     // PATCH /statuses/:id - edit a status
-    .patch("/statuses/:id", { name: "updateStatus" }, async (req, reply) =&gt; {
+    .patch('/statuses/:id', { name: 'updateStatus' }, async (req, reply) =&gt; {
       const { id } = req.params;
       const updatedData = req.body.data;
       try {
         const status = await app.objection.models.status.query().findById(id);
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!status) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.statuses.edit.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.status(404).send("Status not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.statuses.edit.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.status(404).send('Status not found');</span>
         }
         await status.$query().patch(updatedData);
-        req.flash("info", i18next.t("flash.statuses.edit.success"));
-        reply.redirect(`/statuses`);
+        req.flash('info', i18next.t('flash.statuses.edit.success'));
+        reply.redirect('/statuses');
       } catch ({ data }) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.statuses.edit.error"));</span>
-<span class="cstat-no" title="statement not covered" >        reply.render("statuses/edit", {</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.statuses.edit.error'));</span>
+<span class="cstat-no" title="statement not covered" >        reply.render('statuses/edit', {</span>
           status: { id, ...updatedData },
           errors: data,
         });
@@ -350,28 +350,28 @@ export default (app) =&gt; {
     })
 &nbsp;
     // DELETE /statuses/:id - delete a status
-    .delete("/statuses/:id", { name: "deleteStatus" }, async (req, reply) =&gt; {
+    .delete('/statuses/:id', { name: 'deleteStatus' }, async (req, reply) =&gt; {
       const { id } = req.params;
       try {
         const status = await app.objection.models.status
           .query()
           .findById(id)
-          .withGraphFetched("tasks");
+          .withGraphFetched('tasks');
 &nbsp;
         <span class="missing-if-branch" title="if path not taken" >I</span>if (!status) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.statuses.delete.notFound"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.status(404).send("Status not found");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.statuses.delete.notFound'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.status(404).send('Status not found');</span>
         }
         <span class="missing-if-branch" title="if path not taken" >I</span>if (status.tasks.length &gt; 0) {
-<span class="cstat-no" title="statement not covered" >          req.flash("error", i18next.t("flash.labels.delete.hasTasks"));</span>
-<span class="cstat-no" title="statement not covered" >          return reply.redirect("/statuses");</span>
+<span class="cstat-no" title="statement not covered" >          req.flash('error', i18next.t('flash.labels.delete.hasTasks'));</span>
+<span class="cstat-no" title="statement not covered" >          return reply.redirect('/statuses');</span>
         }
         await status.$query().delete();
-        req.flash("info", i18next.t("flash.statuses.delete.success"));
-        return reply.redirect("/statuses");
+        req.flash('info', i18next.t('flash.statuses.delete.success'));
+        return reply.redirect('/statuses');
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        req.flash("error", i18next.t("flash.statuses.delete.error"));</span>
-<span class="cstat-no" title="statement not covered" >        return reply.status(500).send("Internal Server Error");</span>
+<span class="cstat-no" title="statement not covered" >        req.flash('error', i18next.t('flash.statuses.delete.error'));</span>
+<span class="cstat-no" title="statement not covered" >        return reply.status(500).send('Internal Server Error');</span>
       }
     });
 };
@@ -382,7 +382,7 @@ export default (app) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-20T20:39:28.979Z
+                at 2025-03-20T20:52:28.290Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
