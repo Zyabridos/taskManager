@@ -13,6 +13,7 @@
     "start": "node server/plugin/init.js",
     "setup": "npm install && npm start",
     "test": "jest",
+    "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
   },
   "jest": {
@@ -78,6 +79,7 @@
     "@faker-js/faker": "9.4.0",
     "@jest/globals": "29.7.0",
     "babel-loader": "9.2.1",
+    "codeclimate-test-reporter": "^0.5.1",
     "css-loader": "^7.1.2",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "15.0.0",

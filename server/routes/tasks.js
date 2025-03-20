@@ -80,39 +80,37 @@ export default (app) => {
 
     // GET /tasks/:id/edit - edit task page
     .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
-  try {
-    const { id } = req.params;
-    
-    const task = await app.objection.models.task
-      .query()
-      .findById(id)
-      .withGraphFetched("[status, executor, labels]");
+      try {
+        const { id } = req.params;
 
+        const task = await app.objection.models.task
+          .query()
+          .findById(id)
+          .withGraphFetched("[status, executor, labels]");
 
-    if (!task) {
-      console.log('task not found');
-      req.flash("error", i18next.t("flash.tasks.edit.notFound"));
-      return reply.redirect("/tasks");
-    }
+        if (!task) {
+          console.log("task not found");
+          req.flash("error", i18next.t("flash.tasks.edit.notFound"));
+          return reply.redirect("/tasks");
+        }
 
-    const { statuses, executors, labels } = await prepareTaskViewData(app);
+        const { statuses, executors, labels } = await prepareTaskViewData(app);
 
-    await reply.render("tasks/edit", {
-      task,
-      statuses,
-      executors,
-      labels,
-      errors: {},
-    });
+        await reply.render("tasks/edit", {
+          task,
+          statuses,
+          executors,
+          labels,
+          errors: {},
+        });
 
-    return reply;
-
-  } catch (error) {
-    console.error("Error fetching task:", error);
-    req.flash("error", i18next.t("flash.tasks.edit.error"));
-    return reply.redirect("/tasks");
-  }
-})
+        return reply;
+      } catch (error) {
+        console.error("Error fetching task:", error);
+        req.flash("error", i18next.t("flash.tasks.edit.error"));
+        return reply.redirect("/tasks");
+      }
+    })
 
     // POST /tasks - create new task
     .post("/tasks", { name: "createTask" }, async (req, reply) => {
@@ -132,25 +130,23 @@ export default (app) => {
       };
 
       try {
-        await app.objection.models.task.transaction(
-          async (trx) => {
-            const labelObjects =
-              labelIds.length > 0
-                ? await app.objection.models.label
-                    .query(trx)
-                    .whereIn("id", labelIds)
-                : [];
+        await app.objection.models.task.transaction(async (trx) => {
+          const labelObjects =
+            labelIds.length > 0
+              ? await app.objection.models.label
+                  .query(trx)
+                  .whereIn("id", labelIds)
+              : [];
 
-            const taskWithLabels = {
-              ...taskData,
-              labels: labelObjects,
-            };
+          const taskWithLabels = {
+            ...taskData,
+            labels: labelObjects,
+          };
 
-            return app.objection.models.task
-              .query(trx)
-              .insertGraph(taskWithLabels, { relate: ["labels"] });
-          },
-        );
+          return app.objection.models.task
+            .query(trx)
+            .insertGraph(taskWithLabels, { relate: ["labels"] });
+        });
 
         req.flash("info", i18next.t("flash.tasks.create.success"));
         reply.redirect("/tasks");
@@ -190,65 +186,78 @@ export default (app) => {
 
     // PATCH /tasks/:id - edit a task
     .patch("/tasks/:id", { name: "updateTask" }, async (req, reply) => {
-  const taskId = Number(req.params.id);
-  const { name, description, statusId, executorId, labels: labelsList = [] } = req.body.data;
+      const taskId = Number(req.params.id);
+      const {
+        name,
+        description,
+        statusId,
+        executorId,
+        labels: labelsList = [],
+      } = req.body.data;
 
-  try {
-    const prevTask = await app.objection.models.task.query()
-      .withGraphJoined("[status, author, executor, labels]")
-      .findById(taskId);
+      try {
+        const prevTask = await app.objection.models.task
+          .query()
+          .withGraphJoined("[status, author, executor, labels]")
+          .findById(taskId);
 
-  console.log("Full Request body:", req.body);
-  console.log("Labels list:", labelsList);
+        console.log("Full Request body:", req.body);
+        console.log("Labels list:", labelsList);
 
+        if (!prevTask) {
+          req.flash("error", i18next.t("flash.tasks.edit.notFound"));
+          return reply.status(404).send("Task not found");
+        }
 
-    if (!prevTask) {
-      req.flash("error", i18next.t("flash.tasks.edit.notFound"));
-      return reply.status(404).send("Task not found");
-    }
+        const updatedData = {
+          id: taskId,
+          name,
+          description,
+          statusId: Number(statusId),
+          executorId: Number(executorId),
+          authorId: prevTask.authorId,
+        };
 
-    const updatedData = {
-      id: taskId,
-      name,
-      description,
-      statusId: Number(statusId),
-      executorId: Number(executorId),
-      authorId: prevTask.authorId,
-    };
+        const labelIds = labelsList.map((labelId) => ({ id: Number(labelId) }));
 
-    const labelIds = labelsList.map((labelId) => ({ id: Number(labelId) }));
+        await app.objection.models.task.transaction(async (trx) => {
+          await app.objection.models.task.query(trx).upsertGraph(
+            {
+              ...updatedData,
+              labels: labelIds,
+            },
+            { relate: true, unrelate: true },
+          );
+        });
 
-    await app.objection.models.task.transaction(async (trx) => {
-      await app.objection.models.task.query(trx).upsertGraph(
-        {
-          ...updatedData,
-          labels: labelIds,
-        },
-        { relate: true, unrelate: true }
-      );
-    });
+        req.flash("info", i18next.t("flash.tasks.edit.success"));
+        return reply.redirect("/tasks");
+      } catch (error) {
+        console.error("Error updating task:", error);
+        req.flash("error", i18next.t("flash.tasks.edit.error"));
 
-    req.flash("info", i18next.t("flash.tasks.edit.success"));
-    return reply.redirect("/tasks");
-  } catch (error) {
-    console.error("Error updating task:", error);
-    req.flash("error", i18next.t("flash.tasks.edit.error"));
+        const [statuses, executors, labels] = await Promise.all([
+          app.objection.models.status.query(),
+          app.objection.models.user.query(),
+          app.objection.models.label.query(),
+        ]);
 
-    const [statuses, executors, labels] = await Promise.all([
-      app.objection.models.status.query(),
-      app.objection.models.user.query(),
-      app.objection.models.label.query(),
-    ]);
-
-    return reply.render("tasks/edit", {
-      task: { id: taskId, name, description, statusId, executorId, labels: labelsList },
-      statuses,
-      executors,
-      labels,
-      errors: error.data || {},
-    });
-  }
-})
+        return reply.render("tasks/edit", {
+          task: {
+            id: taskId,
+            name,
+            description,
+            statusId,
+            executorId,
+            labels: labelsList,
+          },
+          statuses,
+          executors,
+          labels,
+          errors: error.data || {},
+        });
+      }
+    })
 
     // DELETE /tasks/:id - delete a task
     .delete("/tasks/:id", { name: "deleteTask" }, async (req, reply) => {
