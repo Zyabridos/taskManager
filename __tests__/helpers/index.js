@@ -1,4 +1,9 @@
-import { generateUsers, generateStatuses, generateTasks, generateLabels } from './faker.js';
+import {
+  generateUsers,
+  generateStatuses,
+  generateTasks,
+  generateLabels,
+} from './faker.js';
 
 export const getTestData = () => {
   const users = generateUsers();

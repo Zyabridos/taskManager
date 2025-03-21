@@ -2,11 +2,12 @@
 import globals from 'globals';
 import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
+import prettier from 'eslint-config-prettier';
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
-    ignores: ['dist', '.prettier.config.js'],
+    ignores: ['dist', '__tests__', '.prettier.config.js'],
   },
   {
     languageOptions: {

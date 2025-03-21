@@ -1,14 +1,27 @@
 import dotenv from 'dotenv';
+
 import { checkResponseCode, findEntity } from './helpers/utils.js';
 import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });
 
 describe('test labels CRUD', () => {
-  let app, knex, models, testData, cookie;
+  let app;
+  let knex;
+  let models;
+  let testData;
+  let cookie;
+
   const getTestContext = setStandardBeforeEach();
+
   beforeEach(() => {
-    ({ app, knex, models, testData, cookie } = getTestContext());
+    ({
+      app,
+      knex,
+      models,
+      testData,
+      cookie,
+    } = getTestContext());
   });
 
   async function checkLabelExists(name) {

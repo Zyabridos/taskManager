@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 
 import prepareTaskViewData from '../utils/prepareTaskViewData.js';
+
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {

@@ -1,7 +1,10 @@
 import fastify from 'fastify';
 import dotenv from 'dotenv';
 import init from '../../server/plugin/init.js';
-import { prepareData, makeLogin } from './index.js';
+import { 
+  prepareData,
+  makeLogin 
+} from './index.js';
 
 dotenv.config({ path: '.env.test' });
 

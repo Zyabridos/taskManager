@@ -1,5 +1,8 @@
 import dotenv from 'dotenv';
-import { checkResponseCode, findEntity } from './helpers/utils.js';
+import { 
+  checkResponseCode,
+  findEntity
+} from './helpers/utils.js';
 import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });
