@@ -1,15 +1,16 @@
-import path from "path";
-import fastifyStatic from "@fastify/static";
-import { fileURLToPath } from "url";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import fastifyStatic from '@fastify/static';
 
 const __dirname = fileURLToPath(path.dirname(import.meta.url));
 
 const setUpStaticAssets = (app) => {
-  const pathPublic = path.join(__dirname, "../../../", "dist");
+  const pathPublic = path.join(__dirname, '../../../', 'dist');
   console.log(pathPublic);
   app.register(fastifyStatic, {
     root: pathPublic,
-    prefix: "/assets/",
+    prefix: '/assets/',
   });
 };
 

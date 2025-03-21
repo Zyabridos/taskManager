@@ -4,7 +4,7 @@ export async function checkResponseCode(
   url,
   cookie = null,
   payload = null,
-  expectedStatus = 200,
+  expectedStatus = 200
 ) {
   const response = await app.inject({
     method,
@@ -15,7 +15,7 @@ export async function checkResponseCode(
   console.log(
     `Response from ${method} ${url}:`,
     response.statusCode,
-    response.body,
+    response.body
   );
 
   expect(response.statusCode).toBe(expectedStatus);

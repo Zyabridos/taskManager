@@ -1,9 +1,9 @@
-import i18next from "i18next";
+import i18next from 'i18next';
 
-import prepareTaskViewData from "../utils/prepareTaskViewData.js";
+import prepareTaskViewData from '../utils/prepareTaskViewData.js';
 export default (app) => {
   app
-    .get("/tasks", { name: "tasks" }, async (req, reply) => {
+    .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       const { status, executor, isCreatorUser, onlyExecutorTasks, label } =
         req.query;
 
@@ -12,57 +12,57 @@ export default (app) => {
 
         const query = app.objection.models.task
           .query()
-          .withGraphJoined("[status, executor, author, labels]")
+          .withGraphJoined('[status, executor, author, labels]')
           .select(
-            "tasks.*",
-            "status.name as statusName",
-            "executor.firstName as executorFirstName",
-            "executor.lastName as executorLastName",
-            "author.firstName as authorFirstName",
-            "author.lastName as authorLastName",
+            'tasks.*',
+            'status.name as statusName',
+            'executor.firstName as executorFirstName',
+            'executor.lastName as executorLastName',
+            'author.firstName as authorFirstName',
+            'author.lastName as authorLastName'
           );
 
-        if (status) query.where("tasks.status_id", Number(status));
-        if (executor) query.where("tasks.executor_id", Number(executor));
-        if (isCreatorUser === "true")
-          query.where("tasks.author_id", req.session.userId);
-        if (onlyExecutorTasks === "true")
-          query.where("tasks.executor_id", req.session.userId);
-        if (label) query.where("labels.id", Number(label));
+        if (status) query.where('tasks.status_id', Number(status));
+        if (executor) query.where('tasks.executor_id', Number(executor));
+        if (isCreatorUser === 'true')
+          query.where('tasks.author_id', req.session.userId);
+        if (onlyExecutorTasks === 'true')
+          query.where('tasks.executor_id', req.session.userId);
+        if (label) query.where('labels.id', Number(label));
 
         const tasks = await query;
 
-        if (req.headers.accept === "application/json") {
+        if (req.headers.accept === 'application/json') {
           return reply.send(tasks);
         }
 
-        reply.render("tasks/index", {
+        reply.render('tasks/index', {
           tasks,
           statuses,
           executors,
           labels,
           query: req.query || {},
-          selectedStatus: status || "",
-          selectedExecutor: executor || "",
-          selectedLabel: label || "",
-          isCreatorUser: isCreatorUser === "true",
-          onlyExecutorTasks: onlyExecutorTasks === "true",
+          selectedStatus: status || '',
+          selectedExecutor: executor || '',
+          selectedLabel: label || '',
+          isCreatorUser: isCreatorUser === 'true',
+          onlyExecutorTasks: onlyExecutorTasks === 'true',
         });
       } catch (error) {
-        console.error("Error fetching tasks:", error);
-        reply.code(500).send({ error: "Internal Server Error" });
+        console.error('Error fetching tasks:', error);
+        reply.code(500).send({ error: 'Internal Server Error' });
       }
       return reply;
     })
 
-    .get("/tasks/new", { name: "newTask" }, async (req, reply) => {
+    .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
       try {
         const task = new app.objection.models.task();
         const statuses = await app.objection.models.status.query();
         const users = await app.objection.models.user.query();
         const labels = await app.objection.models.label.query();
 
-        reply.render("tasks/new", {
+        reply.render('tasks/new', {
           task,
           statuses,
           users,
@@ -71,30 +71,30 @@ export default (app) => {
         });
         return reply;
       } catch (error) {
-        console.error("Error fetching data for new task:", error);
-        req.flash("error", i18next.t("flash.tasks.create.error"));
-        return reply.status(500).send("Internal Server Error");
+        console.error('Error fetching data for new task:', error);
+        req.flash('error', i18next.t('flash.tasks.create.error'));
+        return reply.status(500).send('Internal Server Error');
       }
     })
 
-    .get("/tasks/:id/edit", { name: "editTask" }, async (req, reply) => {
+    .get('/tasks/:id/edit', { name: 'editTask' }, async (req, reply) => {
       try {
         const { id } = req.params;
 
         const task = await app.objection.models.task
           .query()
           .findById(id)
-          .withGraphFetched("[status, executor, labels]");
+          .withGraphFetched('[status, executor, labels]');
 
         if (!task) {
-          console.log("task not found");
-          req.flash("error", i18next.t("flash.tasks.edit.notFound"));
-          return reply.redirect("/tasks");
+          console.log('task not found');
+          req.flash('error', i18next.t('flash.tasks.edit.notFound'));
+          return reply.redirect('/tasks');
         }
 
         const { statuses, executors, labels } = await prepareTaskViewData(app);
 
-        await reply.render("tasks/edit", {
+        await reply.render('tasks/edit', {
           task,
           statuses,
           executors,
@@ -104,13 +104,13 @@ export default (app) => {
 
         return reply;
       } catch (error) {
-        console.error("Error fetching task:", error);
-        req.flash("error", i18next.t("flash.tasks.edit.error"));
-        return reply.redirect("/tasks");
+        console.error('Error fetching task:', error);
+        req.flash('error', i18next.t('flash.tasks.edit.error'));
+        return reply.redirect('/tasks');
       }
     })
 
-    .post("/tasks", { name: "createTask" }, async (req, reply) => {
+    .post('/tasks', { name: 'createTask' }, async (req, reply) => {
       const { name, description, statusId, executorId, labels } = req.body.data;
       const { id: authorId } = req.user;
 
@@ -131,8 +131,8 @@ export default (app) => {
           const labelObjects =
             labelIds.length > 0
               ? await app.objection.models.label
-                  .query(trx)
-                  .whereIn("id", labelIds)
+                .query(trx)
+                .whereIn('id', labelIds)
               : [];
 
           const taskWithLabels = {
@@ -142,22 +142,22 @@ export default (app) => {
 
           return app.objection.models.task
             .query(trx)
-            .insertGraph(taskWithLabels, { relate: ["labels"] });
+            .insertGraph(taskWithLabels, { relate: ['labels'] });
         });
 
-        req.flash("info", i18next.t("flash.tasks.create.success"));
-        reply.redirect("/tasks");
+        req.flash('info', i18next.t('flash.tasks.create.success'));
+        reply.redirect('/tasks');
       } catch (error) {
-        console.error("Error during task creation:", error);
-        req.flash("error", i18next.t("flash.tasks.create.error"));
+        console.error('Error during task creation:', error);
+        req.flash('error', i18next.t('flash.tasks.create.error'));
 
-        const { statuses, executors, labels } = await prepareTaskViewData(app);
+        const { statuses, executors, labels: availableLabels } = await prepareTaskViewData(app);
 
-        reply.render("tasks/new", {
+        reply.render('tasks/new', {
           task: taskData,
           statuses,
           executors,
-          labels,
+          labels: availableLabels,
           errors: error.data || {},
         });
       }
@@ -166,21 +166,21 @@ export default (app) => {
     })
 
     .get(
-      "/tasks/:id",
-      { name: "task", preValidation: app.authenticate },
+      '/tasks/:id',
+      { name: 'task', preValidation: app.authenticate },
       async (req, reply) => {
         const taskId = Number(req.params.id);
         const task = await app.objection.models.task
           .query()
           .findById(taskId)
-          .withGraphFetched("[status, executor, author, labels]");
+          .withGraphFetched('[status, executor, author, labels]');
 
-        reply.render("tasks/task", { task });
+        reply.render('tasks/task', { task });
         return reply;
-      },
+      }
     )
 
-    .patch("/tasks/:id", { name: "updateTask" }, async (req, reply) => {
+    .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
       const taskId = Number(req.params.id);
       const {
         name,
@@ -193,15 +193,15 @@ export default (app) => {
       try {
         const prevTask = await app.objection.models.task
           .query()
-          .withGraphJoined("[status, author, executor, labels]")
+          .withGraphJoined('[status, author, executor, labels]')
           .findById(taskId);
 
-        console.log("Full Request body:", req.body);
-        console.log("Labels list:", labelsList);
+        console.log('Full Request body:', req.body);
+        console.log('Labels list:', labelsList);
 
         if (!prevTask) {
-          req.flash("error", i18next.t("flash.tasks.edit.notFound"));
-          return reply.status(404).send("Task not found");
+          req.flash('error', i18next.t('flash.tasks.edit.notFound'));
+          return reply.status(404).send('Task not found');
         }
 
         const updatedData = {
@@ -221,15 +221,15 @@ export default (app) => {
               ...updatedData,
               labels: labelIds,
             },
-            { relate: true, unrelate: true },
+            { relate: true, unrelate: true }
           );
         });
 
-        req.flash("info", i18next.t("flash.tasks.edit.success"));
-        return reply.redirect("/tasks");
+        req.flash('info', i18next.t('flash.tasks.edit.success'));
+        return reply.redirect('/tasks');
       } catch (error) {
-        console.error("Error updating task:", error);
-        req.flash("error", i18next.t("flash.tasks.edit.error"));
+        console.error('Error updating task:', error);
+        req.flash('error', i18next.t('flash.tasks.edit.error'));
 
         const [statuses, executors, labels] = await Promise.all([
           app.objection.models.status.query(),
@@ -237,7 +237,7 @@ export default (app) => {
           app.objection.models.label.query(),
         ]);
 
-        return reply.render("tasks/edit", {
+        return reply.render('tasks/edit', {
           task: {
             id: taskId,
             name,
@@ -254,21 +254,21 @@ export default (app) => {
       }
     })
 
-    .delete("/tasks/:id", { name: "deleteTask" }, async (req, reply) => {
+    .delete('/tasks/:id', { name: 'deleteTask' }, async (req, reply) => {
       try {
         const { id } = req.params;
         const task = await app.objection.models.task.query().findById(id);
         if (!task) {
-          req.flash("error", i18next.t("flash.tasks.delete.notFound"));
-          return reply.status(404).send("Task not found");
+          req.flash('error', i18next.t('flash.tasks.delete.notFound'));
+          return reply.status(404).send('Task not found');
         }
 
         await task.$query().delete();
-        req.flash("info", i18next.t("flash.tasks.delete.success"));
-        reply.redirect("/tasks");
+        req.flash('info', i18next.t('flash.tasks.delete.success'));
+        reply.redirect('/tasks');
       } catch (error) {
-        req.flash("error", i18next.t("flash.tasks.delete.error"));
-        return reply.status(500).send("Internal Server Error");
+        req.flash('error', i18next.t('flash.tasks.delete.error'));
+        return reply.status(500).send('Internal Server Error');
       }
     });
 };

@@ -1,14 +1,14 @@
-import fastify from "fastify";
-import dotenv from "dotenv";
-import init from "../../server/plugin/init.js";
-import { prepareData, makeLogin } from "./index.js";
+import fastify from 'fastify';
+import dotenv from 'dotenv';
+import init from '../../server/plugin/init.js';
+import { prepareData, makeLogin } from './index.js';
 
-dotenv.config({ path: ".env.test" });
+dotenv.config({ path: '.env.test' });
 
 export async function setUpTestsEnv() {
   const app = fastify({
     exposeHeadRoutes: false,
-    logger: { target: "pino-pretty" },
+    logger: { target: 'pino-pretty' },
   });
 
   await init(app);
@@ -20,7 +20,7 @@ export async function setUpTestsEnv() {
 }
 
 export function setStandardBeforeEach(
-  getAuthor = (data) => data.users.existing.author,
+  getAuthor = (data) => data.users.existing.author
 ) {
   let app;
   let knex;
