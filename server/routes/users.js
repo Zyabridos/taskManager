@@ -1,21 +1,19 @@
+/* eslint-disable consistent-return */
 import i18next from 'i18next';
 
 export default (app) => {
   app
-    // GET /users - list of all users
     .get('/users', { name: 'users' }, async (req, reply) => {
       const users = await app.objection.models.user.query();
       reply.render('users/index', { users });
       return reply;
     })
 
-    // GET /users/new - get page for user creation
     .get('/users/new', { name: 'newUser' }, (req, reply) => {
       const user = new app.objection.models.user();
       reply.render('users/new', { user });
     })
 
-    // GET /users/:id/edit - page for editing user
     .get('/users/:id/edit', { name: 'editUser' }, async (req, reply) => {
       const { id } = req.params;
       try {
@@ -34,7 +32,6 @@ export default (app) => {
       return reply;
     })
 
-    // POST /users - send data for user creation
     .post('/users', { name: 'users' }, async (req, reply) => {
       const user = new app.objection.models.user();
 
@@ -56,7 +53,6 @@ export default (app) => {
       return reply;
     })
 
-    // PATCH /users/:id - update user
     .patch('/users/:id', { name: 'editUser' }, async (req, reply) => {
       const { id } = req.params;
       const updatedData = req.body.data;
@@ -78,7 +74,6 @@ export default (app) => {
       }
     })
 
-    // DELETE /users/:id - delete user
     .delete('/users/:id', { name: 'deleteUser' }, async (req, reply) => {
       const { id } = req.params;
 

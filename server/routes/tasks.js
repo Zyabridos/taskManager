@@ -1,8 +1,8 @@
 import i18next from 'i18next';
+
 import prepareTaskViewData from '../utils/prepareTaskViewData.js';
 export default (app) => {
   app
-    // GET /tasks - list of all tasks
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
       const { status, executor, isCreatorUser, onlyExecutorTasks, label } =
         req.query;
@@ -55,7 +55,6 @@ export default (app) => {
       return reply;
     })
 
-    // GET /tasks/new - page for creating new task
     .get('/tasks/new', { name: 'newTask' }, async (req, reply) => {
       try {
         const task = new app.objection.models.task();
@@ -78,7 +77,6 @@ export default (app) => {
       }
     })
 
-    // GET /tasks/:id/edit - edit task page
     .get('/tasks/:id/edit', { name: 'editTask' }, async (req, reply) => {
       try {
         const { id } = req.params;
@@ -112,7 +110,6 @@ export default (app) => {
       }
     })
 
-    // POST /tasks - create new task
     .post('/tasks', { name: 'createTask' }, async (req, reply) => {
       const { name, description, statusId, executorId, labels } = req.body.data;
       const { id: authorId } = req.user;
@@ -134,8 +131,8 @@ export default (app) => {
           const labelObjects =
             labelIds.length > 0
               ? await app.objection.models.label
-                  .query(trx)
-                  .whereIn('id', labelIds)
+                .query(trx)
+                .whereIn('id', labelIds)
               : [];
 
           const taskWithLabels = {
@@ -168,7 +165,6 @@ export default (app) => {
       return reply;
     })
 
-    // GET /tasks/:id - view particular task
     .get(
       '/tasks/:id',
       { name: 'task', preValidation: app.authenticate },
@@ -184,7 +180,6 @@ export default (app) => {
       },
     )
 
-    // PATCH /tasks/:id - edit a task
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
       const taskId = Number(req.params.id);
       const {
@@ -259,7 +254,6 @@ export default (app) => {
       }
     })
 
-    // DELETE /tasks/:id - delete a task
     .delete('/tasks/:id', { name: 'deleteTask' }, async (req, reply) => {
       try {
         const { id } = req.params;

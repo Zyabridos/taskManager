@@ -1,7 +1,6 @@
-import _ from 'lodash';
+import dotenv from 'dotenv';
 import { prepareData, makeLogin } from './helpers/index.js';
 import { checkResponseCode, findEntity } from './helpers/utils.js';
-import dotenv from 'dotenv';
 import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });

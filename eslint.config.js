@@ -1,5 +1,6 @@
 import globals from 'globals';
 import js from '@eslint/js';
+import importPlugin from 'eslint-plugin-import';
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
@@ -11,7 +12,7 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
-        ...globals.node, // add process var to global
+        ...globals.node,
         ...globals.browser,
       },
     },
@@ -20,7 +21,7 @@ export default [
       'object-curly-newline': ['error', { multiline: true, consistent: true }],
       'one-var': ['error', 'never'],
       'no-trailing-spaces': 'error',
-      indent: ['error', 4],
+      indent: ['error', 2],
       'prefer-destructuring': ['error', {
         VariableDeclarator: {
           array: true,
@@ -32,14 +33,21 @@ export default [
         },
       }],
       'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
-      'import/order': ['error', {
-        'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-        'newlines-between': 'always',
-      }],
       'implicit-arrow-linebreak': ['error', 'beside'],
       'arrow-body-style': ['error', 'as-needed'],
       'no-shadow': 'error',
       'no-undef': 'error',
+    },
+  },
+  {
+    plugins: {
+      import: importPlugin,
+    },
+    rules: {
+      'import/order': ['error', {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        'newlines-between': 'always',
+      }],
     },
   },
   js.configs.recommended,

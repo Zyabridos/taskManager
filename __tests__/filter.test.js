@@ -6,14 +6,16 @@ import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 dotenv.config({ path: '.env.test' });
 
 describe('test tasks filtration by labels, status, and executor', () => {
-  let app, 
-models, 
-knex, 
-testData, 
-cookie;
-  let selectedLabel, 
-selectedStatus, 
-selectedExecutor;
+  let app;
+  let models;
+  let knex;
+  let testData;
+  let cookie;
+
+  let selectedLabel;
+  let selectedStatus;
+  let selectedExecutor;
+
   let taskWithDataFromDB;
 
   beforeEach(async () => {

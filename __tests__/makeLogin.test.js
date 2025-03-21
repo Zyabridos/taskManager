@@ -4,6 +4,7 @@ import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 describe('makeLogin function', () => {
   let app;
   let knex;
+  let models;
   let testData;
 
   beforeAll(async () => {

@@ -1,21 +1,19 @@
+/* eslint-disable consistent-return */
 import i18next from 'i18next';
 
 export default (app) => {
   app
-    // GET /statuses - list of all statuses
     .get('/statuses', { name: 'statuses' }, async (req, reply) => {
       const statuses = await app.objection.models.status.query();
       reply.render('statuses/index', { statuses });
       return reply;
     })
 
-    // GET /statuses/new - page for creating new status
     .get('/statuses/new', { name: 'newStatus' }, (req, reply) => {
       const status = new app.objection.models.status();
       reply.render('statuses/new', { status });
     })
 
-    // GET /statuses/:id/edit - page for editing a status
     .get('/statuses/:id/edit', { name: 'editStatus' }, async (req, reply) => {
       const { id } = req.params;
       try {
@@ -35,7 +33,6 @@ export default (app) => {
       return reply;
     })
 
-    // POST /statuses - create new status
     .post('/statuses', { name: 'createStatus' }, async (req, reply) => {
       const status = new app.objection.models.status();
 
@@ -54,7 +51,6 @@ export default (app) => {
       return reply;
     })
 
-    // PATCH /statuses/:id - edit a status
     .patch('/statuses/:id', { name: 'updateStatus' }, async (req, reply) => {
       const { id } = req.params;
       const updatedData = req.body.data;
@@ -76,7 +72,6 @@ export default (app) => {
       }
     })
 
-    // DELETE /statuses/:id - delete a status
     .delete('/statuses/:id', { name: 'deleteStatus' }, async (req, reply) => {
       const { id } = req.params;
       try {
