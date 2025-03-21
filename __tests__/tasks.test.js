@@ -1,44 +1,40 @@
-import dotenv from 'dotenv';
-import { prepareData, makeLogin } from './helpers/index.js';
-import { checkResponseCode, findEntity } from './helpers/utils.js';
-import setUpTestsEnv from './helpers/setUpTestsEnv.js';
+import dotenv from "dotenv";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
+import { setStandardBeforeEach } from "./helpers/setUpTestsEnv.js";
 
-dotenv.config({ path: '.env.test' });
+dotenv.config({ path: ".env.test" });
 
-describe('test tasks CRUD', () => {
+describe("test tasks CRUD", () => {
   let app;
   let models;
   let knex;
   let testData;
   let cookie;
 
-  beforeEach(async () => {
-    ({ app, knex, models } = await setUpTestsEnv());
-    await knex.migrate.rollback();
-    await knex.migrate.latest();
-    testData = await prepareData(app);
-    cookie = await makeLogin(app, testData.users.existing.author);
+  const getTestContext = setStandardBeforeEach();
+  beforeEach(() => {
+    ({ app, knex, models, testData, cookie } = getTestContext());
   });
 
   async function checkTaskExists(name) {
-    return findEntity(models.task, 'name', name);
+    return findEntity(models.task, "name", name);
   }
 
-  it('should show a list of tasks', async () => {
-    await checkResponseCode(app, 'GET', '/tasks', cookie);
+  it("should show a list of tasks", async () => {
+    await checkResponseCode(app, "GET", "/tasks", cookie);
   });
 
-  it('should display new task creation page', async () => {
-    await checkResponseCode(app, 'GET', '/tasks/new', cookie);
+  it("should display new task creation page", async () => {
+    await checkResponseCode(app, "GET", "/tasks/new", cookie);
   });
 
-  it('should return a particular task', async () => {
+  it("should return a particular task", async () => {
     const params = testData.tasks.existing.update;
     const task = await models.task.query().findOne({ name: params.name });
     expect(task).toBeDefined();
 
     const response = await app.inject({
-      method: 'GET',
+      method: "GET",
       url: `/tasks/${task.id}`,
       headers: { cookie: `session=${cookie.session}` },
     });
@@ -46,15 +42,14 @@ describe('test tasks CRUD', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it('should create a new task', async () => {
+  it("should create a new task", async () => {
     const params = testData.tasks.new;
-    cookie = await makeLogin(app, testData.users.existing.author);
 
     const taskData = { data: params };
 
     const response = await app.inject({
-      method: 'POST',
-      url: '/tasks',
+      method: "POST",
+      url: "/tasks",
       headers: { cookie: `session=${cookie.session}` },
       payload: taskData,
     });
@@ -65,14 +60,14 @@ describe('test tasks CRUD', () => {
     expect(task).toMatchObject(params);
   });
 
-  it('should delete a task', async () => {
+  it("should delete a task", async () => {
     const params = testData.tasks.existing.delete;
     const taskToDelete = await checkTaskExists(params.name);
     expect(taskToDelete).toBeDefined();
 
     await checkResponseCode(
       app,
-      'DELETE',
+      "DELETE",
       `/tasks/${taskToDelete.id}`,
       cookie,
       null,
@@ -83,15 +78,15 @@ describe('test tasks CRUD', () => {
     expect(deletedTask).toBeUndefined();
   });
 
-  it('should update a task', async () => {
+  it("should update a task", async () => {
     const params = testData.tasks.existing.update;
     const task = await checkTaskExists(params.name);
     expect(task).toBeDefined();
 
-    const updatedTaskName = 'Updated Task Name';
+    const updatedTaskName = "Updated Task Name";
     await checkResponseCode(
       app,
-      'PATCH',
+      "PATCH",
       `/tasks/${task.id}`,
       cookie,
       { ...params, name: updatedTaskName },
@@ -104,7 +99,6 @@ describe('test tasks CRUD', () => {
 
   afterAll(async () => {
     await app.close();
+    await knex.destroy();
   });
 });
-
-//  npx jest __tests__/tasks.test.js

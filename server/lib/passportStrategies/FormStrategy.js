@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import { Strategy } from '@fastify/passport';
+import _ from "lodash";
+import { Strategy } from "@fastify/passport";
 
 export default class FormStrategy extends Strategy {
   constructor(name, app) {
@@ -12,8 +12,8 @@ export default class FormStrategy extends Strategy {
       return this.pass();
     }
 
-    const email = _.get(request, 'body.data.email', null);
-    const password = _.get(request, 'body.data.password', null);
+    const email = _.get(request, "body.data.email", null);
+    const password = _.get(request, "body.data.password", null);
     const { models } = this.app.objection;
     const user = await models.user.query().findOne({ email });
     if (user && user.verifyPassword(password)) {

@@ -1,3 +1,3 @@
 export default {
-  wrongEmailOrPassword: 'Неправильный емейл или пароль',
+  wrongEmailOrPassword: "Неправильный емейл или пароль",
 };

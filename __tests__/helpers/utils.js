@@ -22,4 +22,5 @@ export async function checkResponseCode(
   return response;
 }
 
-export const findEntity = async (model, fieldName, value) => model.query().findOne({ [fieldName]: value });
+export const findEntity = async (model, fieldName, value) =>
+  model.query().findOne({ [fieldName]: value });

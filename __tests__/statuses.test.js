@@ -1,53 +1,49 @@
-import dotenv from 'dotenv';
-import { prepareData, makeLogin } from './helpers/index.js';
-import { checkResponseCode, findEntity } from './helpers/utils.js';
-import setUpTestsEnv from './helpers/setUpTestsEnv.js';
+import dotenv from "dotenv";
+import { checkResponseCode, findEntity } from "./helpers/utils.js";
+import { setStandardBeforeEach } from "./helpers/setUpTestsEnv.js";
 
-dotenv.config({ path: '.env.test' });
+dotenv.config({ path: ".env.test" });
 
-describe('test statuses CRUD', () => {
+describe("test statuses CRUD", () => {
   let app;
-  let models;
   let knex;
+  let models;
   let testData;
   let cookie;
 
-  beforeEach(async () => {
-    ({ app, knex, models } = await setUpTestsEnv());
-    await knex.migrate.rollback();
-    await knex.migrate.latest();
-    testData = await prepareData(app);
-    cookie = await makeLogin(app, testData.users.existing.author);
+  const getTestContext = setStandardBeforeEach();
+  beforeEach(() => {
+    ({ app, knex, models, testData, cookie } = getTestContext());
   });
 
   async function checkStatusExists(name) {
-    return findEntity(models.status, 'name', name);
+    return findEntity(models.status, "name", name);
   }
 
-  it('should show a list of statuses', async () => {
-    await checkResponseCode(app, 'GET', '/statuses', cookie);
+  it("should show a list of statuses", async () => {
+    await checkResponseCode(app, "GET", "/statuses", cookie);
   });
 
-  it('should display new status creation page', async () => {
-    await checkResponseCode(app, 'GET', '/statuses/new', cookie);
+  it("should display new status creation page", async () => {
+    await checkResponseCode(app, "GET", "/statuses/new", cookie);
   });
 
-  it('should create a new status', async () => {
+  it("should create a new status", async () => {
     const params = testData.statuses.new;
-    await checkResponseCode(app, 'POST', '/statuses', cookie, params, 302);
+    await checkResponseCode(app, "POST", "/statuses", cookie, params, 302);
 
     const status = await checkStatusExists(params.name);
     expect(status).toMatchObject(params);
   });
 
-  it('should delete a status', async () => {
+  it("should delete a status", async () => {
     const params = testData.statuses.existing.delete;
     const statusToDelete = await checkStatusExists(params.name);
     expect(statusToDelete).toBeDefined();
 
     await checkResponseCode(
       app,
-      'DELETE',
+      "DELETE",
       `/statuses/${statusToDelete.id}`,
       cookie,
       null,
@@ -57,15 +53,16 @@ describe('test statuses CRUD', () => {
     const deletedStatus = await checkStatusExists(params.name);
     expect(deletedStatus).toBeUndefined();
   });
-  it('should NOT be deleted when it has a task', async () => {
+
+  it("should NOT be deleted when it has a task", async () => {
     const statusToDelete = await models.status
       .query()
       .findOne({ name: testData.statuses.existing.delete.name });
     expect(statusToDelete).toBeDefined();
 
     await models.task.query().insert({
-      name: 'Test task with status',
-      description: 'This task is linked to a status',
+      name: "Test task with status",
+      description: "This task is linked to a status",
       statusId: statusToDelete.id,
       authorId: 1,
       executorId: 1,
@@ -76,15 +73,15 @@ describe('test statuses CRUD', () => {
     ).toBeDefined();
   });
 
-  it('should update a status', async () => {
+  it("should update a status", async () => {
     const params = testData.statuses.existing.update;
     const statusToUpdate = await checkStatusExists(params.name);
     expect(statusToUpdate).toBeDefined();
 
-    const updatedStatusName = 'Updated Status';
+    const updatedStatusName = "Updated Status";
     await checkResponseCode(
       app,
-      'PATCH',
+      "PATCH",
       `/statuses/${statusToUpdate.id}`,
       cookie,
       { name: updatedStatusName },
@@ -99,7 +96,6 @@ describe('test statuses CRUD', () => {
 
   afterAll(async () => {
     await app.close();
+    await knex.destroy();
   });
 });
-
-// npx jest __tests__/statuses.test.js
