@@ -36,9 +36,7 @@ export default (app) => {
       const label = new app.objection.models.label();
 
       try {
-        const validlabel = await app.objection.models.label.fromJson(
-          req.body.data
-        );
+        const validlabel = await app.objection.models.label.fromJson(req.body.data);
         await app.objection.models.label.query().insert(validlabel);
         req.flash('info', i18next.t('flash.labels.create.success'));
         reply.redirect('/labels');

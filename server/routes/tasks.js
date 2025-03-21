@@ -4,8 +4,7 @@ import prepareTaskViewData from '../utils/prepareTaskViewData.js';
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      const { status, executor, isCreatorUser, onlyExecutorTasks, label } =
-        req.query;
+      const { status, executor, isCreatorUser, onlyExecutorTasks, label } = req.query;
 
       try {
         const { statuses, executors, labels } = await prepareTaskViewData(app);
@@ -19,15 +18,13 @@ export default (app) => {
             'executor.firstName as executorFirstName',
             'executor.lastName as executorLastName',
             'author.firstName as authorFirstName',
-            'author.lastName as authorLastName'
+            'author.lastName as authorLastName',
           );
 
         if (status) query.where('tasks.status_id', Number(status));
         if (executor) query.where('tasks.executor_id', Number(executor));
-        if (isCreatorUser === 'true')
-          query.where('tasks.author_id', req.session.userId);
-        if (onlyExecutorTasks === 'true')
-          query.where('tasks.executor_id', req.session.userId);
+        if (isCreatorUser === 'true') query.where('tasks.author_id', req.session.userId);
+        if (onlyExecutorTasks === 'true') query.where('tasks.executor_id', req.session.userId);
         if (label) query.where('labels.id', Number(label));
 
         const tasks = await query;
@@ -130,9 +127,7 @@ export default (app) => {
         await app.objection.models.task.transaction(async (trx) => {
           const labelObjects =
             labelIds.length > 0
-              ? await app.objection.models.label
-                .query(trx)
-                .whereIn('id', labelIds)
+              ? await app.objection.models.label.query(trx).whereIn('id', labelIds)
               : [];
 
           const taskWithLabels = {
@@ -165,30 +160,20 @@ export default (app) => {
       return reply;
     })
 
-    .get(
-      '/tasks/:id',
-      { name: 'task', preValidation: app.authenticate },
-      async (req, reply) => {
-        const taskId = Number(req.params.id);
-        const task = await app.objection.models.task
-          .query()
-          .findById(taskId)
-          .withGraphFetched('[status, executor, author, labels]');
+    .get('/tasks/:id', { name: 'task', preValidation: app.authenticate }, async (req, reply) => {
+      const taskId = Number(req.params.id);
+      const task = await app.objection.models.task
+        .query()
+        .findById(taskId)
+        .withGraphFetched('[status, executor, author, labels]');
 
-        reply.render('tasks/task', { task });
-        return reply;
-      }
-    )
+      reply.render('tasks/task', { task });
+      return reply;
+    })
 
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
       const taskId = Number(req.params.id);
-      const {
-        name,
-        description,
-        statusId,
-        executorId,
-        labels: labelsList = [],
-      } = req.body.data;
+      const { name, description, statusId, executorId, labels: labelsList = [] } = req.body.data;
 
       try {
         const prevTask = await app.objection.models.task
@@ -221,7 +206,7 @@ export default (app) => {
               ...updatedData,
               labels: labelIds,
             },
-            { relate: true, unrelate: true }
+            { relate: true, unrelate: true },
           );
         });
 
@@ -231,11 +216,7 @@ export default (app) => {
         console.error('Error updating task:', error);
         req.flash('error', i18next.t('flash.tasks.edit.error'));
 
-        const [statuses, executors, labels] = await Promise.all([
-          app.objection.models.status.query(),
-          app.objection.models.user.query(),
-          app.objection.models.label.query(),
-        ]);
+        const { statuses, executors, labels } = await prepareTaskViewData(app);
 
         return reply.render('tasks/edit', {
           task: {

@@ -26,7 +26,7 @@ export default (app) => {
         req.flash('success', i18next.t('flash.session.create.success'));
         reply.redirect('/');
         return reply;
-      })
+      }),
     )
 
     .delete('/session', async (req, reply) => {

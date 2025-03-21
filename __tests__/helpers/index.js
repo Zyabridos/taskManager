@@ -1,9 +1,4 @@
-import {
-  generateUsers,
-  generateStatuses,
-  generateTasks,
-  generateLabels,
-} from './faker.js';
+import { generateUsers, generateStatuses, generateTasks, generateLabels } from './faker.js';
 
 export const getTestData = () => {
   const users = generateUsers();
@@ -45,9 +40,7 @@ export const prepareData = async (app) => {
 };
 
 export const makeLogin = async (app, userData) => {
-  const user = await app.objection.models.user
-    .query()
-    .findOne({ email: userData.email });
+  const user = await app.objection.models.user.query().findOne({ email: userData.email });
 
   if (!user) {
     throw new Error(`User with email ${userData.email} not found in DB`);
@@ -67,9 +60,7 @@ export const makeLogin = async (app, userData) => {
     return { [name]: value };
   });
 
-  const sessionCookie = cookies.find(
-    (cookie) => Object.keys(cookie)[0] === 'session'
-  );
+  const sessionCookie = cookies.find((cookie) => Object.keys(cookie)[0] === 'session');
 
   return sessionCookie;
 };

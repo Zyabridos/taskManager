@@ -80,19 +80,16 @@ describe('test tasks filtration by labels, status, and executor', () => {
       },
       'all filters',
     ],
-  ])(
-    'should return only tasks with the selected %s',
-    async (filterParams, filterType) => {
-      const resolvedFilters = Object.fromEntries(
-        Object.entries(filterParams).map(([key, value]) => [key, value()])
-      );
+  ])('should return only tasks with the selected %s', async (filterParams, filterType) => {
+    const resolvedFilters = Object.fromEntries(
+      Object.entries(filterParams).map(([key, value]) => [key, value()]),
+    );
 
-      const taskNames = await testTaskFilter(resolvedFilters);
+    const taskNames = await testTaskFilter(resolvedFilters);
 
-      expect(taskNames).toContain('Task with correct data');
-      expect(taskNames).not.toContain('Task with random data');
-    }
-  );
+    expect(taskNames).toContain('Task with correct data');
+    expect(taskNames).not.toContain('Task with random data');
+  });
 
   afterEach(async () => {
     await knex('tasks').del();

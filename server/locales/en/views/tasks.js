@@ -18,8 +18,7 @@ export default {
     name: 'Name',
   },
   isUserCreator: 'Only my tasks',
-  noExecutors:
-    'The user list is empty, so there\'s no one to assign this task to :)',
+  noExecutors: "The user list is empty, so there's no one to assign this task to :)",
   new: {
     title: 'Create Task',
     submit: 'Create',

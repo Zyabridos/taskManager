@@ -61,8 +61,6 @@ describe('makeLogin function', () => {
 
     const setCookieHeader = responseSignIn.headers['set-cookie'];
     expect(setCookieHeader).toBeDefined();
-    expect(
-      setCookieHeader.some((cookie) => cookie.startsWith('session='))
-    ).toBe(true);
+    expect(setCookieHeader.some((cookie) => cookie.startsWith('session='))).toBe(true);
   });
 });

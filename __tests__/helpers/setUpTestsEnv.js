@@ -19,9 +19,7 @@ export async function setUpTestsEnv() {
   return { app, knex, models };
 }
 
-export function setStandardBeforeEach(
-  getAuthor = (data) => data.users.existing.author
-) {
+export function setStandardBeforeEach(getAuthor = (data) => data.users.existing.author) {
   let app;
   let knex;
   let models;

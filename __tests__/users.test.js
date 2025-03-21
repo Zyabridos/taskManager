@@ -41,23 +41,12 @@ describe('test users CRUD', () => {
 
   it('should delete a user', async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await models.user
-      .query()
-      .findOne({ email: params.email });
+    const userToDelete = await models.user.query().findOne({ email: params.email });
 
     cookie = await makeLogin(app, testData.users.existing.fixed);
-    await checkResponseCode(
-      app,
-      'DELETE',
-      `/users/${userToDelete.id}`,
-      cookie,
-      params,
-      302
-    );
+    await checkResponseCode(app, 'DELETE', `/users/${userToDelete.id}`, cookie, params, 302);
 
-    expect(
-      await models.user.query().findOne({ email: params.email })
-    ).toBeUndefined();
+    expect(await models.user.query().findOne({ email: params.email })).toBeUndefined();
   });
 
   it('should update a user', async () => {
@@ -72,7 +61,7 @@ describe('test users CRUD', () => {
       `/users/${user.id}`,
       cookie,
       { ...params, lastName: newLastName },
-      302
+      302,
     );
 
     const updatedUser = await user.$query();
@@ -81,9 +70,7 @@ describe('test users CRUD', () => {
 
   it('should NOT be deleted when it has a task', async () => {
     const params = testData.users.existing.fixed;
-    const userToDelete = await models.user
-      .query()
-      .findOne({ email: params.email });
+    const userToDelete = await models.user.query().findOne({ email: params.email });
 
     expect(userToDelete).toBeDefined();
 
@@ -97,9 +84,7 @@ describe('test users CRUD', () => {
 
     expect(taskWithUser).toBeDefined();
 
-    const userNotSupposedToBeDeleted = await models.user
-      .query()
-      .findOne({ email: params.email });
+    const userNotSupposedToBeDeleted = await models.user.query().findOne({ email: params.email });
     expect(userNotSupposedToBeDeleted).toBeDefined();
   });
 

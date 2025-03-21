@@ -41,14 +41,7 @@ describe('test statuses CRUD', () => {
     const statusToDelete = await checkStatusExists(params.name);
     expect(statusToDelete).toBeDefined();
 
-    await checkResponseCode(
-      app,
-      'DELETE',
-      `/statuses/${statusToDelete.id}`,
-      cookie,
-      null,
-      302
-    );
+    await checkResponseCode(app, 'DELETE', `/statuses/${statusToDelete.id}`, cookie, null, 302);
 
     const deletedStatus = await checkStatusExists(params.name);
     expect(deletedStatus).toBeUndefined();
@@ -68,9 +61,7 @@ describe('test statuses CRUD', () => {
       executorId: 1,
     });
 
-    expect(
-      await models.status.query().findOne({ name: statusToDelete.name })
-    ).toBeDefined();
+    expect(await models.status.query().findOne({ name: statusToDelete.name })).toBeDefined();
   });
 
   it('should update a status', async () => {
@@ -85,12 +76,10 @@ describe('test statuses CRUD', () => {
       `/statuses/${statusToUpdate.id}`,
       cookie,
       { name: updatedStatusName },
-      302
+      302,
     );
 
-    const updatedStatus = await models.status
-      .query()
-      .findById(statusToUpdate.id);
+    const updatedStatus = await models.status.query().findById(statusToUpdate.id);
     expect(updatedStatus.name).toEqual(updatedStatusName);
   });
 

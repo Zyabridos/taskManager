@@ -9,17 +9,8 @@ export const up = async (knex) => {
       .inTable('statuses')
       .notNullable()
       .onDelete('CASCADE');
-    table
-      .integer('author_id')
-      .references('id')
-      .inTable('users')
-      .notNullable()
-      .onDelete('CASCADE');
-    table
-      .integer('executor_id')
-      .references('id')
-      .inTable('users')
-      .onDelete('SET NULL');
+    table.integer('author_id').references('id').inTable('users').notNullable().onDelete('CASCADE');
+    table.integer('executor_id').references('id').inTable('users').onDelete('SET NULL');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
   });

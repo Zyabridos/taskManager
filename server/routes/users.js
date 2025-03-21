@@ -36,9 +36,7 @@ export default (app) => {
       const user = new app.objection.models.user();
 
       try {
-        const validUser = await app.objection.models.user.fromJson(
-          req.body.data
-        );
+        const validUser = await app.objection.models.user.fromJson(req.body.data);
         await app.objection.models.user.query().insert(validUser);
 
         const message = i18next.t('flash.users.create.success');

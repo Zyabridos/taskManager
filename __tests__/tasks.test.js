@@ -65,14 +65,7 @@ describe('test tasks CRUD', () => {
     const taskToDelete = await checkTaskExists(params.name);
     expect(taskToDelete).toBeDefined();
 
-    await checkResponseCode(
-      app,
-      'DELETE',
-      `/tasks/${taskToDelete.id}`,
-      cookie,
-      null,
-      302
-    );
+    await checkResponseCode(app, 'DELETE', `/tasks/${taskToDelete.id}`, cookie, null, 302);
 
     const deletedTask = await checkTaskExists(params.name);
     expect(deletedTask).toBeUndefined();
@@ -90,7 +83,7 @@ describe('test tasks CRUD', () => {
       `/tasks/${task.id}`,
       cookie,
       { ...params, name: updatedTaskName },
-      302
+      302,
     );
 
     const updatedTask = await models.task.query().findById(task.id);

@@ -36,14 +36,7 @@ describe('test labels CRUD', () => {
     const labelToDelete = await checkLabelExists(params.name);
     expect(labelToDelete).toBeDefined();
 
-    await checkResponseCode(
-      app,
-      'DELETE',
-      `/labels/${labelToDelete.id}`,
-      cookie,
-      null,
-      302
-    );
+    await checkResponseCode(app, 'DELETE', `/labels/${labelToDelete.id}`, cookie, null, 302);
 
     const deletedLabel = await checkLabelExists(params.name);
     expect(deletedLabel).toBeUndefined();
@@ -68,9 +61,7 @@ describe('test labels CRUD', () => {
       label_id: labelToDelete.id,
     });
 
-    expect(
-      await models.label.query().findOne({ name: labelToDelete.name })
-    ).toBeDefined();
+    expect(await models.label.query().findOne({ name: labelToDelete.name })).toBeDefined();
   });
 
   it('should update a label', async () => {
@@ -85,7 +76,7 @@ describe('test labels CRUD', () => {
       `/labels/${label.id}`,
       cookie,
       { name: updatedName },
-      302
+      302,
     );
 
     const updatedLabel = await models.label.query().findById(label.id);

@@ -21,8 +21,7 @@ const generators = {
   }),
 };
 
-export const generateData = (type, length = 3) =>
-  Array.from({ length }, () => generators[type]());
+export const generateData = (type, length = 3) => Array.from({ length }, () => generators[type]());
 
 const generateUserWithPassword = (user) => ({
   ..._.omit(user, 'password'),
@@ -40,10 +39,7 @@ export const generateUsers = () => {
     password: faker.internet.password(),
   };
 
-  const seeds = [
-    ...users.map(generateUserWithPassword),
-    generateUserWithPassword(fixedUser),
-  ];
+  const seeds = [...users.map(generateUserWithPassword), generateUserWithPassword(fixedUser)];
 
   return {
     new: newUser,
