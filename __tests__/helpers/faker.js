@@ -21,8 +21,7 @@ const generators = {
   }),
 };
 
-export const generateData = (type, length = 3) =>
-  Array.from({ length }, () => generators[type]());
+export const generateData = (type, length = 3) => Array.from({ length }, () => generators[type]());
 
 const generateUserWithPassword = (user) => ({
   ..._.omit(user, 'password'),

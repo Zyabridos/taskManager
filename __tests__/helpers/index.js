@@ -11,7 +11,12 @@ export const getTestData = () => {
   const labels = generateLabels();
 
   const tasks = generateTasks(users.seeds, statuses.seeds);
-  return { users, statuses, labels, tasks };
+  return {
+    users,
+    statuses,
+    labels,
+    tasks,
+  };
 };
 
 export const prepareData = async (app) => {

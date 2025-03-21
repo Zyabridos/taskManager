@@ -3,7 +3,6 @@ import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 
 describe('makeLogin function', () => {
   let app;
-  let models;
   let knex;
   let testData;
 

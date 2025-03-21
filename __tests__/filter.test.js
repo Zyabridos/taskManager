@@ -1,6 +1,6 @@
+import dotenv from 'dotenv';
 import { prepareData, makeLogin } from './helpers/index.js';
 import { expect } from '@jest/globals';
-import dotenv from 'dotenv';
 import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });

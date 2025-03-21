@@ -1,5 +1,5 @@
-import { prepareData, makeLogin } from './helpers/index.js';
 import dotenv from 'dotenv';
+import { prepareData, makeLogin } from './helpers/index.js';
 import { checkResponseCode } from './helpers/utils.js';
 import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 

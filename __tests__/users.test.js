@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import encrypt from '../server/lib/secure.cjs';
+import dotenv from 'dotenv';
 import { prepareData, makeLogin } from './helpers/index.js';
 import { checkResponseCode } from './helpers/utils.js';
-import dotenv from 'dotenv';
 import setUpTestsEnv from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });
@@ -48,7 +48,7 @@ describe('test users CRUD', () => {
       .query()
       .findOne({ email: params.email });
 
-    const cookie = await makeLogin(app, testData.users.existing.fixed);
+    cookie = await makeLogin(app, testData.users.existing.fixed);
     await checkResponseCode(
       app,
       'DELETE',
@@ -68,7 +68,7 @@ describe('test users CRUD', () => {
     const user = await models.user.query().findOne({ email: params.email });
     const newLastName = 'Golovach';
 
-    const cookie = await makeLogin(app, testData.users.existing.fixed);
+    cookie = await makeLogin(app, testData.users.existing.fixed);
     await checkResponseCode(
       app,
       'PATCH',

@@ -1,6 +1,6 @@
 import fastify from 'fastify';
-import init from '../../server/plugin/init.js';
 import dotenv from 'dotenv';
+import init from '../../server/plugin/init.js';
 
 dotenv.config({ path: '.env.test' });
 
@@ -11,8 +11,7 @@ export default async function setUpTestsEnv() {
   });
 
   await init(app);
-  const knex = app.objection.knex;
-  const models = app.objection.models;
+  const { knex, models } = app.objection;
 
   await knex.migrate.latest();
 

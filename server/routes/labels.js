@@ -2,20 +2,17 @@ import i18next from 'i18next';
 
 export default (app) => {
   app
-    // GET /labels - list of all labels
     .get('/labels', { name: 'labels' }, async (req, reply) => {
       const labels = await app.objection.models.label.query();
       reply.render('labels/index', { labels });
       return reply;
     })
 
-    // GET /labels/new - page for creating new label
     .get('/labels/new', { name: 'newLabel' }, (req, reply) => {
       const label = new app.objection.models.label();
       reply.render('labels/new', { label });
     })
 
-    // GET /labels/:id/edit - page for editing a label
     .get('/labels/:id/edit', { name: 'editlabel' }, async (req, reply) => {
       const { id } = req.params;
       try {
@@ -25,7 +22,6 @@ export default (app) => {
           reply.label(404).send('label not found');
           return;
         }
-        console.log('label data:', label);
         reply.render('labels/edit', { label, errors: {} });
       } catch ({ data }) {
         reply.render('labels/edit', { errors: data });
@@ -35,7 +31,6 @@ export default (app) => {
       return reply;
     })
 
-    // POST /labels - create new label
     .post('/labels', { name: 'createlabel' }, async (req, reply) => {
       const label = new app.objection.models.label();
 
@@ -54,7 +49,6 @@ export default (app) => {
       return reply;
     })
 
-    // PATCH /labels/:id - edit a label
     .patch('/labels/:id', { name: 'updatelabel' }, async (req, reply) => {
       const { id } = req.params;
       const updatedData = req.body.data;
@@ -76,7 +70,6 @@ export default (app) => {
       }
     })
 
-    // DELETE /labels/:id - delete a label
     .delete('/labels/:id', { name: 'deleteLabel' }, async (req, reply) => {
       const { id } = req.params;
       try {
