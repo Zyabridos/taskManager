@@ -41,5 +41,11 @@ export function setStandardBeforeEach(getAuthor = (data) => data.users.existing.
     cookie = await makeLogin(app, getAuthor(testData));
   });
 
-  return () => ({ app, knex, models, testData, cookie });
+  return () => ({
+    app,
+    knex,
+    models,
+    testData,
+    cookie,
+  });
 }

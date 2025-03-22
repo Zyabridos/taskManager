@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { 
+import {
   checkResponseCode,
-  findEntity
+  findEntity,
 } from './helpers/utils.js';
 import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
 
@@ -15,8 +15,15 @@ describe('test statuses CRUD', () => {
   let cookie;
 
   const getTestContext = setStandardBeforeEach();
+
   beforeEach(() => {
-    ({ app, knex, models, testData, cookie } = getTestContext());
+    ({
+      app,
+      knex,
+      models,
+      testData,
+      cookie,
+    } = getTestContext());
   });
 
   async function checkStatusExists(name) {
@@ -44,7 +51,14 @@ describe('test statuses CRUD', () => {
     const statusToDelete = await checkStatusExists(params.name);
     expect(statusToDelete).toBeDefined();
 
-    await checkResponseCode(app, 'DELETE', `/statuses/${statusToDelete.id}`, cookie, null, 302);
+    await checkResponseCode(
+      app,
+      'DELETE',
+      `/statuses/${statusToDelete.id}`,
+      cookie,
+      null,
+      302,
+    );
 
     const deletedStatus = await checkStatusExists(params.name);
     expect(deletedStatus).toBeUndefined();
@@ -54,6 +68,7 @@ describe('test statuses CRUD', () => {
     const statusToDelete = await models.status
       .query()
       .findOne({ name: testData.statuses.existing.delete.name });
+
     expect(statusToDelete).toBeDefined();
 
     await models.task.query().insert({

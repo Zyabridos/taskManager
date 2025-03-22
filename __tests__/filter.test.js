@@ -18,8 +18,15 @@ describe('test tasks filtration by labels, status, and executor', () => {
 
   const getTestContext = setStandardBeforeEach();
 
-  beforeEach(async () => {
-    ({ app, knex, models, cookie } = getTestContext());
+  beforeEach(() => {
+    ({
+      app,
+      knex,
+      models,
+      testData,
+      cookie,
+    } = getTestContext());
+  });
 
     const [labels, statuses, users] = await Promise.all([
       models.label.query(),

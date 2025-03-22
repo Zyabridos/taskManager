@@ -1,3 +1,4 @@
+// prettier-ignore
 export const up = (knex) =>
   knex.schema.createTable('labels', (table) => {
     table.increments('id').primary();

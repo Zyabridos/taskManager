@@ -12,11 +12,9 @@ export async function checkResponseCode(
     ...(payload && { payload: { data: payload } }),
     ...(cookie && { cookies: cookie }),
   });
-  console.log(`Response from ${method} ${url}:`, response.statusCode, response.body);
 
   expect(response.statusCode).toBe(expectedStatus);
   return response;
 }
 
-export const findEntity = async (model, fieldName, value) =>
-  model.query().findOne({ [fieldName]: value });
+export const findEntity = async (model, fieldName, value) => model.query().findOne({ [fieldName]: value });

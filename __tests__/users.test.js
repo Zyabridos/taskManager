@@ -14,9 +14,15 @@ describe('test users CRUD', () => {
   let testData;
   let cookie;
 
-  const getTestContext = setStandardBeforeEach();
+ const getTestContext = setStandardBeforeEach();
   beforeEach(() => {
-    ({ app, knex, models, testData, cookie } = getTestContext());
+    ({
+      app,
+      knex,
+      models,
+      testData,
+      cookie,
+    } = getTestContext());
   });
 
   it('should show a list of users', async () => {

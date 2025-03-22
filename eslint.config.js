@@ -43,7 +43,14 @@ export default [
           },
         },
       ],
-      'no-unused-vars': ['error', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
+      'no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: false,
+        },
+      ],
       'implicit-arrow-linebreak': ['error', 'beside'],
       'arrow-body-style': ['error', 'as-needed'],
       'no-shadow': 'error',
@@ -63,17 +70,8 @@ export default [
           'newlines-between': 'always',
         },
       ],
-      'import/no-extraneous-dependencies': [
-        'error',
-        {
-          devDependencies: false,
-          optionalDependencies: false,
-          peerDependencies: false,
-        },
-      ],
     },
   },
   js.configs.recommended,
-
   prettier,
 ];
