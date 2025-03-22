@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { expect } from '@jest/globals';
+
 import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });
@@ -8,7 +9,6 @@ describe('test tasks filtration by labels, status, and executor', () => {
   let app;
   let models;
   let knex;
-  let testData;
   let cookie;
 
   let selectedLabel;
@@ -19,7 +19,7 @@ describe('test tasks filtration by labels, status, and executor', () => {
   const getTestContext = setStandardBeforeEach();
 
   beforeEach(async () => {
-    ({ app, knex, models, testData, cookie } = getTestContext());
+    ({ app, knex, models, cookie } = getTestContext());
 
     const [labels, statuses, users] = await Promise.all([
       models.label.query(),
@@ -27,9 +27,9 @@ describe('test tasks filtration by labels, status, and executor', () => {
       models.user.query(),
     ]);
 
-    selectedLabel = labels[0];
-    selectedStatus = statuses[0];
-    selectedExecutor = users[0];
+    [selectedLabel] = labels;
+    [selectedStatus] = statuses;
+    [selectedExecutor] = users;
 
     taskWithDataFromDB = await models.task.query().insert({
       name: 'Task with correct data',
@@ -69,18 +69,17 @@ describe('test tasks filtration by labels, status, and executor', () => {
   }
 
   it.each([
-    [{ label: () => selectedLabel.id.toString() }, 'label'],
-    [{ status: () => selectedStatus.id.toString() }, 'status'],
-    [{ executor: () => selectedExecutor.id.toString() }, 'executor'],
+    [{ label: () => selectedLabel.id.toString() }],
+    [{ status: () => selectedStatus.id.toString() }],
+    [{ executor: () => selectedExecutor.id.toString() }],
     [
       {
         label: () => selectedLabel.id.toString(),
         status: () => selectedStatus.id.toString(),
         executor: () => selectedExecutor.id.toString(),
       },
-      'all filters',
     ],
-  ])('should return only tasks with the selected %s', async (filterParams, filterType) => {
+  ])('should return only tasks with the selected filter', async (filterParams) => {
     const resolvedFilters = Object.fromEntries(
       Object.entries(filterParams).map(([key, value]) => [key, value()]),
     );

@@ -5,7 +5,14 @@ import prepareTaskViewData from '../utils/prepareTaskViewData.js';
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      const { status, executor, isCreatorUser, onlyExecutorTasks, label } = req.query;
+      const {
+        status,
+        executor,
+        isCreatorUser,
+        onlyExecutorTasks,
+        label,
+      } = req.query;
+
 
       try {
         const { statuses, executors, labels } = await prepareTaskViewData(app);

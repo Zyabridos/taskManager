@@ -37,7 +37,9 @@ export default (app) => {
       const status = new app.objection.models.status();
 
       try {
-        const validStatus = await app.objection.models.status.fromJson(req.body.data);
+        const validStatus = await app.objection.models.status.fromJson(
+          req.body.data
+        );
         await app.objection.models.status.query().insert(validStatus);
         req.flash('info', i18next.t('flash.statuses.create.success'));
         reply.redirect('/statuses');

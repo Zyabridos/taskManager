@@ -1,9 +1,9 @@
 import fastify from 'fastify';
 import dotenv from 'dotenv';
 import init from '../../server/plugin/init.js';
-import { 
+import {
   prepareData,
-  makeLogin 
+  makeLogin,
 } from './index.js';
 
 dotenv.config({ path: '.env.test' });
@@ -19,7 +19,11 @@ export async function setUpTestsEnv() {
 
   await knex.migrate.latest();
 
-  return { app, knex, models };
+  return {
+    app,
+    knex,
+    models,
+  };
 }
 
 export function setStandardBeforeEach(getAuthor = (data) => data.users.existing.author) {

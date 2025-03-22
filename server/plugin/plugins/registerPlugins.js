@@ -41,8 +41,8 @@ const registerPlugins = async (app) => {
     body: true,
   });
 
-  fastifyPassport.registerUserDeserializer((user) =>
-    app.objection.models.user.query().findById(user.id),
+  fastifyPassport.registerUserDeserializer(
+    (user) => app.objection.models.user.query().findById(user.id),
   );
   fastifyPassport.registerUserSerializer((user) => Promise.resolve(user));
   fastifyPassport.use(new FormStrategy('form', app));
@@ -50,12 +50,13 @@ const registerPlugins = async (app) => {
   await app.register(fastifyPassport.initialize());
   await app.register(fastifyPassport.secureSession());
 
-  // decorators
   app.decorate('fp', fastifyPassport);
-  app.decorate('authenticate', (...args) =>
-    fastifyPassport.authenticate('form', {
-      failureRedirect: app.reverse('root'),
-    })(...args),
+  app.decorate(
+    'authenticate',
+    (...args) =>
+      fastifyPassport.authenticate('form', {
+        failureRedirect: app.reverse('root'),
+      })(...args),
   );
 
   app.decorate('reverse', (routeName) => {

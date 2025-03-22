@@ -9,10 +9,9 @@ describe('test session', () => {
   let app;
   let testData;
   let cookie;
-  let knex;
 
   beforeAll(async () => {
-    ({ app, knex } = await setUpTestsEnv());
+    ({ app } = await setUpTestsEnv());
     testData = await prepareData(app);
   });
 
