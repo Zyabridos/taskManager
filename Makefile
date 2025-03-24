@@ -23,14 +23,8 @@ start:
 start-backend:
 	npm start -- --watch --verbose-watch --ignore-watch='node_modules .git .sqlite'
 
-start-frontend:
-	npx webpack --watch --progress
-
 lint:
 	npx eslint .
 
 test:
 	npm test -s
-
-a:
-	node server/index.js --watch

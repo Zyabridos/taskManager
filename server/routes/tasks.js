@@ -123,6 +123,7 @@ export default (app) => {
         labels,
       } = req.body.data;
 
+      const { id: authorId } = req.user;
       const labelIds = Array.isArray(labels)
         ? labels.map(Number)
         : [Number(labels)].filter((id) => !Number.isNaN(id));
@@ -134,7 +135,6 @@ export default (app) => {
         executorId: Number(executorId),
         authorId: Number(authorId),
       };
-      const { id: authorId } = req.user;
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
