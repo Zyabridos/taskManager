@@ -140,8 +140,8 @@ export default (app) => {
       try {
         await app.objection.models.task.transaction(async (trx) => {
           const labelObjects = labelIds.length > 0
-              ? await app.objection.models.label.query(trx).whereIn('id', labelIds)
-              : [];
+            ? await app.objection.models.label.query(trx).whereIn('id', labelIds)
+            : [];
 
           const taskWithLabels = {
             ...taskData,

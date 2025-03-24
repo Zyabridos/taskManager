@@ -13,6 +13,7 @@
     "start": "node server/plugin/init.js",
     "setup": "npm install && npm start",
     "test": "jest",
+    "dev": "make dev",
     "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
   },
