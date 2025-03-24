@@ -1,8 +1,6 @@
 ### Hexlet tests and linter status:
 
-[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)
-
-[![Maintainability](https://api.codeclimate.com/v1/badges/dd3b0c8de30f780cffa1/maintainability)](https://codeclimate.com/github/Zyabridos/taskManager/maintainability)
+[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions) [![Maintainability](https://api.codeclimate.com/v1/badges/dd3b0c8de30f780cffa1/maintainability)](https://codeclimate.com/github/Zyabridos/taskManager/maintainability)
 
 # Task Manager
 
