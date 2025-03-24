@@ -82,7 +82,7 @@ To start the built app, run:
 make start
 ```
 
-This command will launch the app. By default, the app should be accessible at [http://127.0.0.1:3000](http://127.0.0.1:3000). If you cannot access the app, check the terminal output for the correct URL or any errors related to the server startup.
+This command will launch the app. By default, the app should be accessible at [http://0.0.0.0:3000](http://0.0.0.0:3000). If you cannot access the app, check the terminal output for the correct URL or any errors related to the server startup.
 
 ## Run in development mode
 
