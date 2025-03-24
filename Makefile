@@ -1,7 +1,9 @@
 setup:
-	prepare install db-migrate
+	npm run prepare
+	npm ci
+	npx knex migrate:latest
 
-install: 
+install:
 	npm ci
 
 db-migrate:
@@ -18,10 +20,10 @@ prepare:
 	cp -n .env.example .env || true
 
 start:
-	npm start -- --watch --verbose-watch --ignore-watch='node_modules .git .sqlite'
+	npm start
 
 start-backend:
-	npm start -- --watch --verbose-watch --ignore-watch='node_modules .git .sqlite'
+	npm run dev
 
 lint:
 	npx eslint .
