@@ -14,7 +14,7 @@ describe('test users CRUD', () => {
   let testData;
   let cookie;
 
- const getTestContext = setStandardBeforeEach();
+  const getTestContext = setStandardBeforeEach();
   beforeEach(() => {
     ({
       app,

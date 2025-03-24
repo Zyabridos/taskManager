@@ -54,8 +54,8 @@ const registerPlugins = async (app) => {
   app.decorate(
     'authenticate',
     (...args) => fastifyPassport.authenticate('form', {
-        failureRedirect: app.reverse('root'),
-      })(...args),
+      failureRedirect: app.reverse('root'),
+    })(...args),
   );
 
   app.decorate('reverse', (routeName) => {

@@ -13,7 +13,6 @@ export default (app) => {
         label,
       } = req.query;
 
-
       try {
         const { statuses, executors, labels } = await prepareTaskViewData(app);
 
@@ -116,8 +115,13 @@ export default (app) => {
     })
 
     .post('/tasks', { name: 'createTask' }, async (req, reply) => {
-      const { name, description, statusId, executorId, labels } = req.body.data;
-      const { id: authorId } = req.user;
+      const {
+        name,
+        description,
+        statusId,
+        executorId,
+        labels,
+      } = req.body.data;
 
       const labelIds = Array.isArray(labels)
         ? labels.map(Number)
@@ -130,6 +134,7 @@ export default (app) => {
         executorId: Number(executorId),
         authorId: Number(authorId),
       };
+      const { id: authorId } = req.user;
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
@@ -181,7 +186,12 @@ export default (app) => {
 
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
       const taskId = Number(req.params.id);
-      const { name, description, statusId, executorId, labels: labelsList = [] } = req.body.data;
+      const { name,
+        description,
+        statusId,
+        executorId,
+        labels: labelsList = []
+      } = req.body.data;
 
       try {
         const prevTask = await app.objection.models.task
