@@ -28,3 +28,6 @@ lint:
 
 test:
 	npm test -s
+
+dev:
+	node server/index.js

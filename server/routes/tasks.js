@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import i18next from 'i18next';
 
 import prepareTaskViewData from '../utils/prepareTaskViewData.js';
@@ -138,8 +139,7 @@ export default (app) => {
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
-          const labelObjects =
-            labelIds.length > 0
+          const labelObjects = labelIds.length > 0
               ? await app.objection.models.label.query(trx).whereIn('id', labelIds)
               : [];
 
@@ -186,11 +186,12 @@ export default (app) => {
 
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
       const taskId = Number(req.params.id);
-      const { name,
+      const {
+        name,
         description,
         statusId,
         executorId,
-        labels: labelsList = []
+        labels: labelsList = [],
       } = req.body.data;
 
       try {

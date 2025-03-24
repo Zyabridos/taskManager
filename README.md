@@ -86,6 +86,12 @@ make start
 
 This command will launch the app. By default, the app should be accessible at [http://127.0.0.1:3000](http://127.0.0.1:3000). If you cannot access the app, check the terminal output for the correct URL or any errors related to the server startup.
 
+## Run in development mode
+
+```bash
+make dev
+```
+
 ## Summary of Makefile Commands
 
 | Command        | Description                           |
@@ -93,3 +99,4 @@ This command will launch the app. By default, the app should be accessible at [h
 | `make install` | Installs dependencies using `npm ci`. |
 | `make build`   | Builds the frontend for production.   |
 | `make start`   | Starts the built application.         |
+| `make dev`     | Run in development mode               |
