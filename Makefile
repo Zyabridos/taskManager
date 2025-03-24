@@ -30,4 +30,4 @@ test:
 	npm test -s
 
 dev:
-	node server/index.js
+	npm run dev

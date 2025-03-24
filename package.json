@@ -10,10 +10,10 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "node server/plugin/init.js",
+    "start": "node server/index.js",
     "setup": "npm install && npm start",
     "test": "jest",
-    "dev": "make dev",
+    "dev": "NODE_ENV=development node server/index.js",
     "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
   },
