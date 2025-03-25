@@ -3,11 +3,15 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { createUser } from '../api/usersApi';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+import { createUser } from '../api/usersApi';
 
 const RegisterForm = () => {
   const router = useRouter();
+  const { t: tAuth } = useTranslation('auth');
+  const { t: tValidation } = useTranslation('validation');
+  const { t: tErrors } = useTranslation('errors');
 
   const formik = useFormik({
     initialValues: {
@@ -17,17 +21,21 @@ const RegisterForm = () => {
       password: '',
     },
     validationSchema: Yup.object({
-      firstName: Yup.string().required('Имя обязательно'),
-      lastName: Yup.string().required('Фамилия обязательна'),
-      email: Yup.string().email('Неверный email').required('Email обязателен'),
-      password: Yup.string().min(3, 'Минимум 3 символа').required('Пароль обязателен'),
+      firstName: Yup.string().required(tValidation('firstNameRequired')),
+      lastName: Yup.string().required(tValidation('lastNameRequired')),
+      email: Yup.string()
+        .email(tValidation('invalidEmail'))
+        .required(tValidation('emailRequired')),
+      password: Yup.string()
+        .min(3, tValidation('passwordMin'))
+        .required(tValidation('passwordRequired')),
     }),
     onSubmit: async values => {
       try {
         await createUser(values);
         router.push('/users');
       } catch (e) {
-        alert('Ошибка при создании пользователя');
+        alert(tErrors('createUserFailed'));
       }
     },
   });
@@ -44,13 +52,7 @@ const RegisterForm = () => {
               htmlFor={field}
               className="mb-2 block text-sm font-bold text-gray-700 capitalize"
             >
-              {field === 'firstName'
-                ? 'Имя'
-                : field === 'lastName'
-                ? 'Фамилия'
-                : field === 'email'
-                ? 'Email'
-                : 'Пароль'}
+              {tAuth(`form.${field}`)}
             </label>
             <input
               {...formik.getFieldProps(field)}
@@ -59,15 +61,7 @@ const RegisterForm = () => {
               className={`focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none ${
                 formik.touched[field] && formik.errors[field] ? 'border-red-500' : ''
               }`}
-              placeholder={
-                field === 'firstName'
-                  ? 'Имя'
-                  : field === 'lastName'
-                  ? 'Фамилия'
-                  : field === 'email'
-                  ? 'Email'
-                  : 'Пароль'
-              }
+              placeholder={tAuth(`form.${field}`)}
             />
             {formik.touched[field] && formik.errors[field] && (
               <p className="text-xs italic text-red-500 mt-1">{formik.errors[field]}</p>
@@ -80,7 +74,7 @@ const RegisterForm = () => {
             className="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
             type="submit"
           >
-            Зарегистрироваться
+            {tAuth('form.submit')}
           </button>
         </div>
       </form>

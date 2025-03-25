@@ -1,0 +1,8 @@
+{
+  "firstNameRequired": "Имя обязательно",
+  "lastNameRequired": "Фамилия обязательна",
+  "emailRequired": "Email обязателен",
+  "invalidEmail": "Неверный email",
+  "passwordRequired": "Пароль обязателен",
+  "passwordMin": "Минимум 3 символа"
+}

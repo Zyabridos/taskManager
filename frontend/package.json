@@ -17,6 +17,7 @@
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.1",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
     "yup": "^1.6.1"
@@ -31,6 +32,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "eslint-plugin-functional": "^9.0.1",
+    "i18next-scanner": "^4.6.0",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
