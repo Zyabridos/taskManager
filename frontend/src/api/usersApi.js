@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// const base = '/api/users';
 const base = `${process.env.NEXT_PUBLIC_API_BASE}/api/users`;
 
 export const getUsers = async () => {
