@@ -1,6 +1,4 @@
 /node_modules/
-.prettierrc
-.prettuerrc
 .eslintrc.yml
 node_modules
 .DS_Store

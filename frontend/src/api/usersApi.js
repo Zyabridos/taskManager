@@ -7,12 +7,12 @@ export const getUsers = async () => {
   return response.data;
 };
 
-export const createUser = async (data) => {
+export const createUser = async data => {
   const response = await axios.post(base, data);
   return response.data;
 };
 
-export const getUser = async (id) => {
+export const getUser = async id => {
   const response = await axios.get(`${base}/${id}`);
   return response.data;
 };
