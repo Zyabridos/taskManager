@@ -13,6 +13,7 @@ db-rollback:
 	npx knex migrate:rollback
 
 build:
+	cd backend
 	rm -rf dist
 	npm run build
 

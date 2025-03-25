@@ -6,6 +6,7 @@ const app = fastify({ logger: true });
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
+  console.log('port is ', PORT)
   try {
     await init(app);
 
@@ -17,6 +18,7 @@ const startServer = async () => {
     app.log.info(`Server is running on http://localhost:${PORT}`);
   } catch (err) {
     app.log.error('Error starting the server:', err);
+    console.error('Error starting the server', err);
     process.exit(1);
   }
 };
