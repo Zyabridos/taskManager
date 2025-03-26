@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TransparentGrayBtn } from './Buttons';
+import { TransparentGraySubmitBtn } from './Buttons';
 
 const EditFormWrapper = ({ title, onSubmit, children, buttonText }) => (
   <div className="mx-auto mt-10 max-w-400">
@@ -10,7 +10,7 @@ const EditFormWrapper = ({ title, onSubmit, children, buttonText }) => (
       <form onSubmit={onSubmit} className="m-2">
         {children}
         <div className="mt-6 flex justify-start">
-          <TransparentGrayBtn buttonText={buttonText} />
+          <TransparentGraySubmitBtn buttonText={buttonText} />
         </div>
       </form>
     </div>

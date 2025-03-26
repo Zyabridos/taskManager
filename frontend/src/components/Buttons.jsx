@@ -28,7 +28,7 @@ export const DeleteButton = () => {
   );
 };
 
-export const TransparentGrayBtn = ({ buttonText }) => {
+export const TransparentGraySubmitBtn = ({ buttonText }) => {
   return (
     <button
       type="submit"
