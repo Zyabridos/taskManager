@@ -4,15 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
-export const EditButton = ({ href }) => {
-  const { t: tButtons } = useTranslation('buttons');
-
+export const HrefButton = ({ href, buttonText }) => {
   return (
     <Link
       href={href}
       className="inline-block rounded border border-e-stone-800 bg-transparent px-4 py-2 font-semibold text-gray-900 transition hover:border-transparent hover:bg-gray-800 hover:text-amber-50"
     >
-      {tButtons('edit')}
+      {buttonText}
     </Link>
   );
 };

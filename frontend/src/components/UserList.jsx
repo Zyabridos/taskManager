@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUsers } from '../store/slices/usersSlice';
-import { EditButton, DeleteButton } from './Buttons';
+import { DeleteButton, HrefButton } from './Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ const UserList = () => {
   const dispatch = useDispatch();
   const { list, status, error } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
+  const { t: tButtons } = useTranslation('buttons');
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -63,7 +64,7 @@ const UserList = () => {
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">
-                  <EditButton href={routes.users.edit(user.id)} />
+                  <HrefButton href={routes.users.edit(user.id)} buttonText={tButtons('edit')} />
                   <DeleteButton />
                 </div>
               </td>

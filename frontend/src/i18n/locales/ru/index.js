@@ -5,6 +5,7 @@ import buttons from './buttons.json';
 import tables from './tables.json';
 import users from './users.json';
 import common from './common.json';
+import home from './home.json';
 
 export default {
   auth,
@@ -14,4 +15,5 @@ export default {
   tables,
   users,
   common,
+  home,
 };
