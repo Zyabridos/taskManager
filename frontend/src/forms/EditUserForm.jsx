@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import EditFormWrapper from '../components/EditFormWrapper';
 import { getUser, updateUser } from '../api/usersApi';
+import FormInput from './ui/FormInput';
+import FloatingLabel from './ui/FloatingLabel';
 
 const EditUserPage = () => {
   const { id } = useParams();
@@ -57,7 +59,7 @@ const EditUserPage = () => {
   });
 
   if (!initialValues) {
-    return <p>{tUsers('loading')}</p>; // если есть строка loading, или просто текст
+    return <p>{tUsers('loading')}</p>;
   }
 
   return (
@@ -68,21 +70,14 @@ const EditUserPage = () => {
     >
       {['firstName', 'lastName', 'email'].map(field => (
         <div className="relative mb-6" key={field}>
-          <input
+          <FormInput
             id={field}
-            type="text"
-            placeholder=" "
-            {...formik.getFieldProps(field)}
-            className={`peer h-14 w-full appearance-none rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
-              formik.touched[field] && formik.errors[field] ? 'border-red-500' : 'border-gray-300'
-            }`}
+            type={field === 'email' ? 'email' : 'text'}
+            field={formik.getFieldProps(field)}
+            touched={formik.touched[field]}
+            error={formik.errors[field]}
           />
-          <label
-            htmlFor={field}
-            className="absolute top-2 left-3 z-10 origin-[0] scale-100 transform text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:scale-75 peer-focus:text-blue-500"
-          >
-            {tUsers(`form.${field}`)}
-          </label>
+          <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
             <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
           )}
