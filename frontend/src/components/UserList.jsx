@@ -7,7 +7,7 @@ import { EditButton, DeleteButton } from './Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
-import routes from '../routes'
+import routes from '../routes';
 
 const UserList = () => {
   const dispatch = useDispatch();

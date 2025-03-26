@@ -4,6 +4,7 @@ import validation from './validation.json';
 import buttons from './buttons.json';
 import tables from './tables.json';
 import users from './users.json';
+import common from './common.json';
 
 export default {
   auth,
@@ -12,4 +13,5 @@ export default {
   buttons,
   tables,
   users,
+  common,
 };
