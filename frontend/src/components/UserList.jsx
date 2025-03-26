@@ -7,6 +7,7 @@ import { EditButton, DeleteButton } from './Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
+import routes from '../routes'
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -62,7 +63,7 @@ const UserList = () => {
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">
-                  <EditButton />
+                  <EditButton href={routes.users.edit(user.id)} />
                   <DeleteButton />
                 </div>
               </td>
