@@ -1,12 +1,15 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import UserList from '../../components/UserList';
+import PageSection from '../../components/PageSection';
 
-export default function UsersPage() {
+export default function UserListPage() {
+  const { t } = useTranslation('tables');
+
   return (
-    <div>
-      <h1>Список пользователей</h1>
+    <PageSection title={t('users.pageTitle')}>
       <UserList />
-    </div>
+    </PageSection>
   );
 }

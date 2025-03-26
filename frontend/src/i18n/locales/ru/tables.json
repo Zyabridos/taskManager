@@ -1,0 +1,16 @@
+{
+  "common": {
+    "columns": {
+      "id": "ID",
+      "createdAt": "Дата создания",
+      "actions": "Действия"
+    }
+  },
+  "users": {
+    "pageTitle": "Список пользователей",
+    "columns": {
+      "fullName": "ФИО",
+      "email": "Email"
+    }
+  }
+}

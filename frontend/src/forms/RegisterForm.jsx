@@ -23,9 +23,7 @@ const RegisterForm = () => {
     validationSchema: Yup.object({
       firstName: Yup.string().required(tValidation('firstNameRequired')),
       lastName: Yup.string().required(tValidation('lastNameRequired')),
-      email: Yup.string()
-        .email(tValidation('invalidEmail'))
-        .required(tValidation('emailRequired')),
+      email: Yup.string().email(tValidation('invalidEmail')).required(tValidation('emailRequired')),
       password: Yup.string()
         .min(3, tValidation('passwordMin'))
         .required(tValidation('passwordRequired')),
@@ -41,7 +39,7 @@ const RegisterForm = () => {
   });
 
   return (
-    <div className="w-full max-w-md mx-auto mt-8">
+    <div className="mx-auto mt-8 w-full max-w-md">
       <form
         className="mb-4 rounded bg-white px-8 pt-6 pb-8 shadow-md"
         onSubmit={formik.handleSubmit}
@@ -64,7 +62,7 @@ const RegisterForm = () => {
               placeholder={tAuth(`form.${field}`)}
             />
             {formik.touched[field] && formik.errors[field] && (
-              <p className="text-xs italic text-red-500 mt-1">{formik.errors[field]}</p>
+              <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
             )}
           </div>
         ))}
