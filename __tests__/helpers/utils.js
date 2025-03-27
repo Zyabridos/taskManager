@@ -18,4 +18,5 @@ export async function checkResponseCode(
 }
 
 // eslint-disable-next-line
-export const findEntity = async (model, fieldName, value) => model.query().findOne({ [fieldName]: value });
+export const findEntity = async (model, fieldName, value) =>
+  model.query().findOne({ [fieldName]: value });

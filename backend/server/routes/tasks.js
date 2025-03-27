@@ -6,13 +6,7 @@ import prepareTaskViewData from '../utils/prepareTaskViewData.js';
 export default (app) => {
   app
     .get('/tasks', { name: 'tasks' }, async (req, reply) => {
-      const {
-        status,
-        executor,
-        isCreatorUser,
-        onlyExecutorTasks,
-        label,
-      } = req.query;
+      const { status, executor, isCreatorUser, onlyExecutorTasks, label } = req.query;
 
       try {
         const { statuses, executors, labels } = await prepareTaskViewData(app);
@@ -116,13 +110,7 @@ export default (app) => {
     })
 
     .post('/tasks', { name: 'createTask' }, async (req, reply) => {
-      const {
-        name,
-        description,
-        statusId,
-        executorId,
-        labels,
-      } = req.body.data;
+      const { name, description, statusId, executorId, labels } = req.body.data;
 
       const { id: authorId } = req.user;
       const labelIds = Array.isArray(labels)
@@ -139,9 +127,10 @@ export default (app) => {
 
       try {
         await app.objection.models.task.transaction(async (trx) => {
-          const labelObjects = labelIds.length > 0
-            ? await app.objection.models.label.query(trx).whereIn('id', labelIds)
-            : [];
+          const labelObjects =
+            labelIds.length > 0
+              ? await app.objection.models.label.query(trx).whereIn('id', labelIds)
+              : [];
 
           const taskWithLabels = {
             ...taskData,
@@ -186,13 +175,7 @@ export default (app) => {
 
     .patch('/tasks/:id', { name: 'updateTask' }, async (req, reply) => {
       const taskId = Number(req.params.id);
-      const {
-        name,
-        description,
-        statusId,
-        executorId,
-        labels: labelsList = [],
-      } = req.body.data;
+      const { name, description, statusId, executorId, labels: labelsList = [] } = req.body.data;
 
       try {
         const prevTask = await app.objection.models.task

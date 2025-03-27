@@ -3,7 +3,7 @@ import {
   generateStatuses,
   generateTasks,
   generateLabels,
-} from './faker.js';
+} from "./faker.js";
 
 export const getTestData = () => {
   const users = generateUsers();
@@ -26,15 +26,15 @@ export const prepareData = async (app) => {
   const statusesData = generateStatuses();
   const labelsData = generateLabels();
 
-  await knex('users').insert(usersData.seeds);
-  await knex('statuses').insert(statusesData.seeds);
-  await knex('labels').insert(labelsData.seeds);
+  await knex("users").insert(usersData.seeds);
+  await knex("statuses").insert(statusesData.seeds);
+  await knex("labels").insert(labelsData.seeds);
 
-  const users = await knex('users').select();
-  const statuses = await knex('statuses').select();
+  const users = await knex("users").select();
+  const statuses = await knex("statuses").select();
 
   const tasksData = generateTasks(users, statuses);
-  await knex('tasks').insert(tasksData.seeds);
+  await knex("tasks").insert(tasksData.seeds);
 
   return {
     users: usersData,
@@ -45,27 +45,31 @@ export const prepareData = async (app) => {
 };
 
 export const makeLogin = async (app, userData) => {
-  const user = await app.objection.models.user.query().findOne({ email: userData.email });
+  const user = await app.objection.models.user
+    .query()
+    .findOne({ email: userData.email });
 
   if (!user) {
     throw new Error(`User with email ${userData.email} not found in DB`);
   }
 
   const responseSignIn = await app.inject({
-    method: 'POST',
-    url: '/session',
+    method: "POST",
+    url: "/session",
     payload: { data: userData },
   });
 
-  const setCookieHeader = responseSignIn.headers['set-cookie'];
+  const setCookieHeader = responseSignIn.headers["set-cookie"];
 
   const cookies = setCookieHeader.map((cookieString) => {
-    const [nameValue] = cookieString.split(';');
-    const [name, value] = nameValue.split('=');
+    const [nameValue] = cookieString.split(";");
+    const [name, value] = nameValue.split("=");
     return { [name]: value };
   });
 
-  const sessionCookie = cookies.find((cookie) => Object.keys(cookie)[0] === 'session');
+  const sessionCookie = cookies.find(
+    (cookie) => Object.keys(cookie)[0] === "session",
+  );
 
   return sessionCookie;
 };

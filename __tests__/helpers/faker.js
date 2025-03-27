@@ -1,6 +1,6 @@
-import { faker } from '@faker-js/faker';
-import _ from 'lodash';
-import encrypt from '../../server/lib/secure.cjs';
+import { faker } from "@faker-js/faker";
+import _ from "lodash";
+import encrypt from "../../server/lib/secure.cjs";
 
 const generators = {
   user: () => ({
@@ -21,25 +21,29 @@ const generators = {
   }),
 };
 
-export const generateData = (type, length = 3) => Array.from({ length }, () => generators[type]());
+export const generateData = (type, length = 3) =>
+  Array.from({ length }, () => generators[type]());
 
 const generateUserWithPassword = (user) => ({
-  ..._.omit(user, 'password'),
+  ..._.omit(user, "password"),
   passwordDigest: encrypt(user.password),
 });
 
 export const generateUsers = () => {
-  const newUser = generateData('user', 1)[0];
-  const users = generateData('user', 5);
+  const newUser = generateData("user", 1)[0];
+  const users = generateData("user", 5);
 
   const fixedUser = {
-    firstName: 'Alice',
-    lastName: 'Ramsey',
-    email: 'alice@example.com',
+    firstName: "Alice",
+    lastName: "Ramsey",
+    email: "alice@example.com",
     password: faker.internet.password(),
   };
 
-  const seeds = [...users.map(generateUserWithPassword), generateUserWithPassword(fixedUser)];
+  const seeds = [
+    ...users.map(generateUserWithPassword),
+    generateUserWithPassword(fixedUser),
+  ];
 
   return {
     new: newUser,
@@ -54,8 +58,8 @@ export const generateUsers = () => {
 };
 
 export const generateStatuses = () => {
-  const newStatus = generateData('status', 1);
-  const statuses = generateData('status', 2);
+  const newStatus = generateData("status", 1);
+  const statuses = generateData("status", 2);
   return {
     new: newStatus[0],
     existing: {
@@ -68,10 +72,10 @@ export const generateStatuses = () => {
 
 export const generateLabels = () => {
   const newLabel = {
-    ...generateData('label', 1)[0],
+    ...generateData("label", 1)[0],
     id: Math.round(Math.random() * 1000),
   };
-  const labels = generateData('label', 2).map((label) => ({
+  const labels = generateData("label", 2).map((label) => ({
     ...label,
     id: Math.round(Math.random() * 1000),
   }));
@@ -87,7 +91,7 @@ export const generateLabels = () => {
 };
 
 export const generateTasks = (users, statuses) => {
-  const tasks = generateData('task', 2).map((task, index) => ({
+  const tasks = generateData("task", 2).map((task, index) => ({
     ...task,
     id: index,
     statusId: statuses[0]?.id || 1,
@@ -97,7 +101,7 @@ export const generateTasks = (users, statuses) => {
 
   return {
     new: {
-      ...generateData('task', 1)[0],
+      ...generateData("task", 1)[0],
       statusId: statuses[0]?.id || 1,
       authorId: users[0]?.id || 1,
       executorId: users[1]?.id || 1,

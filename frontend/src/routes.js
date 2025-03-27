@@ -5,8 +5,9 @@ const routes = {
     create: '/users/new',
   },
   session: {
-    new: '/session/new',
+    new: 'session/new',
   },
+  loginPath: '/session'
 };
 
 export default routes;

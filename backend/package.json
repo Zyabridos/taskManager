@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "webpack",
-    "start": "node server/index.js",
+    "start": "node server/bin/startServer.js",
     "setup": "npm install && npm start",
     "test": "jest",
     "dev": "NODE_ENV=development nodemon server/index.js",

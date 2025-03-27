@@ -24,13 +24,16 @@ start:
 	npm start
 
 start-backend:
-	npm run dev
+	cd backend && npm run start
+
+frontend-dev:
+	cd frontend && npm run dev
+
+dev:
+	make start-backend && make frontend-dev
 
 lint:
 	npx eslint .
 
 test:
 	npm test -s
-
-dev:
-	npm run dev

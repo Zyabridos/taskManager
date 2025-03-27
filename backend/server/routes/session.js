@@ -6,28 +6,26 @@ export default (app) => {
       const signInForm = {};
       reply.render('session/new', { signInForm });
     })
-    .post(
-      '/session',
-      { name: 'session' },
-      app.fp.authenticate('form', async (req, reply, err, user) => {
-        if (err) {
-          return app.httpErrors.internalServerError(err);
-        }
-        if (!user) {
-          const signInForm = req.body.data;
-          const errors = {
-            email: [{ message: i18next.t('errors.wrongEmailOrPassword') }],
-          };
-          reply.render('session/new', { signInForm, errors });
-          return reply.status(401);
-        }
-        await req.logIn(user);
-        req.session.userId = user.id;
-        req.flash('success', i18next.t('flash.session.create.success'));
-        reply.redirect('/');
-        return reply;
-      }),
-    )
+    app.post(
+    '/api/session',
+    { name: 'session' },
+    app.fp.authenticate('form', async (req, reply, err, user) => {
+      if (err) {
+        req.log.error(err);
+        return reply.status(500).send({ error: 'Internal server error' });
+      }
+
+      if (!user) {
+        return reply.status(401).send({ error: i18next.t('errors.wrongEmailOrPassword') });
+      }
+
+      await req.logIn(user);
+      req.session.userId = user.id;
+
+      console.log('Server got this reply:', { user: { id: user.id, email: user.email }})
+      return reply.send({ user: { id: user.id, email: user.email } });
+    }),
+  )
 
     .delete('/session', async (req, reply) => {
       await req.logOut();
