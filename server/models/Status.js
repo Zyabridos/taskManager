@@ -1,12 +1,12 @@
-const objectionUnique = require('objection-unique');
+import objectionUnique from 'objection-unique';
 
-const BaseModel = require('./BaseModel.cjs');
+import BaseModel from './BaseModel.js';
 
 const unique = objectionUnique({ fields: ['name'] });
 
-module.exports = class Label extends unique(BaseModel) {
+export default class Status extends unique(BaseModel) {
   static get tableName() {
-    return 'labels';
+    return 'statuses';
   }
 
   static get jsonSchema() {
@@ -24,12 +24,12 @@ module.exports = class Label extends unique(BaseModel) {
     return {
       tasks: {
         relation: BaseModel.HasManyRelation,
-        modelClass: 'Task.cjs',
+        modelClass: './Task.js',
         join: {
-          from: 'labels.id',
-          to: 'tasks.id',
+          from: 'statuses.id',
+          to: 'tasks.statusId',
         },
       },
     };
   }
-};
+}

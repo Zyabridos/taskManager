@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import _ from 'lodash';
-import encrypt from '../../server/lib/secure.cjs';
+import encrypt from '../../server/lib/secure.js';
 
 const generators = {
   user: () => ({

@@ -1,6 +1,6 @@
-const BaseModel = require('./BaseModel.cjs');
+import BaseModel from './BaseModel.js';
 
-module.exports = class Task extends BaseModel {
+export default class Task extends BaseModel {
   static get tableName() {
     return 'tasks';
   }
@@ -40,7 +40,7 @@ module.exports = class Task extends BaseModel {
     return {
       status: {
         relation: BaseModel.BelongsToOneRelation,
-        modelClass: 'Status.cjs',
+        modelClass: './Status.js',
         join: {
           from: 'tasks.statusId',
           to: 'statuses.id',
@@ -48,7 +48,7 @@ module.exports = class Task extends BaseModel {
       },
       author: {
         relation: BaseModel.BelongsToOneRelation,
-        modelClass: 'User.cjs',
+        modelClass: './User.js',
         join: {
           from: 'tasks.authorId',
           to: 'users.id',
@@ -56,7 +56,7 @@ module.exports = class Task extends BaseModel {
       },
       executor: {
         relation: BaseModel.BelongsToOneRelation,
-        modelClass: 'User.cjs',
+        modelClass: './User.js',
         join: {
           from: 'tasks.executorId',
           to: 'users.id',
@@ -64,7 +64,7 @@ module.exports = class Task extends BaseModel {
       },
       labels: {
         relation: BaseModel.ManyToManyRelation,
-        modelClass: 'Label.cjs',
+        modelClass: './Label.js',
         join: {
           from: 'tasks.id',
           through: {
@@ -76,4 +76,4 @@ module.exports = class Task extends BaseModel {
       },
     };
   }
-};
+}
