@@ -2,7 +2,6 @@ import fastifyPlugin from 'fastify-plugin';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import fastifySecureSession from '@fastify/secure-session';
-import fastifyCors from '@fastify/cors';
 import fastifyPassport from '@fastify/passport';
 import fastifySensible from '@fastify/sensible';
 import fastifyMethodOverride from 'fastify-method-override';
