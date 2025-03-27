@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
   const { t } = useTranslation('common');
@@ -23,6 +24,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex space-x-4">
+          <LanguageSwitcher />
           <Link href={routes.session.new} className={linkClasses}>
             {t('navbar.signIn')}
           </Link>

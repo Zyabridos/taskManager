@@ -1,0 +1,6 @@
+{
+  "createUserFailed": "Failed to create user",
+  "userNotFound": "User not found",
+  "unauthorized": "You are not authorized",
+  "signInFailed": "Sign in failed"
+}

@@ -1,0 +1,35 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
+  "main": "./server/plugin/init.js",
+  "type": "module",
+  "engines": {
+    "node": "20.17.0"
+  },
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "webpack",
+    "start": "node server/bin/startServer.js",
+    "setup": "npm install && npm start",
+    "test": "jest",
+    "dev": "NODE_ENV=development nodemon server/index.js",
+    "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "<rootDir>/__tests__/helpers/"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zyabridos/taskManager.git"
+  },
+  "author": "Nina Zyabrina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zyabridos/taskManager/issues"
+  },
+  "homepage": "https://github.com/Zyabridos/taskManager#readme"
+}

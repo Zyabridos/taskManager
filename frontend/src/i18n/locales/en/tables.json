@@ -1,0 +1,16 @@
+{
+  "common": {
+    "columns": {
+      "id": "ID",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    }
+  },
+  "users": {
+    "pageTitle": "User List",
+    "columns": {
+      "fullName": "Full Name",
+      "email": "Email"
+    }
+  }
+}

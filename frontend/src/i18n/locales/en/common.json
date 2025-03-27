@@ -1,0 +1,8 @@
+{
+  "navbar": {
+    "appName": "Task Manager",
+    "users": "Users",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  }
+}

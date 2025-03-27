@@ -1,0 +1,16 @@
+{
+  "common": {
+    "columns": {
+      "id": "ID",
+      "createdAt": "Opprettet",
+      "actions": "Handlinger"
+    }
+  },
+  "users": {
+    "pageTitle": "Brukerliste",
+    "columns": {
+      "fullName": "Fullt navn",
+      "email": "E-post"
+    }
+  }
+}

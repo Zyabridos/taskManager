@@ -1,0 +1,12 @@
+{
+  "form": {
+    "createTitle": "User Registration",
+    "editTitle": "Edit User",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Register",
+    "update": "Update"
+  }
+}
