@@ -18,12 +18,6 @@ dotenv.config();
 const registerPlugins = async (app) => {
   await app.register(fastifySensible);
 
-  app.register(fastifyCors, {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    credentials: true,
-  });
-
   await app.register(fastifyFormbody, { parser: qs.parse });
 
   await app.register(fastifySecureSession, {
