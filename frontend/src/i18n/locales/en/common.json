@@ -3,6 +3,7 @@
     "appName": "Task Manager",
     "users": "Users",
     "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "logOut": "Log out"
   }
 }

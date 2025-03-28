@@ -1,12 +1,13 @@
+
 'use client';
 
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import routes from '../routes';
-import LanguageSwitcher from './LanguageSwitcher';
+import routes from '../../routes';
+import LanguageSwitcher from '../LanguageSwitcher';
 
-const Navbar = () => {
+const GuestNavbar = () => {
   const { t } = useTranslation('common');
   const linkClasses =
     'rounded-md px-3 py-2 text-xl font-medium text-gray-300 hover:bg-gray-700 hover:text-white';
@@ -24,12 +25,9 @@ const Navbar = () => {
         </div>
 
         <div className="flex space-x-4">
-          <LanguageSwitcher />
-          <Link href={routes.session.new} className={linkClasses}>
-            {t('navbar.signIn')}
-          </Link>
-          <Link href={routes.users.create} className={linkClasses}>
-            {t('navbar.signUp')}
+          {/* <LanguageSwitcher /> */}
+          <Link href={routes.logOut} className={linkClasses}>
+            {t('navbar.logOut')}
           </Link>
         </div>
       </div>
@@ -37,4 +35,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default GuestNavbar;

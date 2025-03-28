@@ -1,65 +1,85 @@
-'use client';
-
+import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import React, { createContext, useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import routes from '../routes.js';
+import {
+  saveUserToStorage,
+  getUserFromStorage,
+  removeUserFromStorage,
+} from '../utils/storage/authStorage';
 
 export const AuthContext = createContext();
 
-// const baseURL = `${process.env.NEXT_PUBLIC_API_BASE}/api`;
 const baseURL = 'http://localhost:5001/api';
 
 const AuthProvider = ({ children }) => {
   const router = useRouter();
-
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [serverError, setServerError] = useState(null);
 
-  const login = async (email, password) => {
+  const fetchCurrentUser = async () => {
     try {
-      const response = await axios.post(
-        // routes.loginPath,
-        // '/session',
-        `${baseURL}/session`,
-        {
-          data: {
-            email,
-            password,
-          },
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`${baseURL}/session`, {
+        withCredentials: true,
+      });
 
-      console.log('server response on trying to log in:', response)
-
-      setUser(response.data.user || { email });
+      setUser(response.data.user);
       setIsAuthenticated(true);
-      setServerError(null);
-      router.push('/');
-      alert('You have successfully logged in')
-    } catch (error) {
-      console.log(error)
+      saveUserToStorage(response.data.user);
+    } catch {
+      setUser(null);
       setIsAuthenticated(false);
-      if (error.response?.status === 401) {
-        setServerError('Woring Email or Password');
-      } else {
-        setServerError('Server error. Please, try again later.');
-      }
+      removeUserFromStorage();
     }
   };
 
+  const login = async (email, password) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/session`,
+        { data: { email, password } },
+        { withCredentials: true }
+      );
+
+      const loggedUser = response.data.user;
+      setUser(loggedUser);
+      setIsAuthenticated(true);
+      setServerError(null);
+      saveUserToStorage(loggedUser);
+      router.push('/');
+    } catch (error) {
+      setIsAuthenticated(false);
+      setServerError('Неверный логин или пароль');
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.delete(`${baseURL}/session`, { withCredentials: true });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      removeUserFromStorage();
+      router.push('/login');
+    }
+  };
+
+  useEffect(() => {
+    const savedUser = getUserFromStorage();
+    if (savedUser) {
+      setUser(savedUser);
+      setIsAuthenticated(true);
+    } else {
+      fetchCurrentUser();
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{
-      user,
-      isAuthenticated,
-      login,
-      // logout,
-      serverError,
-    }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, login, logout, serverError }}
+    >
       {children}
     </AuthContext.Provider>
   );

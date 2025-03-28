@@ -1,12 +1,16 @@
 import i18next from 'i18next';
 
 export default (app) => {
-  app
-    .get('/session/new', { name: 'newSession' }, (req, reply) => {
-      const signInForm = {};
-      reply.render('session/new', { signInForm });
-    })
-    app.post(
+  app.get('/api/session', async (req, reply) => {
+    if (!req.isAuthenticated()) {
+      return reply.status(401).send({ error: i18next.t('errors.unauthorized') });
+    }
+
+    const { id, email } = req.user;
+    return reply.send({ user: { id, email } });
+  });
+
+  app.post(
     '/api/session',
     { name: 'session' },
     app.fp.authenticate('form', async (req, reply, err, user) => {
@@ -16,20 +20,20 @@ export default (app) => {
       }
 
       if (!user) {
-        return reply.status(401).send({ error: i18next.t('errors.wrongEmailOrPassword') });
+        return reply.status(401).send({
+          error: i18next.t('errors.wrongEmailOrPassword'),
+        });
       }
 
       await req.logIn(user);
       req.session.userId = user.id;
 
-      console.log('Server got this reply:', { user: { id: user.id, email: user.email }})
       return reply.send({ user: { id: user.id, email: user.email } });
     }),
-  )
+  );
 
-    .delete('/session', async (req, reply) => {
-      await req.logOut();
-      req.flash('info', i18next.t('flash.session.delete.success'));
-      return reply.redirect('/');
-    });
+  app.delete('/api/session', async (req, reply) => {
+    await req.logOut();
+    return reply.send({ message: i18next.t('flash.session.delete.success') });
+  });
 };

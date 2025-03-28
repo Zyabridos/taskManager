@@ -3,6 +3,7 @@
     "appName": "Oppgavebehandler",
     "users": "Brukere",
     "signIn": "Logg inn",
-    "signUp": "Registrer deg"
+    "signUp": "Registrer deg",
+    "logOut": "Logg ut"
   }
 }

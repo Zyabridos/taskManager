@@ -1,13 +1,19 @@
 const routes = {
+  session: {
+    new: 'session/new',
+  },
+  loginPath: '/session',
+  logOut: '/',
   users: {
     edit: id => `/users/${id}/edit`,
     list: '/users',
     create: '/users/new',
   },
-  session: {
-    new: 'session/new',
+  statuses: {
+    edit: id => `/statuses/${id}/edit`,
+    list: '/statuses',
+    create: '/statuses/new',
   },
-  loginPath: '/session'
 };
 
 export default routes;
