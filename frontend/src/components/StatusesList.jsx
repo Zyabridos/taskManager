@@ -2,21 +2,21 @@
 
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers } from '../store/slices/usersSlice';
+import { fetchStatuses } from '../store/slices/statusesSlice';
 import { DeleteButton, HrefButton } from './Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes';
 
-const UserList = () => {
+const StatusesList = () => {
   const dispatch = useDispatch();
-  const { list, status, error } = useSelector(state => state.users);
+  const { list, status, error } = useSelector(state => state.statuses);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchStatuses());
   }, [dispatch]);
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
@@ -36,10 +36,7 @@ const UserList = () => {
               {t('common.columns.id')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('users.columns.fullName')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('users.columns.email')}
+              {t('statuses.columns.name')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.createdAt')}
@@ -50,21 +47,21 @@ const UserList = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {list.map(user => (
-            <tr key={user.id}>
-              <td className="px-6 py-4 text-sm text-gray-900">{user.id}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">
-                {user.firstName} {user.lastName}
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
+          {list.map(status => (
+            <tr key={status.id}>
+              <td className="px-6 py-4 text-sm text-gray-900">{status.id}</td>
+              <td className="px-6 py-4 text-sm text-gray-900">{status.name}</td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {format(new Date(user.createdAt), 'dd.MM.yyyy HH:mm', {
+                {format(new Date(status.createdAt), 'dd.MM.yyyy HH:mm', {
                   locale: ruLocale,
                 })}
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">
-                  <HrefButton href={routes.app.users.edit(user.id)} buttonText={tButtons('edit')} />
+                  <HrefButton
+                    href={routes.app.statuses.edit(status.id)}
+                    buttonText={tButtons('edit')}
+                  />
                   <DeleteButton />
                 </div>
               </td>
@@ -76,4 +73,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default StatusesList;

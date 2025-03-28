@@ -20,7 +20,7 @@ const LanguageSwitcher = () => {
     setMounted(true);
   }, []);
 
-  const changeLanguage = (lng) => {
+  const changeLanguage = lng => {
     i18n.changeLanguage(lng);
     localStorage.setItem('i18nextLng', lng);
     setIsOpen(false);
@@ -37,16 +37,11 @@ const LanguageSwitcher = () => {
         aria-expanded={isOpen}
       >
         {i18n.language.slice(0, 2).toUpperCase()}
-        <Image
-          src={arrowDown}
-          alt="Toggle language dropdown"
-          width={16}
-          height={16}
-        />
+        <Image src={arrowDown} alt="Toggle language dropdown" width={16} height={16} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+        <div className="ring-opacity-5 absolute right-0 z-10 mt-2 w-28 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black">
           <div className="py-1">
             {languages.map(({ code, label }) => (
               <button

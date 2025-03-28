@@ -12,5 +12,11 @@
       "fullName": "Full Name",
       "email": "Email"
     }
+  },
+  "statuses": {
+    "pageTitle": "Status list",
+    "columns": {
+      "name": "Name"
+    }
   }
 }

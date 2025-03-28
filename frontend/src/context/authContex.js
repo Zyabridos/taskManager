@@ -6,7 +6,7 @@ import {
   getUserFromStorage,
   removeUserFromStorage,
 } from '../utils/storage/authStorage';
-import routes from '../routes'
+import routes from '../routes';
 
 export const AuthContext = createContext();
 
@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
       const response = await axios.post(
         `${baseURL}${routes.api.session.current()}`,
         { data: { email, password } },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       const loggedUser = response.data.user;
@@ -81,9 +81,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logOut, serverError }}
-    >
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logOut, serverError }}>
       {children}
     </AuthContext.Provider>
   );

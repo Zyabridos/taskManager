@@ -12,5 +12,11 @@
       "fullName": "Fullt navn",
       "email": "E-post"
     }
+  },
+  "statuses": {
+    "pageTitle": "Statusliste",
+    "columns": {
+      "name": "Navn"
+    }
   }
 }

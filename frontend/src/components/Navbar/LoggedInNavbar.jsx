@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -6,7 +5,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import LanguageSwitcher from '../LanguageSwitcher';
-import { useAuth } from '../../context/authContex'
+import { useAuth } from '../../context/authContex';
 
 const baseURL = 'http://localhost:3000';
 
@@ -34,8 +33,8 @@ const LoggedInNavbar = () => {
             {t('navbar.statuses')}
           </Link>
           <button onClick={logOut} className={linkClasses}>
-  {t('navbar.logOut')}
-</button>
+            {t('navbar.logOut')}
+          </button>
         </div>
       </div>
     </nav>

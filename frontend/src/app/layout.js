@@ -16,14 +16,14 @@ const RootLayout = ({ children }) => {
         <Provider store={store}>
           <AuthProvider>
             <ProtectedRoute>
-            <Navbar />
-            <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+              <Navbar />
+              <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
             </ProtectedRoute>
           </AuthProvider>
         </Provider>
       </body>
     </html>
   );
-}
+};
 
 export default RootLayout;

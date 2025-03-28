@@ -1,6 +1,6 @@
 const USER_KEY = 'authUser';
 
-export const saveUserToStorage = (user) => {
+export const saveUserToStorage = user => {
   if (user) {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
   }

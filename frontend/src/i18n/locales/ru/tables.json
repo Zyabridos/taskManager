@@ -12,5 +12,11 @@
       "fullName": "ФИО",
       "email": "Email"
     }
+  },
+  "statuses": {
+    "pageTitle": "Список статусов",
+    "columns": {
+      "name": "Наименованик"
+    }
   }
 }
