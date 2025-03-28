@@ -32,19 +32,19 @@ const UserList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('users.columns.fullName')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('users.columns.email')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
@@ -64,7 +64,7 @@ const UserList = () => {
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">
-                  <HrefButton href={routes.users.edit(user.id)} buttonText={tButtons('edit')} />
+                  <HrefButton href={routes.app.users.edit(user.id)} buttonText={tButtons('edit')} />
                   <DeleteButton />
                 </div>
               </td>

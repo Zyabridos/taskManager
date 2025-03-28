@@ -4,6 +4,9 @@
     "users": "Brukere",
     "signIn": "Logg inn",
     "signUp": "Registrer deg",
-    "logOut": "Logg ut"
+    "logOut": "Logg ut",
+    "statuses": "Statuser",
+    "labels": "Etiketter",
+    "tasks": "Oppgaver"
   }
 }

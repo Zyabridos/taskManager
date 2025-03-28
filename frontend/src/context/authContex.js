@@ -6,10 +6,11 @@ import {
   getUserFromStorage,
   removeUserFromStorage,
 } from '../utils/storage/authStorage';
+import routes from '../routes'
 
 export const AuthContext = createContext();
 
-const baseURL = 'http://localhost:5001/api';
+const baseURL = 'http://localhost:5001';
 
 const AuthProvider = ({ children }) => {
   const router = useRouter();
@@ -18,8 +19,9 @@ const AuthProvider = ({ children }) => {
   const [serverError, setServerError] = useState(null);
 
   const fetchCurrentUser = async () => {
+    console.log('fetching user by adres:', `${baseURL}${routes.api.session.current()}`);
     try {
-      const response = await axios.get(`${baseURL}/session`, {
+      const response = await axios.get(`${baseURL}${routes.api.session.current()}`, {
         withCredentials: true,
       });
 
@@ -34,9 +36,10 @@ const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
+    console.log('POST login to:', `${baseURL}${routes.api.session.current()}`);
     try {
       const response = await axios.post(
-        `${baseURL}/session`,
+        `${baseURL}${routes.api.session.current()}`,
         { data: { email, password } },
         { withCredentials: true }
       );
@@ -49,13 +52,14 @@ const AuthProvider = ({ children }) => {
       router.push('/');
     } catch (error) {
       setIsAuthenticated(false);
-      setServerError('Неверный логин или пароль');
+      setServerError('WrongEmailOrPassword');
     }
   };
 
-  const logout = async () => {
+  const logOut = async () => {
+    console.log('DELETE login to:', `${baseURL}${routes.api.session.delete()}`);
     try {
-      await axios.delete(`${baseURL}/session`, { withCredentials: true });
+      await axios.delete(`${baseURL}${routes.api.session.delete()}`, { withCredentials: true });
     } catch (e) {
       console.error(e);
     } finally {
@@ -78,7 +82,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, serverError }}
+      value={{ user, isAuthenticated, login, logOut, serverError }}
     >
       {children}
     </AuthContext.Provider>

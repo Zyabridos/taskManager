@@ -4,6 +4,9 @@
     "users": "Users",
     "signIn": "Sign In",
     "signUp": "Sign Up",
-    "logOut": "Log out"
+    "logOut": "Log out",
+    "statuses": "Statuses",
+    "labels": "Labels",
+    "tasks": "Tasks"
   }
 }

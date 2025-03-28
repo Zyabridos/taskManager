@@ -30,6 +30,7 @@ const SignInForm = () => {
         .required(tValidation('passwordRequired')),
     }),
     onSubmit: async (values) => {
+      console.log('Submitting with:', values);
       await login(values.email, values.password);
     },
   });
@@ -53,7 +54,7 @@ const SignInForm = () => {
                 id={field}
                 type={field === 'password' ? 'password' : 'text'}
                 placeholder=" "
-                className={`peer h-14 w-[80%] rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
+                className={`peer h-14 w-[80%] rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
                   formik.touched[field] && formik.errors[field]
                     ? 'border-red-500'
                     : 'border-gray-300'
@@ -61,12 +62,12 @@ const SignInForm = () => {
               />
               <label
                 htmlFor={field}
-                className="absolute top-2 left-3 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
+                className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
               >
                 {tAuth(`form.${field}`)}
               </label>
               {formik.touched[field] && formik.errors[field] && (
-                <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
+                <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
               )}
             </div>
           ))}

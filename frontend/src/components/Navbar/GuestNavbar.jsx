@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import LanguageSwitcher from '../LanguageSwitcher';
 
+const baseURL = 'http://localhost:3000';
+
 const GuestNavbar = () => {
   const { t } = useTranslation('common');
   const linkClasses =
@@ -19,17 +21,17 @@ const GuestNavbar = () => {
           <Link href="/" className={linkClasses}>
             {t('navbar.appName')}
           </Link>
-          <Link href={routes.users.list} className={linkClasses}>
+          <Link href={`${baseURL}${routes.app.users.list()}`} className={linkClasses}>
             {t('navbar.users')}
           </Link>
         </div>
 
         <div className="flex space-x-4">
           {/* <LanguageSwitcher /> */}
-          <Link href={routes.session.new} className={linkClasses}>
+          <Link href={`${baseURL}${routes.app.session.new()}`} className={linkClasses}>
             {t('navbar.signIn')}
           </Link>
-          <Link href={routes.users.create} className={linkClasses}>
+          <Link href={`${baseURL}${routes.app.users.create()}`} className={linkClasses}>
             {t('navbar.signUp')}
           </Link>
         </div>
