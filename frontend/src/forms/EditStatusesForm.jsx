@@ -48,7 +48,7 @@ const EditUserPage = () => {
         await updateStatus(id, values);
         router.push(routes.app.statuses.list());
       } catch (e) {
-        console.log(e)
+        console.log(e);
         alert(tErrors('updateStatusFailed'));
       }
     },
@@ -75,7 +75,7 @@ const EditUserPage = () => {
           />
           <FloatingLabel htmlFor={field} text={tStatuses(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
           )}
         </div>
       ))}

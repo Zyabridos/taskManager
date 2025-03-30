@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes';
+import { deleteStatusThunk } from '../store/slices/statusesSlice';
 
 const StatusesList = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,14 @@ const StatusesList = () => {
   useEffect(() => {
     dispatch(fetchStatuses());
   }, [dispatch]);
+
+  const handleDelete = async id => {
+    try {
+      await dispatch(deleteStatusThunk(id));
+    } catch (e) {
+      alert(t('common.deleteError'));
+    }
+  };
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
   if (status === 'failed')
@@ -32,16 +41,16 @@ const StatusesList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('statuses.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>
@@ -62,7 +71,7 @@ const StatusesList = () => {
                     href={routes.app.statuses.edit(status.id)}
                     buttonText={tButtons('edit')}
                   />
-                  <DeleteButton />
+                  <DeleteButton onClick={() => handleDelete(status.id)} />
                 </div>
               </td>
             </tr>

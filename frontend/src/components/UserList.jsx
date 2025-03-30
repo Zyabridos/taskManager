@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes';
+import { deleteUserThunk } from '../store/slices/usersSlice';
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,14 @@ const UserList = () => {
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  const handleDelete = async id => {
+    try {
+      await dispatch(deleteUserThunk(id));
+    } catch (e) {
+      alert(t('common.deleteError'));
+    }
+  };
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
   if (status === 'failed')
@@ -65,7 +74,7 @@ const UserList = () => {
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">
                   <HrefButton href={routes.app.users.edit(user.id)} buttonText={tButtons('edit')} />
-                  <DeleteButton />
+                  <DeleteButton onClick={() => handleDelete(user.id)} />
                 </div>
               </td>
             </tr>

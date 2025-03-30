@@ -21,3 +21,9 @@ export const updateUser = async (id, data) => {
   const response = await axios.patch(`${base}/${id}`, data);
   return response.data;
 };
+
+export const deleteUser = async id => {
+  console.log('Got an delete request for user id:', id);
+  const response = await axios.delete(`${base}/${id}`);
+  return response.data;
+};

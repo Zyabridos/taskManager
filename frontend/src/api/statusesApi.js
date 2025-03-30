@@ -21,3 +21,8 @@ export const updateStatus = async (id, data) => {
   const response = await axios.patch(`${base}/${id}`, data);
   return response.data;
 };
+
+export const deleteStatus = async id => {
+  const response = await axios.delete(`${base}/${id}`);
+  return response.data;
+};

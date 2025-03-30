@@ -8,6 +8,6 @@ const EditStatusPage = () => {
       <EditStatusesForm />
     </div>
   );
-}
+};
 
 export default EditStatusPage;

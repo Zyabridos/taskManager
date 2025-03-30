@@ -15,12 +15,13 @@ export const HrefButton = ({ href, buttonText }) => {
   );
 };
 
-export const DeleteButton = () => {
+export const DeleteButton = ({ onClick }) => {
   const { t: tButtons } = useTranslation('buttons');
 
   return (
     <button
       type="button"
+      onClick={onClick}
       className="rounded border border-red-600 bg-transparent px-4 py-2 font-semibold text-red-600 transition hover:border-transparent hover:bg-red-600 hover:text-white"
     >
       {tButtons('delete')}

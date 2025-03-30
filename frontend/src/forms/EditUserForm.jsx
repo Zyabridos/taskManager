@@ -9,7 +9,7 @@ import EditFormWrapper from '../components/EditFormWrapper';
 import { getUser, updateUser } from '../api/usersApi';
 import FormInput from './ui/FormInput';
 import FloatingLabel from './ui/FloatingLabel';
-import routes from '../routes'
+import routes from '../routes';
 
 const EditUserPage = () => {
   const { id } = useParams();
@@ -80,7 +80,7 @@ const EditUserPage = () => {
           />
           <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
           )}
         </div>
       ))}
