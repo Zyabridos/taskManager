@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getStatuses, deleteStatus as apiDeleteStatus } from '../../api/statusesApi';
+import { statusesApi } from '../../api/statusesApi';
 
 export const fetchStatuses = createAsyncThunk('statuses/fetchStatuses', async () => {
-  return await getStatuses();
+  return await statusesApi.getAll();
 });
 
 export const deleteStatusThunk = createAsyncThunk('statuses/deleteStatus', async id => {
-  await apiDeleteStatus(id);
+  await statusesApi.remove(id);
   return id;
 });
 

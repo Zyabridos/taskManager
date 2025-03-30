@@ -1,6 +1,6 @@
 'use client';
 
-import EditStatusesForm from '../../../../forms/EditStatusesForm';
+import EditStatusesForm from '../../../../forms/editForms/EditStatusesForm';
 
 const EditStatusPage = () => {
   return (

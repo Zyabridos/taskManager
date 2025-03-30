@@ -1,6 +1,6 @@
 'use client';
 
-import CreateStatusForm from '../../../forms/CreateStatusForm';
+import CreateStatusForm from '../../../forms/createForms/CreateStatusForm';
 import { useTranslation } from 'react-i18next';
 
 const newStatusPage = () => {

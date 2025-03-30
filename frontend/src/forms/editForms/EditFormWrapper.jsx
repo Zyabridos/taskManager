@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TransparentGraySubmitBtn } from './Buttons';
+import { TransparentGraySubmitBtn } from '../../components/Buttons';
 
 const EditFormWrapper = ({ title, onSubmit, children, buttonText }) => (
   <div className="mx-auto mt-10 max-w-400">

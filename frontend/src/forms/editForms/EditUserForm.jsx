@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import EditFormWrapper from '../components/EditFormWrapper';
-import { getUser, updateUser } from '../api/usersApi';
-import FormInput from './ui/FormInput';
-import FloatingLabel from './ui/FloatingLabel';
-import routes from '../routes';
+import EditFormWrapper from './EditFormWrapper';
+import { usersApi } from '../../api/usersApi';
+import FormInput from '../ui/FormInput';
+import FloatingLabel from '../ui/FloatingLabel';
+import routes from '../../routes';
 
 const EditUserPage = () => {
   const { id } = useParams();
@@ -23,7 +23,7 @@ const EditUserPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await getUser(id);
+        const user = await usersApi.getById(id);
         setInitialValues({
           firstName: user.firstName,
           lastName: user.lastName,
@@ -51,7 +51,7 @@ const EditUserPage = () => {
     }),
     onSubmit: async values => {
       try {
-        await updateUser(id, values);
+        await usersApi.update(id, values);
         router.push(routes.app.users.list());
       } catch (e) {
         alert(tErrors('updateUserFailed'));

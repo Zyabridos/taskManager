@@ -32,6 +32,9 @@ const LoggedInNavbar = () => {
           <Link href={`${baseURL}${routes.app.statuses.list()}`} className={linkClasses}>
             {t('navbar.statuses')}
           </Link>
+          <Link href={`${baseURL}${routes.app.labels.list()}`} className={linkClasses}>
+            {t('navbar.labels')}
+          </Link>
           <button onClick={logOut} className={linkClasses}>
             {t('navbar.logOut')}
           </button>

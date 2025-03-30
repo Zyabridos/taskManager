@@ -49,6 +49,11 @@ const frontendRoutes = {
     create: () => '/statuses/new',
     edit: id => `/statuses/${id}/edit`,
   },
+  labels: {
+    list: () => '/labels',
+    create: () => '/labels/new',
+    edit: id => `/labels/${id}/edit`,
+  },
 };
 
 const routes = {

@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import EditFormWrapper from '../components/EditFormWrapper';
-import { getStatus, updateStatus } from '../api/statusesApi';
-import FormInput from './ui/FormInput';
-import FloatingLabel from './ui/FloatingLabel';
-import routes from '../routes';
+import EditFormWrapper from './EditFormWrapper';
+import { statusesApi } from '../../api/statusesApi';
+import FormInput from '../ui/FormInput';
+import FloatingLabel from '../ui/FloatingLabel';
+import routes from '../../routes';
 
 const EditUserPage = () => {
   const { id } = useParams();
@@ -23,7 +23,7 @@ const EditUserPage = () => {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const status = await getStatus(id);
+        const status = await statusesApi.getById(id);
         setInitialValues({
           name: status.name,
         });
@@ -45,7 +45,7 @@ const EditUserPage = () => {
     }),
     onSubmit: async values => {
       try {
-        await updateStatus(id, values);
+        await statusesApi.update(id, values);
         router.push(routes.app.statuses.list());
       } catch (e) {
         console.log(e);

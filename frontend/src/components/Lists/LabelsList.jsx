@@ -2,34 +2,34 @@
 
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers } from '../store/slices/usersSlice';
-import { DeleteButton, HrefButton } from './Buttons';
+import { DeleteButton, HrefButton } from '../Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
-import routes from '../routes';
-import { deleteUserThunk } from '../store/slices/usersSlice';
+import routes from '../../routes';
+import { deleteLabelThunk, fetchLabel } from '../../store/slices/labelsSlice';
 
-const UserList = () => {
+const LabelsList = () => {
   const dispatch = useDispatch();
-  const { list, status, error } = useSelector(state => state.users);
+  const { list, label, error } = useSelector(state => state.labels);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
+  const { t: tLabels } = useTranslation('labels');
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchLabel());
   }, [dispatch]);
 
   const handleDelete = async id => {
     try {
-      await dispatch(deleteUserThunk(id));
+      await dispatch(deleteLabelThunk(id));
     } catch (e) {
       alert(t('common.deleteError'));
     }
   };
 
-  if (status === 'loading') return <p>{t('common.loading')}</p>;
-  if (status === 'failed')
+  if (label === 'loading') return <p>{t('common.loading')}</p>;
+  if (label === 'failed')
     return (
       <p>
         {t('common.error')}: {error}
@@ -38,6 +38,7 @@ const UserList = () => {
 
   return (
     <div className="mt-6 overflow-x-auto">
+      <HrefButton href={routes.app.labels.create()} buttonText={tLabels('form.createTitle')} />
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
@@ -45,10 +46,7 @@ const UserList = () => {
               {t('common.columns.id')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('users.columns.fullName')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('users.columns.email')}
+              {t('labels.columns.name')}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.createdAt')}
@@ -59,22 +57,22 @@ const UserList = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {list.map(user => (
-            <tr key={user.id}>
-              <td className="px-6 py-4 text-sm text-gray-900">{user.id}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">
-                {user.firstName} {user.lastName}
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
+          {list.map(label => (
+            <tr key={label.id}>
+              <td className="px-6 py-4 text-sm text-gray-900">{label.id}</td>
+              <td className="px-6 py-4 text-sm text-gray-900">{label.name}</td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {format(new Date(user.createdAt), 'dd.MM.yyyy HH:mm', {
+                {format(new Date(label.createdAt), 'dd.MM.yyyy HH:mm', {
                   locale: ruLocale,
                 })}
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">
-                  <HrefButton href={routes.app.users.edit(user.id)} buttonText={tButtons('edit')} />
-                  <DeleteButton onClick={() => handleDelete(user.id)} />
+                  <HrefButton
+                    href={routes.app.labels.edit(label.id)}
+                    buttonText={tButtons('edit')}
+                  />
+                  <DeleteButton onClick={() => handleDelete(label.id)} />
                 </div>
               </td>
             </tr>
@@ -85,4 +83,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default LabelsList;

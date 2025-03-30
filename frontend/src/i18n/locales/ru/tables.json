@@ -16,7 +16,13 @@
   "statuses": {
     "pageTitle": "Список статусов",
     "columns": {
-      "name": "Наименованик"
+      "name": "Наименование"
+    }
+  },
+  "labels": {
+    "pageTitle": "Список меток",
+    "columns": {
+      "name": "Наименование"
     }
   }
 }

@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUsers, deleteUser as apiDeleteUser } from '../../api/usersApi';
+import { usersApi } from '../../api/usersApi';
 
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
-  return await getUsers();
+  return await usersApi.getAll();
 });
 
 export const deleteUserThunk = createAsyncThunk('users/deleteUser', async id => {
-  await apiDeleteUser(id);
+  await usersApi.remove(id);
   return id;
 });
 

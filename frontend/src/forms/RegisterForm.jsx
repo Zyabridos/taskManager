@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { createUser } from '../api/usersApi';
+import { usersApi } from '../api/usersApi';
 import { TransparentGraySubmitBtn } from '../components/Buttons';
 import signUpImage from '../../public/signUp_picture.jpg';
 import Image from 'next/image';
@@ -33,7 +33,7 @@ const RegisterForm = () => {
     }),
     onSubmit: async values => {
       try {
-        await createUser(values);
+        await usersApi.create(values);
         router.push('/users');
       } catch (e) {
         alert(tErrors('createUserFailed'));

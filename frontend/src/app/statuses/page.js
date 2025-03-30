@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import StatusesList from '../../components/StatusesList';
+import StatusesList from '../../components/Lists/StatusesList';
 import PageSection from '../../components/PageSection';
 
 const StatusesListPage = () => {
