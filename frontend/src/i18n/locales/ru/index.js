@@ -8,6 +8,7 @@ import common from './common.json';
 import home from './home.json';
 import statuses from './statuses.json';
 import labels from './labels.json';
+import tasks from './tasks.json';
 
 export default {
   auth,
@@ -20,4 +21,5 @@ export default {
   home,
   statuses,
   labels,
+  tasks,
 };

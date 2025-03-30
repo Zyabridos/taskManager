@@ -73,7 +73,7 @@ const SignInForm = () => {
           ))}
 
           <div className="mt-6">
-            <TransparentGraySubmitBtn buttonText={tAuth('form.login')} />
+            <TransparentGraySubmitBtn buttonText={tAuth('form.loginButton')} />
           </div>
         </div>
       </form>

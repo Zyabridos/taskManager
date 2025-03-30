@@ -1,5 +1,4 @@
 const apiBase = '/api';
-const frontendBase = '';
 
 const apiRoutes = {
   session: {
@@ -53,6 +52,11 @@ const frontendRoutes = {
     list: () => '/labels',
     create: () => '/labels/new',
     edit: id => `/labels/${id}/edit`,
+  },
+  tasks: {
+    list: () => '/tasks',
+    create: () => '/tasks/new',
+    edit: id => `/tasks/${id}/edit`,
   },
 };
 

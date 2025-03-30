@@ -1,9 +1,0 @@
-mixin changeLanguage()
-  li.nav-item.dropdown
-    a.nav-link.dropdown-toggle(href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false")
-      = t('layouts.application.language')
-    ul.dropdown-menu(aria-labelledby="languageDropdown")
-      li
-        a.dropdown-item(href="/change-language/en")= t('layouts.english')
-      li
-        a.dropdown-item(href="/change-language/ru")= t('layouts.russian')

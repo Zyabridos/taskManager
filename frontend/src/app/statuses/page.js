@@ -8,7 +8,7 @@ const StatusesListPage = () => {
   const { t } = useTranslation('tables');
 
   return (
-    <PageSection title={t('users.pageTitle')}>
+    <PageSection title={t('statuses.pageTitle')}>
       <StatusesList />
     </PageSection>
   );

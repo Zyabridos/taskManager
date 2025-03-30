@@ -7,6 +7,7 @@ const createCrudApi = baseUrl => ({
   },
 
   create: async data => {
+    console.log(data);
     const response = await axios.post(baseUrl, data);
     return response.data;
   },
