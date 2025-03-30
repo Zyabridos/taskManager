@@ -32,16 +32,16 @@ const StatusesList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('statuses.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

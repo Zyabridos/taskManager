@@ -1,0 +1,8 @@
+{
+  "form": {
+    "createTitle": "Create Status",
+    "editTitle": "Edit Status",
+    "name": "Name",
+    "update": "Update"
+  }
+}

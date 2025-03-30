@@ -6,6 +6,7 @@ import tables from './tables.json';
 import users from './users.json';
 import common from './common.json';
 import home from './home.json';
+import statuses from './statuses.json'
 
 export default {
   auth,
@@ -16,4 +17,5 @@ export default {
   users,
   common,
   home,
+  statuses,
 };
