@@ -15,6 +15,7 @@ const StatusesList = () => {
   const { list, status, error } = useSelector(state => state.statuses);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
+  const { t: tStatuses } = useTranslation('statuses');
 
   useEffect(() => {
     dispatch(fetchStatuses());
@@ -38,6 +39,7 @@ const StatusesList = () => {
 
   return (
     <div className="mt-6 overflow-x-auto">
+      <HrefButton href={routes.app.statuses.create()} buttonText={tStatuses('form.createTitle')} />
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>

@@ -29,11 +29,11 @@ export const DeleteButton = ({ onClick }) => {
   );
 };
 
-export const TransparentGraySubmitBtn = ({ buttonText }) => {
+export const TransparentGraySubmitBtn = ({ buttonText, className = '' }) => {
   return (
     <button
       type="submit"
-      className="rounded border border-e-stone-800 bg-transparent px-4 py-2 font-semibold text-gray-900 hover:border-transparent hover:bg-gray-800 hover:text-amber-50"
+      className={`rounded border border-e-stone-800 bg-transparent px-4 py-2 font-semibold text-gray-900 hover:border-transparent hover:bg-gray-800 hover:text-amber-50 ${className}`}
     >
       {buttonText}
     </button>
