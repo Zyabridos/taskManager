@@ -1,4 +1,4 @@
-import withAuth from '../Protected/withAuth'
+import withAuth from '../Protected/withAuth';
 
 const PageSection = ({ title, children }) => (
   <div className="mx-auto max-w-7xl px-4 py-8">

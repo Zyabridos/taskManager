@@ -10,10 +10,10 @@ const CreateStatusPage = () => {
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async values => {
     try {
       await statusesApi.create(values);
-      router.push(routes.app.statuses.list());
+      router.push(`${routes.app.statuses.list()}?created=status`);
     } catch (e) {
       alert(tErrors('createStatusFailed'));
     }

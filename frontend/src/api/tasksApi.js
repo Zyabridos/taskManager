@@ -8,7 +8,7 @@ export const tasksApi = {
     return response.data;
   },
 
-  getById: async (id) => {
+  getById: async id => {
     console.log('Fetching task by id:', id);
     const response = await axiosInstance.get(`${base}/${id}`);
     return response.data;

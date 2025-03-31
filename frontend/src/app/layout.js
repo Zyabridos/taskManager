@@ -7,6 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n/i18n.js';
 import Navbar from '../components/Navbar/Navbar.jsx';
 import AuthProvider from '../context/authContex.js';
+import { Toaster } from 'sonner';
 
 const RootLayout = ({ children }) => {
   return (
@@ -14,8 +15,9 @@ const RootLayout = ({ children }) => {
       <body className="h-24">
         <Provider store={store}>
           <AuthProvider>
-              <Navbar />
-              <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+            <Navbar />
+            <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+            <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
           </AuthProvider>
         </Provider>
       </body>

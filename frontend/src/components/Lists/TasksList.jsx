@@ -39,27 +39,27 @@ const TasksList = () => {
   return (
     <div className="mt-6 overflow-x-auto">
       <div className="pb-2">
-      <HrefButton href={routes.app.tasks.create()} buttonText={tTasks('form.createTitle')} />
+        <HrefButton href={routes.app.tasks.create()} buttonText={tTasks('form.createTitle')} />
       </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
               {t('tasks.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
               {t('tasks.columns.status')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
               {t('tasks.columns.executor')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-700">
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>

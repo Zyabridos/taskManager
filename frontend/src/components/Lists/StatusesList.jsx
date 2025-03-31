@@ -9,6 +9,8 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteStatusThunk } from '../../store/slices/statusesSlice';
+import useToast from '../../hooks/useToast'
+import { useRouter } from 'next/navigation';
 
 const StatusesList = () => {
   const dispatch = useDispatch();
@@ -17,6 +19,9 @@ const StatusesList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tStatuses } = useTranslation('statuses');
 
+  const router = useRouter();
+  useToast();
+
   useEffect(() => {
     dispatch(fetchStatuses());
   }, [dispatch]);
@@ -24,6 +29,7 @@ const StatusesList = () => {
   const handleDelete = async id => {
     try {
       await dispatch(deleteStatusThunk(id));
+      router.push(`${routes.app.statuses.list()}?deleted=status`);
     } catch (e) {
       alert(t('common.deleteError'));
     }
@@ -40,7 +46,10 @@ const StatusesList = () => {
   return (
     <div className="mt-6 overflow-x-auto">
       <div className="pb-2">
-      <HrefButton href={routes.app.statuses.create()} buttonText={tStatuses('form.createTitle')} />
+        <HrefButton
+          href={routes.app.statuses.create()}
+          buttonText={tStatuses('form.createTitle')}
+        />
       </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
