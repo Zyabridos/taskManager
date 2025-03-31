@@ -15,10 +15,10 @@ const RootLayout = ({ children }) => {
       <body className="h-24">
         <Provider store={store}>
           <AuthProvider>
-            <ProtectedRoute>
+            {/* <ProtectedRoute> */}
               <Navbar />
               <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
-            </ProtectedRoute>
+            {/* </ProtectedRoute> */}
           </AuthProvider>
         </Provider>
       </body>

@@ -29,3 +29,6 @@ start-backend:
 
 dev-frontend:
 	cd frontend && npm run dev
+
+test-frontend-e2e:
+	cd frontend && npx playwright test

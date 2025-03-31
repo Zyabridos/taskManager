@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.51.1",
     "@tailwindcss/postcss": "^4.0.16",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -34,6 +35,7 @@
     "eslint-config-next": "15.2.4",
     "eslint-plugin-functional": "^9.0.1",
     "i18next-scanner": "^4.6.0",
+    "playwright": "^1.51.1",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
