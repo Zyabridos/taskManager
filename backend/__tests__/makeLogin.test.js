@@ -41,7 +41,7 @@ describe('makeLogin function', () => {
 
     const responseSignIn = await app.inject({
       method: 'POST',
-      url: '/session',
+      url: '/api/session',
       payload: { data: wrongPasswordData },
     });
 
@@ -52,11 +52,11 @@ describe('makeLogin function', () => {
     const userData = testData.users.existing.author;
     const responseSignIn = await app.inject({
       method: 'POST',
-      url: '/session',
+      url: '/api/session',
       payload: { data: userData },
     });
 
-    expect(responseSignIn.statusCode).toBe(302);
+    expect(responseSignIn.statusCode).toBe(200);
 
     const setCookieHeader = responseSignIn.headers['set-cookie'];
     expect(setCookieHeader).toBeDefined();

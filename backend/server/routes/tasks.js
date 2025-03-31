@@ -66,9 +66,7 @@ export default (app) => {
     .post('/api/tasks', async (req, reply) => {
       try {
         const { name, description, statusId, executorId, labels = [] } = req.body;
-        if (!req.user) {
-          return reply.code(401).send({ error: 'Unauthorized' });
-        }
+
         const { id: authorId } = req.user;
 
         const labelIds = Array.isArray(labels)

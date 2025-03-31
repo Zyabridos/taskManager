@@ -48,7 +48,7 @@ export const makeLogin = async (app, userData) => {
 
   const responseSignIn = await app.inject({
     method: 'POST',
-    url: '/session',
+    url: '/api/session',
     payload: { data: userData },
   });
 

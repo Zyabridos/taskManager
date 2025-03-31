@@ -1,39 +1,31 @@
+# Local-comands - backend
 setup:
-	npm run prepare
-	npm ci
-	npx knex migrate:latest
+	prepare install db-migrate
 
-install:
-	npm ci
+install-backend:
+	cd backend && npm install
+
+test-backend:
+	cd backend && npm test -s
 
 db-migrate:
-	npx knex migrate:latest
+	cd backend && npx knex migrate:latest
 
 db-rollback:
-	npx knex migrate:rollback
+	cd backend && npx knex migrate:rollback
 
-build:
+build-backend:
 	cd backend
 	rm -rf dist
 	npm run build
 
 prepare:
-	cp -n .env.example .env || true
-
-start:
-	npm start
+	cd backend && cp -n .env.example .env || true
 
 start-backend:
 	cd backend && npm run start
 
-frontend-dev:
+# Local-comands - backend
+
+dev-frontend:
 	cd frontend && npm run dev
-
-dev:
-	make start-backend && make frontend-dev
-
-lint:
-	npx eslint .
-
-test:
-	npm test -s

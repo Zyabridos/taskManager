@@ -1,102 +1,134 @@
 /* eslint-env jest */
+import fastify from 'fastify';
 import dotenv from 'dotenv';
-import { expect } from '@jest/globals';
-import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
+import init from '../server/plugin/init.js';
+import { prepareData, makeLogin } from './helpers/index.js';
 
 dotenv.config({ path: '.env.test' });
 
-describe('test tasks filtration by labels, status, and executor', () => {
+describe('test tasks CRUD (REST API)', () => {
   let app;
-  let models;
   let knex;
+  let models;
+  let testData;
   let cookie;
 
-  let selectedLabel;
-  let selectedStatus;
-  let selectedExecutor;
-  let taskWithDataFromDB;
-
-  const getTestContext = setStandardBeforeEach();
-
   beforeEach(async () => {
-    ({ app, knex, models, cookie } = getTestContext());
+    app = fastify({ logger: false });
+    await init(app);
+    knex = app.objection.knex;
+    models = app.objection.models;
 
-    const [labels, statuses, users] = await Promise.all([
-      models.label.query(),
-      models.status.query(),
-      models.user.query(),
-    ]);
-
-    [selectedLabel] = labels;
-    [selectedStatus] = statuses;
-    [selectedExecutor] = users;
-
-    taskWithDataFromDB = await models.task.query().insert({
-      name: 'Task with correct data',
-      description: 'This task should appear in the filtered results',
-      statusId: selectedStatus.id,
-      authorId: 1,
-      executorId: selectedExecutor.id,
-    });
-
-    await knex('task_labels').insert({
-      task_id: taskWithDataFromDB.id,
-      label_id: selectedLabel.id,
-    });
-
-    await models.task.query().insert({
-      name: 'Task with random data',
-      description: 'This task should NOT appear in the filtered results',
-      statusId: selectedStatus.id + 1,
-      authorId: 2,
-      executorId: selectedExecutor.id + 1,
-    });
+    await knex.migrate.latest();
+    testData = await prepareData(app);
+    cookie = await makeLogin(app, testData.users.existing.author);
   });
 
-  async function testTaskFilter(filterParams) {
+  it('GET /api/tasks — index', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: '/tasks',
-      cookies: cookie,
-      query: filterParams,
-      headers: { accept: 'application/json' },
+      url: '/api/tasks',
+      headers: {
+        cookie: `session=${cookie.session}`,
+        accept: 'application/json',
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(Array.isArray(JSON.parse(response.body))).toBe(true);
+  });
+
+  it('GET /api/tasks/:id — show one task', async () => {
+    const params = testData.tasks.existing.update;
+    const task = await models.task.query().findOne({ name: params.name });
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/api/tasks/${task.id}`,
+      headers: {
+        cookie: `session=${cookie.session}`,
+        accept: 'application/json',
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    const taskData = JSON.parse(response.body);
+    expect(taskData.name).toBe(params.name);
+  });
+
+  it('POST /api/tasks — create task', async () => {
+    const params = testData.tasks.new;
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/api/tasks',
+      headers: {
+        cookie: `session=${cookie.session}`,
+        'content-type': 'application/json',
+      },
+      payload: JSON.stringify(params),
+    });
+
+    expect(response.statusCode).toBe(201);
+
+    const task = await models.task.query().findOne({ name: params.name });
+    expect(task).toMatchObject(params);
+  });
+
+  it('PATCH /api/tasks/:id — update task', async () => {
+    const params = testData.tasks.existing.update;
+    const task = await models.task.query().findOne({ name: params.name });
+
+    const updatedName = 'Updated Task Name';
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/api/tasks/${task.id}`,
+      headers: {
+        cookie: `session=${cookie.session}`,
+        'content-type': 'application/json',
+      },
+      payload: JSON.stringify({ ...params, name: updatedName }),
     });
 
     expect(response.statusCode).toBe(200);
 
-    const jsonResponse = JSON.parse(response.body);
-    return jsonResponse.map((task) => task.name);
-  }
-
-  it.each([
-    [{ label: () => selectedLabel.id.toString() }],
-    [{ status: () => selectedStatus.id.toString() }],
-    [{ executor: () => selectedExecutor.id.toString() }],
-    [
-      {
-        label: () => selectedLabel.id.toString(),
-        status: () => selectedStatus.id.toString(),
-        executor: () => selectedExecutor.id.toString(),
-      },
-    ],
-  ])('should return only tasks with the selected filters', async (filterParamsObj) => {
-    const resolvedFilters = Object.fromEntries(
-      Object.entries(filterParamsObj).map(([key, value]) => [key, value()]),
-    );
-
-    const taskNames = await testTaskFilter(resolvedFilters);
-
-    expect(taskNames).toContain('Task with correct data');
-    expect(taskNames).not.toContain('Task with random data');
+    const updatedTask = await models.task.query().findById(task.id);
+    expect(updatedTask.name).toBe(updatedName);
   });
 
+  // Work in progress
+  // it('should delete a task without error', async () => {
+  //   const taskToDelete = await models.task.query().insert({
+  //     name: 'Temp Task',
+  //     description: 'For deletion test',
+  //     statusId: testData.statuses.existing.default.id,
+  //     authorId: testData.users.existing.author.id,
+  //     executorId: testData.users.existing.executor.id,
+  //   });
+
+  //   const response = await app.inject({
+  //     method: 'DELETE',
+  //     url: `/api/tasks/${taskToDelete.id}`,
+  //     headers: {
+  //       cookie: `session=${cookie.session}`,
+  //     },
+  //   });
+
+  //   expect(response.statusCode).toBe(200);
+
+  //   const deleted = await models.task.query().findById(taskToDelete.id);
+  //   expect(deleted).toBeUndefined();
+  // });
+
+
   afterEach(async () => {
+    await knex('task_labels').del();
     await knex('tasks').del();
   });
 
   afterAll(async () => {
     await knex.migrate.rollback();
     await app.close();
-    await knex.destroy();
   });
 });

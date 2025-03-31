@@ -1,25 +1,27 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import EditFormWrapper from './EditFormWrapper';
-import FormInput from '../ui/FormInput';
-import FloatingLabel from '../ui/FloatingLabel';
+import routes from '../../routes';
 import { tasksApi } from '../../api/tasksApi';
 import SelectField from '../UI/SelectField';
 import MultiSelectField from '../UI/MultiSelectField';
-import routes from '../../routes';
+import { TransparentGraySubmitBtn } from '../../components/Buttons';
+import { useParams } from 'next/navigation';
 
-const EditTaskPage = () => {
-  const { id } = useParams();
+const EditTaskForm = () => {
+  const params = useParams();
+  const taskId = Number(params.id); 
   const router = useRouter();
-  const { t } = useTranslation(['tasks', 'validation', 'errors']);
+  const { t: tTasks } = useTranslation('tasks');
+  const { t: tValidation } = useTranslation('validation');
+  const { t: tErrors } = useTranslation('errors');
 
-  const [initialValues, setInitialValues] = useState(null);
-  const [options, setOptions] = useState({
+  const [task, setTask] = useState(null);
+  const [meta, setMeta] = useState({
     statuses: [],
     executors: [],
     labels: [],
@@ -28,28 +30,31 @@ const EditTaskPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const task = await tasksApi.getById(id);
-        const { statuses, executors, labels } = await tasksApi.getFormOptions();
-        setInitialValues({
-          name: task.name,
-          description: task.description || '',
-          statusId: task.statusId || '',
-          executorId: task.executorId || '',
-          labels: task.labels?.map(label => label.id) || [],
-        });
-        setOptions({ statuses, executors, labels });
+        const [taskData, metaData] = await Promise.all([
+          tasksApi.getById(taskId),
+          tasksApi.getMeta(),
+        ]);
+        console.log('taskData', taskData)
+        console.log('metaData', metaData)
+        setTask(taskData);
+        setMeta(metaData);
       } catch (e) {
-        alert(t('errors:taskNotFound'));
-        router.push(routes.app.tasks.list());
+        console.error(e);
+        alert(tErrors('loadEditDataFailed'));
       }
     };
-
     fetchData();
-  }, [id, router, t]);
+  }, [taskId, tErrors]);
 
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: initialValues || {
+    initialValues: task ? {
+      name: task.name,
+      description: task.description || '',
+      statusId: task.statusId || '',
+      executorId: task.executorId || '',
+      labels: task.labels?.map(label => label.id) || [],
+    } : {
       name: '',
       description: '',
       statusId: '',
@@ -57,77 +62,96 @@ const EditTaskPage = () => {
       labels: [],
     },
     validationSchema: Yup.object({
-      name: Yup.string().required(t('validation:nameRequired')),
+      name: Yup.string().required(tValidation('nameRequired')),
+      description: Yup.string(),
+      statusId: Yup.number().required(tValidation('statusRequired')),
+      executorId: Yup.number().nullable(),
+      labels: Yup.array().of(Yup.number()),
     }),
     onSubmit: async values => {
       try {
-        await tasksApi.update(id, values);
+        const preparedValues = {
+          ...values,
+          statusId: Number(values.statusId),
+          executorId: values.executorId ? Number(values.executorId) : null,
+          labels: values.labels.map(Number),
+        };
+
+        await tasksApi.update(taskId, preparedValues);
         router.push(routes.app.tasks.list());
       } catch (e) {
-        alert(t('errors:updateTaskFailed'));
+        console.error(e);
+        alert(tErrors('editTaskFailed'));
       }
     },
   });
 
-  if (!initialValues) return <p>{t('tasks:loading')}</p>;
+  if (!task) return <p className="text-center text-gray-500">{tTasks('loading')}</p>;
 
   return (
-    <EditFormWrapper
-      title={t('tasks:form.editTitle')}
-      onSubmit={formik.handleSubmit}
-      buttonText={t('tasks:form.update')}
-    >
-      <div className="relative mb-6">
-        <FormInput
-          id="name"
-          type="text"
-          field={formik.getFieldProps('name')}
-          touched={formik.touched.name}
-          error={formik.errors.name}
-        />
-        <FloatingLabel htmlFor="name" text={t('tasks:form.name')} />
-      </div>
+    <div className="mx-auto mt-8 w-[90%]">
+      <form className="flex rounded bg-white shadow-md" onSubmit={formik.handleSubmit}>
+        <div className="flex flex-col gap-4 p-8 md:w-full">
+          {/* Name */}
+          <div className="relative mb-6">
+            <input
+              {...formik.getFieldProps('name')}
+              id="name"
+              type="text"
+              placeholder=" "
+              className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
+                formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
+              }`}
+            />
+            <label
+              htmlFor="name"
+              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
+            >
+              {tTasks('form.name')}
+            </label>
+            {formik.touched.name && formik.errors.name && (
+              <p className="text-xs italic text-red-500">{formik.errors.name}</p>
+            )}
+          </div>
 
-      <div className="mb-6">
-        <label htmlFor="description" className="mb-1 block text-sm text-gray-600">
-          {t('tasks:form.description')}
-        </label>
-        <textarea
-          id="description"
-          {...formik.getFieldProps('description')}
-          rows="3"
-          className="w-full rounded border border-gray-300 p-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none"
-        />
-      </div>
+          {/* Status */}
+          <SelectField
+            id="statusId"
+            label={tTasks('form.status')}
+            options={meta.statuses}
+            field={formik.getFieldProps('statusId')}
+            touched={formik.touched.statusId}
+            error={formik.errors.statusId}
+          />
 
-      <SelectField
-        id="statusId"
-        label={t('tasks:form.status')}
-        options={options.statuses}
-        value={formik.values.statusId}
-        onChange={formik.handleChange}
-        error={formik.touched.statusId && formik.errors.statusId}
-      />
+          {/* Executor */}
+          <SelectField
+            id="executorId"
+            label={tTasks('form.executor')}
+            options={meta.executors}
+            field={formik.getFieldProps('executorId')}
+            touched={formik.touched.executorId}
+            error={formik.errors.executorId}
+          />
 
-      <SelectField
-        id="executorId"
-        label={t('tasks:form.executor')}
-        options={options.executors}
-        value={formik.values.executorId}
-        onChange={formik.handleChange}
-        error={formik.touched.executorId && formik.errors.executorId}
-      />
+          {/* Labels */}
+          <MultiSelectField
+            id="labels"
+            label={tTasks('form.labels')}
+            options={meta.labels}
+            value={formik.values.labels}
+            onChange={selected => formik.setFieldValue('labels', selected)}
+            error={formik.errors.labels}
+            touched={formik.touched.labels}
+          />
 
-      <MultiSelectField
-        id="labels"
-        label={t('tasks:form.labels')}
-        options={options.labels}
-        value={formik.values.labels}
-        onChange={formik.handleChange}
-        error={formik.touched.labels && formik.errors.labels}
-      />
-    </EditFormWrapper>
+          <div className="mt-[-20px] self-start">
+            <TransparentGraySubmitBtn buttonText={tTasks('form.edit')} />
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default EditTaskPage;
+export default EditTaskForm;

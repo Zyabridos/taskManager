@@ -1,20 +1,19 @@
+/* eslint-env jest */
 import dotenv from 'dotenv';
-import { expect } from '@jest/globals';
-
 import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
 
 dotenv.config({ path: '.env.test' });
 
-describe('test tasks filtration by labels, status, and executor', () => {
+describe('test tasks filtering by label, status, and executor (REST API)', () => {
   let app;
-  let models;
   let knex;
+  let models;
   let cookie;
 
   let selectedLabel;
   let selectedStatus;
   let selectedExecutor;
-  let taskWithDataFromDB;
+  let taskToFind;
 
   const getTestContext = setStandardBeforeEach();
 
@@ -31,66 +30,70 @@ describe('test tasks filtration by labels, status, and executor', () => {
     [selectedStatus] = statuses;
     [selectedExecutor] = users;
 
-    taskWithDataFromDB = await models.task.query().insert({
+    taskToFind = await models.task.query().insert({
       name: 'Task with correct data',
-      description: 'This task should appear in the filtered results',
+      description: 'This task should match filters',
       statusId: selectedStatus.id,
       authorId: 1,
       executorId: selectedExecutor.id,
     });
 
     await knex('task_labels').insert({
-      task_id: taskWithDataFromDB.id,
+      task_id: taskToFind.id,
       label_id: selectedLabel.id,
     });
 
     await models.task.query().insert({
       name: 'Task with random data',
-      description: 'This task should NOT appear in the filtered results',
+      description: 'This task should NOT match filters',
       statusId: selectedStatus.id + 1,
       authorId: 2,
       executorId: selectedExecutor.id + 1,
     });
   });
 
-  async function testTaskFilter(filterParams) {
+  const getFilteredTaskNames = async (queryParams) => {
+    const searchParams = new URLSearchParams(queryParams).toString();
+
     const response = await app.inject({
       method: 'GET',
-      url: '/tasks',
-      cookies: cookie,
-      query: filterParams,
-      headers: { accept: 'application/json' },
+      url: `/api/tasks?${searchParams}`,
+      headers: {
+        cookie: `session=${cookie.session}`,
+        accept: 'application/json',
+      },
     });
 
     expect(response.statusCode).toBe(200);
 
-    const jsonResponse = JSON.parse(response.body);
-    return jsonResponse.map((task) => task.name);
-  }
+    const tasks = JSON.parse(response.body);
+    return tasks.map((task) => task.name);
+  };
 
   it.each([
-    [{ label: () => selectedLabel.id.toString() }],
-    [{ status: () => selectedStatus.id.toString() }],
-    [{ executor: () => selectedExecutor.id.toString() }],
+    [{ label: () => selectedLabel.id }],
+    [{ status: () => selectedStatus.id }],
+    [{ executor: () => selectedExecutor.id }],
     [
       {
-        label: () => selectedLabel.id.toString(),
-        status: () => selectedStatus.id.toString(),
-        executor: () => selectedExecutor.id.toString(),
+        label: () => selectedLabel.id,
+        status: () => selectedStatus.id,
+        executor: () => selectedExecutor.id,
       },
     ],
-  ])('should return only tasks with the selected filter', async (filterParams) => {
-    const resolvedFilters = Object.fromEntries(
-      Object.entries(filterParams).map(([key, value]) => [key, value()]),
+  ])('should return only tasks matching filters: %p', async (paramSet) => {
+    const queryParams = Object.fromEntries(
+      Object.entries(paramSet).map(([key, getValue]) => [key, getValue().toString()])
     );
 
-    const taskNames = await testTaskFilter(resolvedFilters);
+    const taskNames = await getFilteredTaskNames(queryParams);
 
     expect(taskNames).toContain('Task with correct data');
     expect(taskNames).not.toContain('Task with random data');
   });
 
   afterEach(async () => {
+    await knex('task_labels').del();
     await knex('tasks').del();
   });
 

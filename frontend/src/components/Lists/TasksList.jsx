@@ -38,26 +38,28 @@ const TasksList = () => {
 
   return (
     <div className="mt-6 overflow-x-auto">
+      <div className="pb-2">
       <HrefButton href={routes.app.tasks.create()} buttonText={tTasks('form.createTitle')} />
+      </div>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('tasks.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('tasks.columns.status')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('tasks.columns.executor')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
@@ -67,9 +69,9 @@ const TasksList = () => {
             <tr key={task.id}>
               <td className="px-6 py-4 text-sm text-gray-900">{task.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">{task.name}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">{task.statusName}</td>
+              <td className="px-6 py-4 text-sm text-gray-900">{task.status.name}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
-                {task.executorFirstName} {task.executorLastName}
+                {task.executor.firstName} {task.executor.lastName}
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {format(new Date(task.createdAt), 'dd.MM.yyyy HH:mm', { locale: ruLocale })}

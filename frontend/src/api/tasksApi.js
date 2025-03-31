@@ -1,10 +1,6 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const base = `${process.env.NEXT_PUBLIC_API_BASE}/api/tasks`;
-
-const axiosInstance = axios.create({
-  withCredentials: true,
-});
 
 export const tasksApi = {
   getAll: async () => {
@@ -12,7 +8,8 @@ export const tasksApi = {
     return response.data;
   },
 
-  getById: async id => {
+  getById: async (id) => {
+    console.log('Fetching task by id:', id);
     const response = await axiosInstance.get(`${base}/${id}`);
     return response.data;
   },

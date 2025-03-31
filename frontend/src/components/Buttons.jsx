@@ -4,11 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
-export const HrefButton = ({ href, buttonText }) => {
+export const HrefButton = ({ href, buttonText, className= '' }) => {
   return (
     <Link
       href={href}
-      className="inline-block rounded border border-e-stone-800 bg-transparent px-4 py-2 font-semibold text-gray-900 transition hover:border-transparent hover:bg-gray-800 hover:text-amber-50"
+      className={`inline-block rounded border border-e-stone-800 bg-transparent px-4 py-2 font-semibold text-gray-900 transition hover:border-transparent hover:bg-gray-800 hover:text-amber-50 ${className}`}
     >
       {buttonText}
     </Link>
