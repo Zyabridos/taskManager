@@ -10,11 +10,13 @@ import { labelsApi } from '../../api/labelsApi';
 import FormInput from '../ui/FormInput';
 import FloatingLabel from '../ui/FloatingLabel';
 import routes from '../../routes';
+import useEntityToast from '../../hooks/useEntityToast';
 
-const EditUserPage = () => {
+const EditLabelForm = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { t: tLables } = useTranslation('labels');
+  const { showUpdated, showError } = useEntityToast();
+  const { t: tLabels } = useTranslation('labels');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
 
@@ -24,63 +26,60 @@ const EditUserPage = () => {
     const fetchLabel = async () => {
       try {
         const label = await labelsApi.getById(id);
-        setInitialValues({
-          name: label.name,
-        });
-      } catch {
-        alert(tErrors('labelNotFound'));
+        setInitialValues({ name: label.name });
+      } catch (e) {
+        console.error(e);
+        showError('label', 'failedUpdate');
         router.push(routes.app.labels.list());
       }
     };
+
     fetchLabel();
-  }, [id, router, tErrors]);
+  }, [id, router, showError]);
 
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: initialValues || {
-      name: '',
-    },
+    initialValues: initialValues || { name: '' },
     validationSchema: Yup.object({
       name: Yup.string().required(tValidation('nameRequired')),
     }),
     onSubmit: async values => {
       try {
         await labelsApi.update(id, values);
-        router.push(`${routes.app.labels.list()}?updated=label`);
+        showUpdated('label');
+        router.push(routes.app.labels.list());
       } catch (e) {
-        console.log(e);
-        router.push(`${routes.app.labels.list()}?failedUpdate=label`);
+        console.error(e);
+        showError('label', 'failedUpdate');
       }
     },
   });
 
   if (!initialValues) {
-    return <p>{tLables('loading')}</p>;
+    return <p>{tLabels('loading')}</p>;
   }
 
   return (
     <EditFormWrapper
-      title={tLables('form.editTitle')}
+      title={tLabels('form.editTitle')}
       onSubmit={formik.handleSubmit}
-      buttonText={tLables('form.update')}
+      buttonText={tLabels('form.update')}
     >
-      {['name'].map(field => (
-        <div className="relative mb-6" key={field}>
-          <FormInput
-            id={field}
-            type={'text'}
-            field={formik.getFieldProps(field)}
-            touched={formik.touched[field]}
-            error={formik.errors[field]}
-          />
-          <FloatingLabel htmlFor={field} text={tLables(`form.${field}`)} />
-          {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
-          )}
-        </div>
-      ))}
+      <div className="relative mb-6">
+        <FormInput
+          id="name"
+          type="text"
+          field={formik.getFieldProps('name')}
+          touched={formik.touched.name}
+          error={formik.errors.name}
+        />
+        <FloatingLabel htmlFor="name" text={tLabels('form.name')} />
+        {formik.touched.name && formik.errors.name && (
+          <p className="mt-1 text-xs italic text-red-500">{formik.errors.name}</p>
+        )}
+      </div>
     </EditFormWrapper>
   );
 };
 
-export default EditUserPage;
+export default EditLabelForm;

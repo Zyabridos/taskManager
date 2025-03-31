@@ -10,10 +10,12 @@ import { statusesApi } from '../../api/statusesApi';
 import FormInput from '../ui/FormInput';
 import FloatingLabel from '../ui/FloatingLabel';
 import routes from '../../routes';
+import useEntityToast from '../../hooks/useEntityToast';
 
-const EditUserPage = () => {
+const EditStatusForm = () => {
   const { id } = useParams();
   const router = useRouter();
+  const { showUpdated, showError } = useEntityToast();
   const { t: tStatuses } = useTranslation('statuses');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
@@ -24,40 +26,34 @@ const EditUserPage = () => {
     const fetchStatus = async () => {
       try {
         const status = await statusesApi.getById(id);
-        setInitialValues({
-          name: status.name,
-        });
-        router.push(`${routes.app.statuses.list()}?updated=status`);
+        setInitialValues({ name: status.name });
       } catch {
-        alert(tErrors('statusNotFound'));
-        router.push(`${routes.app.statuses.list()}?failedUpdate=status`);
+        showError('status', 'failedUpdate');
+        router.push(routes.app.statuses.list());
       }
     };
     fetchStatus();
-  }, [id, router, tErrors]);
+  }, [id, router, showError]);
 
   const formik = useFormik({
     enableReinitialize: true,
-    initialValues: initialValues || {
-      name: '',
-    },
+    initialValues: initialValues || { name: '' },
     validationSchema: Yup.object({
       name: Yup.string().required(tValidation('nameRequired')),
     }),
     onSubmit: async values => {
       try {
         await statusesApi.update(id, values);
+        showUpdated('status');
         router.push(routes.app.statuses.list());
       } catch (e) {
-        console.log(e);
-        alert(tErrors('updateStatusFailed'));
+        console.error(e);
+        showError('status', 'failedUpdate');
       }
     },
   });
 
-  if (!initialValues) {
-    return <p>{tStatuses('loading')}</p>;
-  }
+  if (!initialValues) return <p>{tStatuses('loading')}</p>;
 
   return (
     <EditFormWrapper
@@ -69,14 +65,14 @@ const EditUserPage = () => {
         <div className="relative mb-6" key={field}>
           <FormInput
             id={field}
-            type={'text'}
+            type="text"
             field={formik.getFieldProps(field)}
             touched={formik.touched[field]}
             error={formik.errors[field]}
           />
           <FloatingLabel htmlFor={field} text={tStatuses(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
           )}
         </div>
       ))}
@@ -84,4 +80,4 @@ const EditUserPage = () => {
   );
 };
 
-export default EditUserPage;
+export default EditStatusForm;

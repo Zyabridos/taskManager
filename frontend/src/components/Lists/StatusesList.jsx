@@ -2,15 +2,13 @@
 
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchStatuses } from '../../store/slices/statusesSlice';
+import { fetchStatuses, deleteStatusThunk } from '../../store/slices/statusesSlice';
 import { DeleteButton, HrefButton } from '../Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
-import { deleteStatusThunk } from '../../store/slices/statusesSlice';
-import useToast from '../../hooks/useToast';
-import { useRouter } from 'next/navigation';
+import useEntityToast from '../../hooks/useEntityToast';
 
 const StatusesList = () => {
   const dispatch = useDispatch();
@@ -19,8 +17,7 @@ const StatusesList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tStatuses } = useTranslation('statuses');
 
-  const router = useRouter();
-  useToast();
+  const { showDeleted, showError } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchStatuses());
@@ -28,10 +25,11 @@ const StatusesList = () => {
 
   const handleDelete = async id => {
     try {
-      await dispatch(deleteStatusThunk(id));
-      router.push(`${routes.app.statuses.list()}?deleted=status`);
+      await dispatch(deleteStatusThunk(id)).unwrap();
+      showDeleted('status');
     } catch (e) {
-      alert(t('common.deleteError'));
+      showError('status', 'failedDelete');
+      console.error(e);
     }
   };
 
@@ -54,16 +52,16 @@ const StatusesList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('statuses.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

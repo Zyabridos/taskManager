@@ -8,8 +8,7 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteTaskThunk, fetchTasks } from '../../store/slices/tasksSlice';
-import useToast from '../../hooks/useToast';
-import { useRouter } from 'next/navigation';
+import useEntityToast from '../../hooks/useEntityToast';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -18,8 +17,7 @@ const TasksList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tTasks } = useTranslation('tasks');
 
-  const router = useRouter();
-  useToast();
+  const { showDeleted, showError } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchTasks());
@@ -27,9 +25,11 @@ const TasksList = () => {
 
   const handleDelete = async id => {
     try {
-      await dispatch(deleteTaskThunk(id));
+      await dispatch(deleteTaskThunk(id)).unwrap();
+      showDeleted('task');
     } catch (e) {
-      alert(t('common.deleteError'));
+      showError('task', 'failedDelete');
+      console.error(e);
     }
   };
 

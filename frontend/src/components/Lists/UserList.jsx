@@ -2,19 +2,20 @@
 
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers } from '../../store/slices/usersSlice';
+import { fetchUsers, deleteUserThunk } from '../../store/slices/usersSlice';
 import { DeleteButton, HrefButton } from '../Buttons';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
-import { deleteUserThunk } from '../../store/slices/usersSlice';
+import useEntityToast from '../../hooks/useEntityToast';
 
 const UserList = () => {
   const dispatch = useDispatch();
   const { list, status, error } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
+  const { showDeleted, showError } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -22,9 +23,11 @@ const UserList = () => {
 
   const handleDelete = async id => {
     try {
-      await dispatch(deleteUserThunk(id));
+      await dispatch(deleteUserThunk(id)).unwrap();
+      showDeleted('user');
     } catch (e) {
-      alert(t('common.deleteError'));
+      showError('user', 'failedDelete');
+      console.error(e);
     }
   };
 

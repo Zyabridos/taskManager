@@ -10,10 +10,12 @@ import { usersApi } from '../../api/usersApi';
 import FormInput from '../ui/FormInput';
 import FloatingLabel from '../ui/FloatingLabel';
 import routes from '../../routes';
+import useEntityToast from '../../hooks/useEntityToast';
 
-const EditUserPage = () => {
+const EditUserForm = () => {
   const { id } = useParams();
   const router = useRouter();
+  const { showUpdated, showError } = useEntityToast();
   const { t: tUsers } = useTranslation('users');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
@@ -30,12 +32,12 @@ const EditUserPage = () => {
           email: user.email,
         });
       } catch {
-        alert(tErrors('userNotFound'));
+        showError('user', 'failedUpdate');
         router.push(routes.app.users.list());
       }
     };
     fetchUser();
-  }, [id, router, tErrors]);
+  }, [id, router, showError]);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -52,16 +54,16 @@ const EditUserPage = () => {
     onSubmit: async values => {
       try {
         await usersApi.update(id, values);
-        router.push(`${routes.app.users.list()}?updated=user`);
+        showUpdated('user');
+        router.push(routes.app.users.list());
       } catch (e) {
-        router.push(`${routes.app.users.list()}?failedUpdate=user`);
+        console.error(e);
+        showError('user', 'failedUpdate');
       }
     },
   });
 
-  if (!initialValues) {
-    return <p>{tUsers('loading')}</p>;
-  }
+  if (!initialValues) return <p>{tUsers('loading')}</p>;
 
   return (
     <EditFormWrapper
@@ -80,7 +82,7 @@ const EditUserPage = () => {
           />
           <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
           )}
         </div>
       ))}
@@ -88,4 +90,4 @@ const EditUserPage = () => {
   );
 };
 
-export default EditUserPage;
+export default EditUserForm;

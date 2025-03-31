@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -7,8 +9,7 @@ import {
   removeUserFromStorage,
 } from '../utils/storage/authStorage';
 import routes from '../routes';
-import useToast from '../hooks/useToast';
-
+import useEntityToast from '../hooks/useEntityToast';
 
 export const AuthContext = createContext();
 
@@ -20,10 +21,9 @@ const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [serverError, setServerError] = useState(null);
 
-  useToast();
+  const { showToast } = useEntityToast();
 
   const fetchCurrentUser = async () => {
-    console.log('fetching user by adres:', `${baseURL}${routes.api.session.current()}`);
     try {
       const response = await axios.get(`${baseURL}${routes.api.session.current()}`, {
         withCredentials: true,
@@ -40,30 +40,31 @@ const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password, isAfterRegistration = false) => {
-  try {
-    const response = await axios.post(
-      `${baseURL}${routes.api.session.current()}`,
-      { data: { email, password } },
-      { withCredentials: true },
-    );
+    try {
+      const response = await axios.post(
+        `${baseURL}${routes.api.session.current()}`,
+        { data: { email, password } },
+        { withCredentials: true },
+      );
 
-    const loggedUser = response.data.user;
-    setUser(loggedUser);
-    setIsAuthenticated(true);
-    setServerError(null);
-    saveUserToStorage(loggedUser);
+      const loggedUser = response.data.user;
+      setUser(loggedUser);
+      setIsAuthenticated(true);
+      setServerError(null);
+      saveUserToStorage(loggedUser);
 
-    const query = isAfterRegistration ? '?registered=success' : '?loggedIn=success';
-    router.push(`${routes.app.users.list()}/${query}`);
-  } catch (error) {
-    setIsAuthenticated(false);
-    setServerError('WrongEmailOrPassword');
-  }
-};
+      const query = isAfterRegistration ? 'registered' : 'loggedIn';
+      showToast({ type: 'user', action: query, titleKey: 'successTitle' });
 
+      router.push(`${routes.app.users.list()}`);
+    } catch (error) {
+      setIsAuthenticated(false);
+      setServerError('WrongEmailOrPassword');
+      showToast({ type: 'user', action: 'failedLogin', titleKey: 'errorTitle' });
+    }
+  };
 
   const logOut = async () => {
-    console.log('DELETE login to:', `${baseURL}${routes.api.session.delete()}`);
     try {
       await axios.delete(`${baseURL}${routes.api.session.delete()}`, { withCredentials: true });
     } catch (e) {

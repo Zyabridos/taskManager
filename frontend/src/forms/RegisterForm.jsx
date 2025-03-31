@@ -38,7 +38,6 @@ const RegisterForm = () => {
     try {
       await usersApi.create(values);
       await login(values.email, values.password, true);
-      router.push(`${routes.app.users.list()}?registered=success`);
     } catch (e) {
       router.push(`${routes.app.users.new()}?failedCreate=user`);
     }

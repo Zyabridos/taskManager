@@ -8,17 +8,16 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteLabelThunk, fetchLabel } from '../../store/slices/labelsSlice';
-import useToast from '../../hooks/useToast';
-import { useRouter } from 'next/navigation';
+import useEntityToast from '../../hooks/useEntityToast';
 
 const LabelsList = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { list, label, error } = useSelector(state => state.labels);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { t: tLabels } = useTranslation('labels');
-  useToast();
+
+  const { showDeleted, showError } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchLabel());
@@ -26,10 +25,11 @@ const LabelsList = () => {
 
   const handleDelete = async id => {
     try {
-      await dispatch(deleteLabelThunk(id));
-      router.push(`${routes.app.statuses.list()}?deleted=label`);
+      await dispatch(deleteLabelThunk(id)).unwrap();
+      showDeleted('label');
     } catch (e) {
-      alert(t('common.deleteError'));
+      showError('label', 'failedDelete');
+      console.error(e);
     }
   };
 
@@ -49,16 +49,16 @@ const LabelsList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('labels.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
