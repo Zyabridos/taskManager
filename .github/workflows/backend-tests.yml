@@ -3,10 +3,10 @@ name: My Backend Tests Workflow
 on:
   push:
     branches:
-      - main
+      - '**'
   pull_request:
     branches:
-      - main
+      - '**'
 
 jobs:
   user-tests:
@@ -19,8 +19,11 @@ jobs:
       - name: Install dependencies
         run: make install-backend
 
+      - name: Prepare env
+        run: make prepare
+
       - name: Apply database migrations
         run: make db-migrate
 
       - name: Run tests
-        run: test-backend
+        run: make test-backend
