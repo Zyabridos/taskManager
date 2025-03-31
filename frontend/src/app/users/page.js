@@ -2,7 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import UserList from '../../components/Lists/UserList';
-import PageSection from '../../components/PageSection';
+import PageSection from '../../components/Lists/ProtectedPageListSection';
 
 const UserListPage = () => {
   const { t } = useTranslation('tables');

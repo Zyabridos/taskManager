@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/authContex';
-import routes from '../routes';
+import { useAuth } from '../../context/authContex';
+import routes from '../../routes';
 
 const baseURL = 'http://localhost:3000';
 
