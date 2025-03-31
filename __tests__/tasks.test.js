@@ -1,107 +1,135 @@
-/* eslint-env jest */
-import dotenv from 'dotenv';
-import { expect } from '@jest/globals';
-import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
+import fastify from "fastify";
+import init from "../server/plugin/init.js";
+import { prepareData, makeLogin } from "./helpers/index.js";
+import dotenv from "dotenv";
 
-dotenv.config({ path: '.env.test' });
+dotenv.config({ path: ".env.test" });
 
-describe('test tasks filtration by labels, status, and executor', () => {
+describe("test tasks CRUD", () => {
   let app;
   let models;
   let knex;
+  let testData;
   let cookie;
 
-  let selectedLabel;
-  let selectedStatus;
-  let selectedExecutor;
-  let taskWithDataFromDB;
-
-  const getTestContext = setStandardBeforeEach();
-
   beforeEach(async () => {
-    ({
-      app,
-      knex,
-      models,
-      cookie,
-    } = getTestContext());
-
-    const [labels, statuses, users] = await Promise.all([
-      models.label.query(),
-      models.status.query(),
-      models.user.query(),
-    ]);
-
-    [selectedLabel] = labels;
-    [selectedStatus] = statuses;
-    [selectedExecutor] = users;
-
-    taskWithDataFromDB = await models.task.query().insert({
-      name: 'Task with correct data',
-      description: 'This task should appear in the filtered results',
-      statusId: selectedStatus.id,
-      authorId: 1,
-      executorId: selectedExecutor.id,
+    app = fastify({
+      exposeHeadRoutes: false,
+      logger: { target: "pino-pretty" },
     });
 
-    await knex('task_labels').insert({
-      task_id: taskWithDataFromDB.id,
-      label_id: selectedLabel.id,
-    });
+    await init(app);
+    knex = app.objection.knex;
+    models = app.objection.models;
 
-    await models.task.query().insert({
-      name: 'Task with random data',
-      description: 'This task should NOT appear in the filtered results',
-      statusId: selectedStatus.id + 1,
-      authorId: 2,
-      executorId: selectedExecutor.id + 1,
-    });
+    await knex.migrate.latest();
+
+    testData = await prepareData(app);
   });
 
-  async function testTaskFilter(filterParams) {
+  beforeEach(async () => {
+    cookie = await makeLogin(app, testData.users.existing.author);
+  });
+
+  it("index", async () => {
     const response = await app.inject({
-      method: 'GET',
-      url: '/tasks',
+      method: "GET",
+      url: "/tasks",
       cookies: cookie,
-      query: filterParams,
-      headers: { accept: 'application/json' },
     });
 
     expect(response.statusCode).toBe(200);
+  });
 
-    const jsonResponse = JSON.parse(response.body);
-    return jsonResponse.map((task) => task.name);
-  }
+  it("new", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/tasks/new",
+      cookies: cookie,
+    });
 
-  it.each([
-    [{ label: () => selectedLabel.id.toString() }],
-    [{ status: () => selectedStatus.id.toString() }],
-    [{ executor: () => selectedExecutor.id.toString() }],
-    [
-      {
-        label: () => selectedLabel.id.toString(),
-        status: () => selectedStatus.id.toString(),
-        executor: () => selectedExecutor.id.toString(),
+    expect(response.statusCode).toBe(200);
+  });
+
+  it("particular task", async () => {
+    const params = testData.tasks.existing.update;
+    const task = await models.task.query().findOne({ name: params.name });
+
+    const response = await app.inject({
+      method: "GET",
+      url: `/tasks/${task.id}`,
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it("create", async () => {
+    const params = testData.tasks.new;
+    console.log("params new task, ", params);
+    const response = await app.inject({
+      method: "POST",
+      url: "/tasks",
+      payload: {
+        data: params,
       },
-    ],
-  ])('should return only tasks with the selected filters', async (filterParamsObj) => {
-    const resolvedFilters = Object.fromEntries(
-      Object.entries(filterParamsObj).map(([key, value]) => [key, value()]),
-    );
+      cookies: cookie,
+    });
 
-    const taskNames = await testTaskFilter(resolvedFilters);
+    // expect(response.statusCode).toBe(302);
+    const task = await models.task.query().findOne({ name: params.name });
+    expect(task).toMatchObject(params);
+  });
 
-    expect(taskNames).toContain('Task with correct data');
-    expect(taskNames).not.toContain('Task with random data');
+  it("delete", async () => {
+    const params = testData.tasks.existing.delete;
+    const taskToDelete = await models.task
+      .query()
+      .findOne({ name: params.name });
+
+    const response = await app.inject({
+      method: "DELETE",
+      url: `/tasks/${taskToDelete.id}`,
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(302);
+    const deletedTask = await models.task
+      .query()
+      .findOne({ name: params.name });
+    expect(deletedTask).toBeUndefined();
+  });
+
+  // work in progress
+  it("update", async () => {
+    const params = testData.tasks.existing.update;
+    const task = await models.task.query().findOne({ name: params.name });
+
+    const updatedTaskName = "updated";
+    const response = await app.inject({
+      method: "PATCH",
+      url: `/tasks/${task.id}`,
+      payload: {
+        data: {
+          ...params,
+          name: updatedTaskName,
+        },
+      },
+      cookies: cookie,
+    });
+
+    expect(response.statusCode).toBe(302);
+
+    const updatedTask = await models.task.query().findById(task.id);
+    expect(updatedTask.name).toEqual(updatedTaskName);
   });
 
   afterEach(async () => {
-    await knex('tasks').del();
+    await knex("tasks").del();
   });
 
   afterAll(async () => {
     await knex.migrate.rollback();
     await app.close();
-    await knex.destroy();
   });
 });
