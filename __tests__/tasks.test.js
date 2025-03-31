@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-dotenv.config({ path: '.env.test' });
-
 import fastify from 'fastify';
 import init from '../server/plugin/init.js';
 import { prepareData, makeLogin } from './helpers/index.js';
+
+dotenv.config({ path: '.env.test' });
 
 describe('test tasks CRUD', () => {
   let app;
