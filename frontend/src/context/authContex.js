@@ -7,6 +7,8 @@ import {
   removeUserFromStorage,
 } from '../utils/storage/authStorage';
 import routes from '../routes';
+import useToast from '../hooks/useToast';
+
 
 export const AuthContext = createContext();
 
@@ -17,6 +19,8 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [serverError, setServerError] = useState(null);
+
+  useToast();
 
   const fetchCurrentUser = async () => {
     console.log('fetching user by adres:', `${baseURL}${routes.api.session.current()}`);
@@ -35,26 +39,28 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
-    console.log('POST login to:', `${baseURL}${routes.api.session.current()}`);
-    try {
-      const response = await axios.post(
-        `${baseURL}${routes.api.session.current()}`,
-        { data: { email, password } },
-        { withCredentials: true },
-      );
+  const login = async (email, password, isAfterRegistration = false) => {
+  try {
+    const response = await axios.post(
+      `${baseURL}${routes.api.session.current()}`,
+      { data: { email, password } },
+      { withCredentials: true },
+    );
 
-      const loggedUser = response.data.user;
-      setUser(loggedUser);
-      setIsAuthenticated(true);
-      setServerError(null);
-      saveUserToStorage(loggedUser);
-      router.push('/');
-    } catch (error) {
-      setIsAuthenticated(false);
-      setServerError('WrongEmailOrPassword');
-    }
-  };
+    const loggedUser = response.data.user;
+    setUser(loggedUser);
+    setIsAuthenticated(true);
+    setServerError(null);
+    saveUserToStorage(loggedUser);
+
+    const query = isAfterRegistration ? '?registered=success' : '?loggedIn=success';
+    router.push(`${routes.app.users.list()}/${query}`);
+  } catch (error) {
+    setIsAuthenticated(false);
+    setServerError('WrongEmailOrPassword');
+  }
+};
+
 
   const logOut = async () => {
     console.log('DELETE login to:', `${baseURL}${routes.api.session.delete()}`);

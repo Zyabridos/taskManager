@@ -3,7 +3,7 @@
 import { CheckCircle } from 'lucide-react';
 import { NAVBARHEIGHT } from '../../components/Navbar/Navbar';
 
-const CustomToast = ({ title = 'Успешно!', message = 'Операция завершена успешно.', onClick }) => {
+const CustomToast = ({ title = 'Success!', message = 'Your action has been successfully completed', onClick }) => {
   return (
     <div
       onClick={onClick}

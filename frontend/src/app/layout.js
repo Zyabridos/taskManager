@@ -16,7 +16,7 @@ const RootLayout = ({ children }) => {
         <Provider store={store}>
           <AuthProvider>
             <Navbar />
-            <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+            <Toaster position="top-right" toastOptions={{ duration: 30000 }} />
             <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
           </AuthProvider>
         </Provider>
