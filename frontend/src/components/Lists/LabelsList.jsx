@@ -8,13 +8,17 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteLabelThunk, fetchLabel } from '../../store/slices/labelsSlice';
+import useToast from '../../hooks/useToast';
+import { useRouter } from 'next/navigation';
 
 const LabelsList = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { list, label, error } = useSelector(state => state.labels);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { t: tLabels } = useTranslation('labels');
+  useToast();
 
   useEffect(() => {
     dispatch(fetchLabel());
@@ -23,6 +27,7 @@ const LabelsList = () => {
   const handleDelete = async id => {
     try {
       await dispatch(deleteLabelThunk(id));
+      router.push(`${routes.app.statuses.list()}?deleted=label`);
     } catch (e) {
       alert(t('common.deleteError'));
     }

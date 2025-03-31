@@ -9,6 +9,7 @@ import { usersApi } from '../api/usersApi';
 import { TransparentGraySubmitBtn } from '../components/Buttons';
 import signUpImage from '../../public/signUp_picture.jpg';
 import Image from 'next/image';
+import routes from '../routes';
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -34,9 +35,9 @@ const RegisterForm = () => {
     onSubmit: async values => {
       try {
         await usersApi.create(values);
-        router.push('/users');
+        router.push(`${routes.app.users.list()}?created=user`);
       } catch (e) {
-        alert(tErrors('createUserFailed'));
+        router.push(`${routes.app.users.list()}?failedCreate=user`);
       }
     },
   });

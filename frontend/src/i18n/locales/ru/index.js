@@ -9,7 +9,7 @@ import home from './home.json';
 import statuses from './statuses.json';
 import labels from './labels.json';
 import tasks from './tasks.json';
-import toast from './toast.json'
+import toast from './toast.json';
 
 export default {
   auth,

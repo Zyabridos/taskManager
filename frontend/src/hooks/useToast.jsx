@@ -20,7 +20,7 @@ const useToast = () => {
       const translated = t(translationKey, { defaultValue: '' });
 
       if (translated !== '') {
-        toast.custom((tId) => (
+        toast.custom(tId => (
           <CustomToast
             title={t('success')} // envt t(`${key}.title`) for diff titles
             message={translated}

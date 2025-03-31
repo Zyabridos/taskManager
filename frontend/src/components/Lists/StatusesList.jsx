@@ -9,7 +9,7 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteStatusThunk } from '../../store/slices/statusesSlice';
-import useToast from '../../hooks/useToast'
+import useToast from '../../hooks/useToast';
 import { useRouter } from 'next/navigation';
 
 const StatusesList = () => {
@@ -54,16 +54,16 @@ const StatusesList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('statuses.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>

@@ -27,9 +27,10 @@ const EditUserPage = () => {
         setInitialValues({
           name: status.name,
         });
+        router.push(`${routes.app.statuses.list()}?updated=status`);
       } catch {
         alert(tErrors('statusNotFound'));
-        router.push(routes.app.statuses.list());
+        router.push(`${routes.app.statuses.list()}?failedUpdate=status`);
       }
     };
     fetchStatus();

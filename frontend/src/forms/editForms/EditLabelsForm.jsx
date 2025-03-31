@@ -46,10 +46,10 @@ const EditUserPage = () => {
     onSubmit: async values => {
       try {
         await labelsApi.update(id, values);
-        router.push(routes.app.labels.list());
+        router.push(`${routes.app.labels.list()}?updated=label`);
       } catch (e) {
         console.log(e);
-        alert(tErrors('updateLabelFailed'));
+        router.push(`${routes.app.labels.list()}?failedUpdate=label`);
       }
     },
   });

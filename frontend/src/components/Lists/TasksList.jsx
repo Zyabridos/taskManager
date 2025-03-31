@@ -8,6 +8,8 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteTaskThunk, fetchTasks } from '../../store/slices/tasksSlice';
+import useToast from '../../hooks/useToast';
+import { useRouter } from 'next/navigation';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -15,6 +17,9 @@ const TasksList = () => {
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { t: tTasks } = useTranslation('tasks');
+
+  const router = useRouter();
+  useToast();
 
   useEffect(() => {
     dispatch(fetchTasks());

@@ -3,9 +3,13 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { HrefButton } from '../components/Buttons';
 import Head from 'next/head';
+import { useRouter } from 'next/navigation';
+import useToast from '../hooks/useToast.jsx';
 
 const HomePage = () => {
   const { t } = useTranslation('home');
+  const router = useRouter();
+  useToast();
 
   return (
     <>

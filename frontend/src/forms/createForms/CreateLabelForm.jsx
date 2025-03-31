@@ -13,10 +13,10 @@ const CreateLabelPage = () => {
   const handleSubmit = async values => {
     try {
       await labelsApi.create(values);
-      router.push(routes.app.labels.list());
+      router.push(`${routes.app.labels.list()}?created=label`);
     } catch (e) {
       console.log('error', e);
-      alert(tErrors('createLabelFailed'));
+      router.push(`${routes.app.labels.list()}?failedDelete=label`);
     }
   };
 
@@ -24,7 +24,7 @@ const CreateLabelPage = () => {
     <CreateFormMixin
       initialValues={{ name: '' }}
       validationSchema={Yup.object({
-        name: Yup.string().required(tValidation('nameRequired')).min(3, tValidation('min1Symbol')),
+        name: Yup.string().required(tValidation('nameRequired')).min(1, tValidation('min1Symbol')),
       })}
       onSubmit={handleSubmit}
       fields={['name']}

@@ -52,9 +52,9 @@ const EditUserPage = () => {
     onSubmit: async values => {
       try {
         await usersApi.update(id, values);
-        router.push(routes.app.users.list());
+        router.push(`${routes.app.users.list()}?updated=user`);
       } catch (e) {
-        alert(tErrors('updateUserFailed'));
+        router.push(`${routes.app.users.list()}?failedUpdate=user`);
       }
     },
   });

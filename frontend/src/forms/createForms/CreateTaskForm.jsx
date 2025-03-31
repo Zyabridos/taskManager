@@ -62,10 +62,10 @@ const CreateTaskPage = () => {
 
         console.log('Submitting to API:', preparedValues);
         await tasksApi.create(preparedValues);
-        router.push(routes.app.tasks.list());
+        router.push(`${routes.app.labels.list()}?created=task`);
       } catch (e) {
         console.error('Submit error:', e);
-        alert(tErrors('createTaskFailed'));
+        router.push(`${routes.app.labels.list()}?failed=task`);
       }
     },
   });

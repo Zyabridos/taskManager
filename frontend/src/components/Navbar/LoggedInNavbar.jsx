@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useAuth } from '../../context/authContex';
+import { NAVBARHEIGHT } from './Navbar';
 
 const baseURL = 'http://localhost:3000';
 
@@ -16,7 +17,7 @@ const LoggedInNavbar = () => {
     'rounded-md px-3 py-2 text-xl font-medium text-gray-300 hover:bg-gray-700 hover:text-white';
 
   return (
-    <nav className="h-18 bg-gray-800">
+    <nav style={{ height: `${NAVBARHEIGHT}px` }} className="bg-gray-800">
       <div className="flex h-full items-center justify-between px-4">
         <div className="flex space-x-4">
           <Link href="/" className={linkClasses}>

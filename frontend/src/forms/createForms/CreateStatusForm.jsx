@@ -15,7 +15,7 @@ const CreateStatusPage = () => {
       await statusesApi.create(values);
       router.push(`${routes.app.statuses.list()}?created=status`);
     } catch (e) {
-      alert(tErrors('createStatusFailed'));
+      router.push(`${routes.app.labels.list()}?failedDelete=status`);
     }
   };
 

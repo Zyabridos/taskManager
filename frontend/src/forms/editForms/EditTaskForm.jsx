@@ -38,9 +38,10 @@ const EditTaskForm = () => {
         console.log('metaData', metaData);
         setTask(taskData);
         setMeta(metaData);
+        router.push(`${routes.app.tasks.list()}?updated=task`);
       } catch (e) {
         console.error(e);
-        alert(tErrors('loadEditDataFailed'));
+        router.push(`${routes.app.tasks.list()}?failedUpdate=task`);
       }
     };
     fetchData();
