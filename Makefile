@@ -28,7 +28,7 @@ start-backend:
 # Local-comands - backend
 
 install-frontend:
-	cd frontend && npm install
+	cd frontend && npm ci
 
 dev-frontend:
 	cd frontend && npm run dev

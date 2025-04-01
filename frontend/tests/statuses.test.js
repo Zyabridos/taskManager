@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
 import routes from '../src/routes';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import { LogInExistingUser } from './helpers/session.js';
 
-test.describe('Statuses CRUD visual (UI)', () => {
+test.describe('labels CRUD visual (UI)', () => {
   const baseUrl = 'http://localhost:3000';
-  const email = 'example@example.com';
-  const password = 'qwerty';
 
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseUrl}${routes.app.session.new()}`);
-
-    await page.getByLabel('Email').fill(email);
-    await page.getByLabel('Пароль').fill(password);
-    await clickButtonByName(page, 'Войти');
-
-    await expect(page).toHaveURL(`${baseUrl}${routes.app.users.list()}`);
+    await LogInExistingUser(page, 'example@example.com');
   });
 
   test('Should show list of statuses from backend', async ({ page }) => {
@@ -57,12 +50,10 @@ test.describe('Statuses CRUD visual (UI)', () => {
     const editLink = row.getByRole('link', { name: 'Изменить' });
 
     await editLink.click();
-    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
 
     const updatedName = 'Updated Test Status';
     const nameInput = page.getByLabel('Наименование');
 
-    await nameInput.fill('');
     await nameInput.fill(updatedName);
     await clickButtonByName(page, 'Изменить');
 

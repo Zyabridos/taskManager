@@ -2,10 +2,9 @@ import routes from '../../src/routes';
 import { clickButtonByName } from './selectors.js';
 
 const baseUrl = 'http://localhost:3000';
-const email = 'example@example.com';
 const password = 'qwerty';
 
-export const LogInExistingUser = async page => {
+export const LogInExistingUser = async (page, email) => {
   await page.goto(`${baseUrl}${routes.app.session.new()}`);
 
   await page.getByLabel('Email').fill(email);

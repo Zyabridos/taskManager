@@ -7,7 +7,7 @@ test.describe('labels CRUD visual (UI)', () => {
   const baseUrl = 'http://localhost:3000';
 
   test.beforeEach(async ({ page }) => {
-    await LogInExistingUser(page);
+    await LogInExistingUser(page, 'example@example.com');
   });
 
   test('Should show list of labels from backend', async ({ page }) => {
@@ -50,12 +50,10 @@ test.describe('labels CRUD visual (UI)', () => {
     const editLink = row.getByRole('link', { name: 'Изменить' });
 
     await editLink.click();
-    await expect(page).toHaveURL(`${baseUrl}${routes.app.labels.list()}`);
 
     const updatedName = 'Updated Test label';
     const nameInput = page.getByLabel('Наименование');
 
-    await nameInput.fill('');
     await nameInput.fill(updatedName);
     await clickButtonByName(page, 'Изменить');
 

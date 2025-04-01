@@ -30,6 +30,7 @@ const EditUserForm = () => {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          password: '',
         });
       } catch {
         showError('user', 'failedUpdate');
@@ -37,7 +38,7 @@ const EditUserForm = () => {
       }
     };
     fetchUser();
-  }, [id, router, showError]);
+  }, [id, router]);
 
   const handleSubmit = async values => {
     try {
@@ -56,11 +57,13 @@ const EditUserForm = () => {
       firstName: '',
       lastName: '',
       email: '',
+      password: '',
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required(tValidation('firstNameRequired')),
       lastName: Yup.string().required(tValidation('lastNameRequired')),
       email: Yup.string().email(tValidation('invalidEmail')).required(tValidation('emailRequired')),
+      password: Yup.string().required(tValidation('passwordRequiered')).min(3, tValidation('min3Symbols')),
     }),
     onSubmit: handleSubmit,
   });
@@ -73,7 +76,7 @@ const EditUserForm = () => {
       onSubmit={formik.handleSubmit}
       buttonText={tUsers('form.update')}
     >
-      {['firstName', 'lastName', 'email'].map(field => (
+      {['firstName', 'lastName', 'email', 'password'].map(field => (
         <div className="relative mb-6" key={field}>
           <FormInput
             id={field}
@@ -84,7 +87,7 @@ const EditUserForm = () => {
           />
           <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
           )}
         </div>
       ))}

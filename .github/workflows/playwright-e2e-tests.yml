@@ -8,15 +8,44 @@ on:
       - '**'
 
 jobs:
-  user-tests:
+  test:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: make install-frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
-      - name: Run e2e tests
-        run: make test-frontend-e2e
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Start the application
+        run:
+          cd frontend &&
+          npm run build &&
+          npm run dev
+        env:
+          NODE_ENV: test
+
+      - name: Wait for the server to be ready
+        run: |
+          timeout 30s bash -c 'until curl -sSf http://localhost:3000 >/dev/null; do sleep 1; done'
+        shell: bash
+
+      - name: Run Playwright tests
+        run: cd frontend && npx playwright test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
