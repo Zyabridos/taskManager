@@ -24,7 +24,7 @@ jobs:
         run: cd frontend && npm ci
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: cd frontent && npx playwright install --with-deps
 
       - name: Start the application
         run:
