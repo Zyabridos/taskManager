@@ -17,7 +17,7 @@ const TasksList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tTasks } = useTranslation('tasks');
 
-  const { showDeleted, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchTasks());
@@ -26,9 +26,9 @@ const TasksList = () => {
   const handleDelete = async id => {
     try {
       await dispatch(deleteTaskThunk(id)).unwrap();
-      showDeleted('task');
+      showToast({ type: 'task', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showError('task', 'failedDelete');
+      showToast({ type: 'task', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
   };

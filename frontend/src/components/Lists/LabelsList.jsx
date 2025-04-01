@@ -17,7 +17,7 @@ const LabelsList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tLabels } = useTranslation('labels');
 
-  const { showDeleted, showError } = useEntityToast();
+  const showToast = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchLabel());
@@ -26,9 +26,9 @@ const LabelsList = () => {
   const handleDelete = async id => {
     try {
       await dispatch(deleteLabelThunk(id)).unwrap();
-      showDeleted('label');
+      showToast({ type: 'label', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showError('label', 'failedDelete');
+      showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
   };

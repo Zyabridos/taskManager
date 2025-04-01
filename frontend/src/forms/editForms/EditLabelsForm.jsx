@@ -15,7 +15,7 @@ import useEntityToast from '../../hooks/useEntityToast';
 const EditLabelForm = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { showUpdated, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
   const { t: tLabels } = useTranslation('labels');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
@@ -37,22 +37,24 @@ const EditLabelForm = () => {
     fetchLabel();
   }, [id, router, showError]);
 
+  const handleSubmit = async values => {
+    try {
+      await labelsApi.update(id, values);
+      showToast({ type: 'label', action: 'updated', titleKey: 'successTitle' });
+      router.push(routes.app.labels.list());
+    } catch (e) {
+      showToast({ type: 'label', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
+      console.error(e);
+    }
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: initialValues || { name: '' },
     validationSchema: Yup.object({
       name: Yup.string().required(tValidation('nameRequired')),
     }),
-    onSubmit: async values => {
-      try {
-        await labelsApi.update(id, values);
-        showUpdated('label');
-        router.push(routes.app.labels.list());
-      } catch (e) {
-        console.error(e);
-        showError('label', 'failedUpdate');
-      }
-    },
+    onSubmit: handleSubmit
   });
 
   if (!initialValues) {

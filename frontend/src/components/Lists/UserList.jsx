@@ -15,7 +15,7 @@ const UserList = () => {
   const { list, status, error } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
-  const { showDeleted, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -24,9 +24,9 @@ const UserList = () => {
   const handleDelete = async id => {
     try {
       await dispatch(deleteUserThunk(id)).unwrap();
-      showDeleted('user');
+      showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showError('user', 'failedDelete');
+      showToast({ type: 'user', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
   };

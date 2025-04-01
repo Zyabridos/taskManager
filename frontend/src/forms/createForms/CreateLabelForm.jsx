@@ -10,16 +10,16 @@ import useEntityToast from '../../hooks/useEntityToast';
 
 const CreateLabelPage = () => {
   const router = useRouter();
-  const { showSuccess, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
   const { t: tValidation } = useTranslation('validation');
 
   const handleSubmit = async values => {
     try {
       await labelsApi.create(values);
-      showSuccess('label', 'created', 'successTitle');
+      showToast({ type: 'label', action: 'created', titleKey: 'successTitle'});
       router.push(routes.app.labels.list());
     } catch (e) {
-      showError('label', 'failedCreate', 'errorTitle');
+      showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
   };

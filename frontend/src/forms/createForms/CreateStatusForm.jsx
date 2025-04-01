@@ -10,16 +10,16 @@ import useEntityToast from '../../hooks/useEntityToast';
 
 const CreateStatusPage = () => {
   const router = useRouter();
-  const { showSuccess, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
   const { t: tValidation } = useTranslation('validation');
 
   const handleSubmit = async values => {
     try {
-      await statusesApi.create(values);
-      showSuccess('status', 'created', 'successTitle');
-      router.push(routes.app.statuses.list());
+      await statuesApi.create(values);
+      showToast({ type: 'status', action: 'created', titleKey: 'successTitle'});
+      router.push(routes.app.statues.list());
     } catch (e) {
-      showError('status', 'failedCreate', 'errorTitle');
+      showToast({ type: 'status', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
   };

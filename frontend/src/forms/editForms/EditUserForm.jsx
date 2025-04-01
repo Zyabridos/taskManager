@@ -15,7 +15,7 @@ import useEntityToast from '../../hooks/useEntityToast';
 const EditUserForm = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { showUpdated, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
   const { t: tUsers } = useTranslation('users');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
@@ -39,6 +39,17 @@ const EditUserForm = () => {
     fetchUser();
   }, [id, router, showError]);
 
+  const handleSubmit = async values => {
+    try {
+      await usersApi.update(id, values);
+      showToast({ type: 'user', action: 'updated', titleKey: 'successTitle' });
+      router.push(routes.app.users.list());
+    } catch (e) {
+      showToast({ type: 'user', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
+      console.error(e);
+    }
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: initialValues || {
@@ -51,16 +62,7 @@ const EditUserForm = () => {
       lastName: Yup.string().required(tValidation('lastNameRequired')),
       email: Yup.string().email(tValidation('invalidEmail')).required(tValidation('emailRequired')),
     }),
-    onSubmit: async values => {
-      try {
-        await usersApi.update(id, values);
-        showUpdated('user');
-        router.push(routes.app.users.list());
-      } catch (e) {
-        console.error(e);
-        showError('user', 'failedUpdate');
-      }
-    },
+    onSubmit: handleSubmit
   });
 
   if (!initialValues) return <p>{tUsers('loading')}</p>;

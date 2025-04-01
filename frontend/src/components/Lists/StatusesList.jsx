@@ -17,7 +17,7 @@ const StatusesList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tStatuses } = useTranslation('statuses');
 
-  const { showDeleted, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
 
   useEffect(() => {
     dispatch(fetchStatuses());
@@ -26,9 +26,9 @@ const StatusesList = () => {
   const handleDelete = async id => {
     try {
       await dispatch(deleteStatusThunk(id)).unwrap();
-      showDeleted('status');
+      showToast({ type: 'status', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showError('status', 'failedDelete');
+      showToast({ type: 'status', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
   };

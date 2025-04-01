@@ -15,7 +15,7 @@ import useEntityToast from '../../hooks/useEntityToast';
 const EditStatusForm = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { showUpdated, showError } = useEntityToast();
+  const { showToast } = useEntityToast();
   const { t: tStatuses } = useTranslation('statuses');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
@@ -35,22 +35,24 @@ const EditStatusForm = () => {
     fetchStatus();
   }, [id, router, showError]);
 
+  const handleSubmit = async values => {
+    try {
+      await statusesApi.update(id, values);
+      showToast({ type: 'status', action: 'updated', titleKey: 'successTitle' });
+      router.push(routes.app.statuses.list());
+    } catch (e) {
+      showToast({ type: 'status', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
+      console.error(e);
+    }
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: initialValues || { name: '' },
     validationSchema: Yup.object({
       name: Yup.string().required(tValidation('nameRequired')),
     }),
-    onSubmit: async values => {
-      try {
-        await statusesApi.update(id, values);
-        showUpdated('status');
-        router.push(routes.app.statuses.list());
-      } catch (e) {
-        console.error(e);
-        showError('status', 'failedUpdate');
-      }
-    },
+    onSubmit: handleSubmit
   });
 
   if (!initialValues) return <p>{tStatuses('loading')}</p>;
