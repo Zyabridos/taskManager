@@ -11,6 +11,6 @@ const NewUserPage = () => {
       <RegisterForm />
     </div>
   );
-}
+};
 
 export default NewUserPage;

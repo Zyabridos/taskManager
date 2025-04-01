@@ -15,11 +15,7 @@ import CustomToast from '@/components/UI/CustomToast';
 const useEntityToast = () => {
   const { t: tToast } = useTranslation('toast');
 
-  const showToast = ({
-    type,
-    action,
-    titleKey,
-  }) => {
+  const showToast = ({ type, action, titleKey }) => {
     toast.custom(tId => (
       <CustomToast
         title={tToast(titleKey)}

@@ -1,4 +1,5 @@
-{ "successTitle": "Успешно",
+{
+  "successTitle": "Успешно",
   "errorTitle": "Ошибка",
   "registered": {
     "success": "Вы зарегистрированы"

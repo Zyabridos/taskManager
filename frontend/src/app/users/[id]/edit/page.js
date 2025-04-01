@@ -1,14 +1,20 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import EditUserForm from '../../../../forms/editForms/EditStatusesForm';
+import EditUserForm from '../../../../forms/editForms/EditUsersForm';
+import PageSection from '../../../../components/Lists/PageListSection';
+import ProtectedPage from '../../../../components/Protected/ProtectedPage';
 
-export default function EditUserPage() {
-  const { t } = useTranslation('auth');
+const EditUserPage = () => {
+  const { t } = useTranslation('tables');
 
   return (
-    <div>
-      <EditUserForm />
-    </div>
+    <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
+      <PageSection title={t('Users.pageTitle')}>
+        <EditUserForm />
+      </PageSection>
+    </ProtectedPage>
   );
-}
+};
+
+export default EditUserPage;

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import routes from '../src/routes'
+import routes from '../src/routes';
 
 test.describe('Statuses CRUD visual (UI)', () => {
   const baseUrl = 'http://localhost:3000';
@@ -48,28 +48,27 @@ test.describe('Statuses CRUD visual (UI)', () => {
 
     await expect(page.locator('text=Статус удалён')).toBeVisible();
     await expect(page.locator('text=Test Status')).not.toBeVisible();
-});
+  });
 
-test('Should edit a specific status', async ({ page }) => {
-  await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
+  test('Should edit a specific status', async ({ page }) => {
+    await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
 
-  const row = page.locator('table tbody tr', { hasText: 'Test Status' });
-  const editLink = row.getByRole('link', { name: 'Изменить' });
+    const row = page.locator('table tbody tr', { hasText: 'Test Status' });
+    const editLink = row.getByRole('link', { name: 'Изменить' });
 
-  await editLink.click();
+    await editLink.click();
 
-  await expect(page).toHaveURL(new RegExp(`${routes.app.statuses.edit('').slice(0, -1)}`)); // Проверка на URL /statuses/:id/edit
+    await expect(page).toHaveURL(new RegExp(`${routes.app.statuses.edit('').slice(0, -1)}`)); // Проверка на URL /statuses/:id/edit
 
-  const updatedName = 'Updated Test Status';
-  const nameInput = page.getByLabel('Наименование');
+    const updatedName = 'Updated Test Status';
+    const nameInput = page.getByLabel('Наименование');
 
-  await nameInput.fill('');
-  await nameInput.fill(updatedName);
-  await page.getByRole('button', { name: 'Обновить' }).click();
+    await nameInput.fill('');
+    await nameInput.fill(updatedName);
+    await page.getByRole('button', { name: 'Обновить' }).click();
 
-  await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
-  await expect(page.locator('text=Статус обновлён')).toBeVisible();
-  await expect(page.locator(`text=${updatedName}`)).toBeVisible();
-});
-
+    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
+    await expect(page.locator('text=Статус обновлён')).toBeVisible();
+    await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+  });
 });

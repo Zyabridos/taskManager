@@ -1,16 +1,20 @@
 'use client';
 
-import CreateTaskForm from '../../../forms/createForms/CreateTaskForm';
 import { useTranslation } from 'react-i18next';
+import CreateTaskForm from '../../../forms/createForms/CreateTaskForm';
+import PageSection from '../../../components/Lists/PageListSection';
+import ProtectedPage from '../../../components/Protected/ProtectedPage';
 
-const newTaskPage = () => {
-  const { t } = useTranslation('labels');
+const TasksListPage = () => {
+  const { t } = useTranslation('tables');
+
   return (
-    <div>
-      <h1 className="px-20 pt-10 text-5xl font-semibold text-slate-800">{t('form.createTitle')}</h1>
-      <CreateTaskForm />
-    </div>
+    <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
+      <PageSection title={t('tasks.pageTitle')}>
+        <CreateTaskForm />
+      </PageSection>
+    </ProtectedPage>
   );
 };
 
-export default newTaskPage;
+export default TasksListPage;

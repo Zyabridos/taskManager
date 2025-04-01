@@ -1,17 +1,20 @@
 'use client';
 
-import CreateStatusForm from '../../../forms/createForms/CreateStatusForm';
 import { useTranslation } from 'react-i18next';
+import CreateStatusForm from '../../../forms/createForms/CreateStatusForm';
+import PageSection from '../../../components/Lists/PageListSection';
+import ProtectedPage from '../../../components/Protected/ProtectedPage';
 
-const newStatusPage = () => {
-  const { t } = useTranslation('statuses');
+const StatussListPage = () => {
+  const { t } = useTranslation('tables');
 
   return (
-    <div>
-      <h1 className="px-20 pt-10 text-5xl font-semibold text-slate-800">{t('form.createTitle')}</h1>
-      <CreateStatusForm />
-    </div>
+    <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
+      <PageSection title={t('statuses.pageTitle')}>
+        <CreateStatusForm />
+      </PageSection>
+    </ProtectedPage>
   );
 };
 
-export default newStatusPage;
+export default StatussListPage;

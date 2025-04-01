@@ -1,12 +1,19 @@
 'use client';
 
-import EditStatusesForm from '../../../../forms/editForms/EditStatusesForm';
+import { useTranslation } from 'react-i18next';
+import EditStatusForm from '../../../../forms/editForms/EditStatussForm';
+import PageSection from '../../../../components/Lists/PageListSection';
+import ProtectedPage from '../../../../components/Protected/ProtectedPage';
 
 const EditStatusPage = () => {
+  const { t } = useTranslation('tables');
+
   return (
-    <div>
-      <EditStatusesForm />
-    </div>
+    <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
+      <PageSection title={t('statuses.pageTitle')}>
+        <EditStatusForm />
+      </PageSection>
+    </ProtectedPage>
   );
 };
 

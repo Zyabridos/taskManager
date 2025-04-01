@@ -1,16 +1,20 @@
 'use client';
 
-import CreateLabelForm from '../../../forms/createForms/CreateLabelForm';
 import { useTranslation } from 'react-i18next';
+import CreateLabelForm from '../../../forms/createForms/CreateLabelForm';
+import PageSection from '../../../components/Lists/PageListSection';
+import ProtectedPage from '../../../components/Protected/ProtectedPage';
 
-const newLabelPage = () => {
-  const { t } = useTranslation('labels');
+const LabelsListPage = () => {
+  const { t } = useTranslation('tables');
+
   return (
-    <div>
-      <h1 className="px-20 pt-10 text-5xl font-semibold text-slate-800">{t('form.createTitle')}</h1>
-      <CreateLabelForm />
-    </div>
+    <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
+      <PageSection title={t('labels.pageTitle')}>
+        <CreateLabelForm />
+      </PageSection>
+    </ProtectedPage>
   );
 };
 
-export default newLabelPage;
+export default LabelsListPage;

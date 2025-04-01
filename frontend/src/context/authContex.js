@@ -20,6 +20,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [serverError, setServerError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { showToast } = useEntityToast();
 
@@ -73,22 +74,23 @@ const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
       removeUserFromStorage();
-      router.push('/login');
     }
   };
 
   useEffect(() => {
     const savedUser = getUserFromStorage();
+
     if (savedUser) {
       setUser(savedUser);
       setIsAuthenticated(true);
+      setIsLoading(false);
     } else {
-      fetchCurrentUser();
+      fetchCurrentUser().finally(() => setIsLoading(false));
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logOut, serverError }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logOut, serverError }}>
       {children}
     </AuthContext.Provider>
   );

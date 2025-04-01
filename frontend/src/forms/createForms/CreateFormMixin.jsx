@@ -4,7 +4,6 @@ import React from 'react';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
-import withAuth from '../../components/Protected/withAuth';
 
 const CreateFormMixin = ({
   initialValues,
@@ -24,7 +23,7 @@ const CreateFormMixin = ({
   });
 
   return (
-    <div className="mx-auto mt-8 w-[90%]">
+    <div className="mx-auto mt-4 w-[100%]">
       <form className="flex rounded bg-white shadow-md" onSubmit={formik.handleSubmit}>
         <div className="flex flex-col gap-4 p-8 md:w-full">
           {fields.map(field => (
@@ -66,4 +65,4 @@ const CreateFormMixin = ({
   );
 };
 
-export default withAuth(CreateFormMixin);
+export default CreateFormMixin;

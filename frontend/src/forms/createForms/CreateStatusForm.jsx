@@ -16,7 +16,7 @@ const CreateStatusPage = () => {
   const handleSubmit = async values => {
     try {
       await statuesApi.create(values);
-      showToast({ type: 'status', action: 'created', titleKey: 'successTitle'});
+      showToast({ type: 'status', action: 'created', titleKey: 'successTitle' });
       router.push(routes.app.statues.list());
     } catch (e) {
       showToast({ type: 'status', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });

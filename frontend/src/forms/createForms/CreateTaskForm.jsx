@@ -81,18 +81,18 @@ const CreateTaskPage = () => {
               id="name"
               type="text"
               placeholder=" "
-              className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
+              className={`peer h-14 w-full rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
                 formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
               }`}
             />
             <label
               htmlFor="name"
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
+              className="absolute top-2 left-3 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
             >
               {tTasks('form.name')}
             </label>
             {formik.touched.name && formik.errors.name && (
-              <p className="text-xs italic text-red-500">{formik.errors.name}</p>
+              <p className="text-xs text-red-500 italic">{formik.errors.name}</p>
             )}
           </div>
 
