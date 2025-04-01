@@ -17,4 +17,4 @@ const UserListPage = () => {
   );
 };
 
-export default LabelsListPage;
+export default UserListPage;

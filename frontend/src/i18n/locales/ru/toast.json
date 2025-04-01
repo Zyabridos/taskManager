@@ -2,10 +2,14 @@
   "successTitle": "Успешно",
   "errorTitle": "Ошибка",
   "registered": {
-    "success": "Вы зарегистрированы"
+    "success": {
+      "user": "Вы зарегистрированы"
+    }
   },
   "loggedIn": {
-    "success": "Вы вошли в систему"
+    "success": {
+      "user": "Вы вошли в систему"
+    }
   },
   "created": {
     "status": "Статус создан",

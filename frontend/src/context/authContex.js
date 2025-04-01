@@ -30,9 +30,10 @@ const AuthProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      setUser(response.data.user);
+      const currentUser = response.data.user;
+      setUser(currentUser);
       setIsAuthenticated(true);
-      saveUserToStorage(response.data.user);
+      saveUserToStorage(currentUser);
     } catch {
       setUser(null);
       setIsAuthenticated(false);
@@ -54,20 +55,31 @@ const AuthProvider = ({ children }) => {
       setServerError(null);
       saveUserToStorage(loggedUser);
 
-      const query = isAfterRegistration ? 'registered' : 'loggedIn';
-      showToast({ type: 'user', action: query, titleKey: 'successTitle' });
+      showToast({
+        type: 'user',
+        action: isAfterRegistration ? 'registered.success' : 'loggedIn.success',
+        titleKey: 'successTitle',
+      });
 
-      router.push(`${routes.app.users.list()}`);
+      router.push(routes.app.users.list());
     } catch (error) {
       setIsAuthenticated(false);
       setServerError('WrongEmailOrPassword');
-      showToast({ type: 'user', action: 'failedLogin', titleKey: 'errorTitle' });
+
+      showToast({
+        type: 'user',
+        action: 'failedLogin',
+        titleKey: 'errorTitle',
+        toastType: 'error',
+      });
     }
   };
 
   const logOut = async () => {
     try {
-      await axios.delete(`${baseURL}${routes.api.session.delete()}`, { withCredentials: true });
+      await axios.delete(`${baseURL}${routes.api.session.delete()}`, {
+        withCredentials: true,
+      });
     } catch (e) {
       console.error(e);
     } finally {
@@ -90,7 +102,16 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logOut, serverError }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        isLoading,
+        login,
+        logOut,
+        serverError,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

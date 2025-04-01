@@ -38,16 +38,16 @@ test.describe('Statuses CRUD visual (UI)', () => {
     await expect(page.locator('text=Test Status')).toBeVisible();
   });
 
-  test('Should delete a specific status', async ({ page }) => {
+    test('Should show error if status name is empty', async ({ page }) => {
     await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
 
-    const row = page.locator('table tbody tr', { hasText: 'Test Status' });
-    await row.getByRole('button', { name: 'Удалить' }).click();
+    await page.getByRole('link', { name: 'Создать статус' }).click();
+    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
 
-    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
+    await page.getByRole('button', { name: 'Создать статус' }).click();
 
-    await expect(page.locator('text=Статус удалён')).toBeVisible();
-    await expect(page.locator('text=Test Status')).not.toBeVisible();
+    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
+    await expect(page.locator('text=Имя обязательно')).toBeVisible();
   });
 
   test('Should edit a specific status', async ({ page }) => {
@@ -58,17 +58,29 @@ test.describe('Statuses CRUD visual (UI)', () => {
 
     await editLink.click();
 
-    await expect(page).toHaveURL(new RegExp(`${routes.app.statuses.edit('').slice(0, -1)}`)); // Проверка на URL /statuses/:id/edit
+    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
 
     const updatedName = 'Updated Test Status';
     const nameInput = page.getByLabel('Наименование');
 
     await nameInput.fill('');
     await nameInput.fill(updatedName);
-    await page.getByRole('button', { name: 'Обновить' }).click();
+    await page.getByRole('button', { name: 'Изменить' }).click();
 
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
     await expect(page.locator('text=Статус обновлён')).toBeVisible();
     await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+  });
+
+  test('Should delete a specific status', async ({ page }) => {
+    await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
+
+    const row = page.locator('table tbody tr', { hasText: 'Test Status' });
+    await row.getByRole('button', { name: 'Удалить' }).click();
+
+    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
+
+    await expect(page.locator('text=Статус удалён')).toBeVisible();
+    await expect(page.locator('text=Test Status')).not.toBeVisible();
   });
 });
