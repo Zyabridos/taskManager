@@ -1,18 +1,18 @@
 import { test, expect } from '@playwright/test';
 import routes from '../src/routes';
+import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 
 test.describe('Statuses CRUD visual (UI)', () => {
   const baseUrl = 'http://localhost:3000';
-  // TODO - stop using hardcore data
   const email = 'example@example.com';
   const password = 'qwerty';
 
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseUrl}/session/new`);
+    await page.goto(`${baseUrl}${routes.app.session.new()}`);
 
     await page.getByLabel('Email').fill(email);
     await page.getByLabel('Пароль').fill(password);
-    await page.getByRole('button', { name: 'Войти' }).click();
+    await clickButtonByName(page, 'Войти');
 
     await expect(page).toHaveURL(`${baseUrl}${routes.app.users.list()}`);
   });
@@ -27,24 +27,24 @@ test.describe('Statuses CRUD visual (UI)', () => {
   test('Should create new status', async ({ page }) => {
     await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
 
-    await page.getByRole('link', { name: 'Создать статус' }).click();
+    await clickLinkByName(page, 'Создать статус');
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
 
     await page.getByLabel('Наименование').fill('Test Status');
-    await page.getByRole('button', { name: 'Создать статус' }).click();
+    await clickButtonByName(page, 'Создать статус');
 
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
     await expect(page.locator('text=Статус создан')).toBeVisible();
     await expect(page.locator('text=Test Status')).toBeVisible();
   });
 
-    test('Should show error if status name is empty', async ({ page }) => {
+  test('Should show error if status name is empty', async ({ page }) => {
     await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
 
-    await page.getByRole('link', { name: 'Создать статус' }).click();
+    await clickLinkByName(page, 'Создать статус');
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
 
-    await page.getByRole('button', { name: 'Создать статус' }).click();
+    await clickButtonByName(page, 'Создать статус');
 
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
     await expect(page.locator('text=Имя обязательно')).toBeVisible();
@@ -57,7 +57,6 @@ test.describe('Statuses CRUD visual (UI)', () => {
     const editLink = row.getByRole('link', { name: 'Изменить' });
 
     await editLink.click();
-
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
 
     const updatedName = 'Updated Test Status';
@@ -65,7 +64,7 @@ test.describe('Statuses CRUD visual (UI)', () => {
 
     await nameInput.fill('');
     await nameInput.fill(updatedName);
-    await page.getByRole('button', { name: 'Изменить' }).click();
+    await clickButtonByName(page, 'Изменить');
 
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
     await expect(page.locator('text=Статус обновлён')).toBeVisible();
@@ -76,10 +75,10 @@ test.describe('Statuses CRUD visual (UI)', () => {
     await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
 
     const row = page.locator('table tbody tr', { hasText: 'Test Status' });
-    await row.getByRole('button', { name: 'Удалить' }).click();
+    const deleteButton = row.getByRole('button', { name: 'Удалить' });
+    await deleteButton.click();
 
     await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
-
     await expect(page.locator('text=Статус удалён')).toBeVisible();
     await expect(page.locator('text=Test Status')).not.toBeVisible();
   });
