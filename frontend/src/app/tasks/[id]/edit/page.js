@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import EditTaskForm from '../../../../forms/editForms/EditTasksForm';
+import EditTaskForm from '../../../../forms/editForms/EditTaskForm';
 import PageSection from '../../../../components/Lists/PageListSection';
 import ProtectedPage from '../../../../components/Protected/ProtectedPage';
 

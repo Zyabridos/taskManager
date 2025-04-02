@@ -32,7 +32,7 @@ export const tasksApi = {
   update: async (id, task) => {
     const payload = {
       ...task,
-      labels: task.labels.map(id => ({ id: Number(id) })),
+      labels: task.labels.map(Number),
     };
     const response = await axiosInstance.patch(`${base}/${id}`, payload);
     return response.data;

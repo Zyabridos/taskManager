@@ -11,6 +11,7 @@ import SelectField from '../UI/SelectField';
 import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 import { useParams } from 'next/navigation';
+import useEntityToast from '@/hooks/useEntityToast';
 
 const EditTaskForm = () => {
   const params = useParams();
@@ -19,6 +20,7 @@ const EditTaskForm = () => {
   const { t: tTasks } = useTranslation('tasks');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
+  const { showToast } = useEntityToast();
 
   const [task, setTask] = useState(null);
   const [meta, setMeta] = useState({
@@ -38,10 +40,10 @@ const EditTaskForm = () => {
         console.log('metaData', metaData);
         setTask(taskData);
         setMeta(metaData);
-        router.push(`${routes.app.tasks.list()}?updated=task`);
+        showToast({ type: 'task', action: 'updated', titleKey: 'successTitle' });
       } catch (e) {
         console.error(e);
-        router.push(`${routes.app.tasks.list()}?failedUpdate=task`);
+        showToast({ type: 'task', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
       }
     };
     fetchData();

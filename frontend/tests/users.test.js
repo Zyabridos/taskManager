@@ -13,7 +13,7 @@ test.describe('users CRUD visual (UI)', () => {
   const updatedFirstName = faker.person.firstName();
   const updatedLastName = faker.person.fullName();
   const updatedEmail = faker.internet.email();
-  const updatedPassword = faker.internet.password(8)
+  const updatedPassword = faker.internet.password(8);
 
   test('Should create new user from home page with random email', async ({ page }) => {
     await page.goto(baseUrl);
@@ -33,7 +33,7 @@ test.describe('users CRUD visual (UI)', () => {
   test('Should show list of users from backend', async ({ page }) => {
     await page.goto(`${baseUrl}${routes.app.session.new()}`);
 
-    await LogInExistingUser(page, email)
+    await LogInExistingUser(page, email);
 
     await page.goto(`${baseUrl}${routes.app.users.list()}`);
 
@@ -46,13 +46,13 @@ test.describe('users CRUD visual (UI)', () => {
 
     // TODO: evnt users can edit only themselvs, so evnt
     // make split this test in 2 - negative and positive case
-    await LogInExistingUser(page, email)
-    
+    await LogInExistingUser(page, email);
+
     await page.goto(`${baseUrl}${routes.app.users.list()}`);
 
     const row = page.locator('table tbody tr', { hasText: `${firstName} ${lastName}` });
     const editLink = row.getByRole('link', { name: 'Изменить' });
-    console.log(editLink)
+    console.log(editLink);
 
     await editLink.click();
 
@@ -81,7 +81,7 @@ test.describe('users CRUD visual (UI)', () => {
   //   await page.goto(`${baseUrl}${routes.app.session.new()}`);
 
   //   await LogInExistingUser(page, email)
-    
+
   //   await page.goto(`${baseUrl}${routes.app.users.list()}`);
 
   //   const row = page.locator('table tbody tr', { hasText: `${updatedFirstName} ${updatedLastName}` });
