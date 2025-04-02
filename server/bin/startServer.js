@@ -6,6 +6,9 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
+    console.log('Starting server...');
+    console.log('process.env.PORT:', process.env.PORT);
+    console.log('Using PORT:', PORT);
     const app = await buildApp();
     app.log.info('All plugins initialized successfully.');
     await app.listen({ port: PORT, host: '0.0.0.0' });
