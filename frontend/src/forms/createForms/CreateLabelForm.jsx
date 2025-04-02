@@ -19,7 +19,10 @@ const CreateLabelPage = () => {
       showToast({ type: 'label', action: 'created', titleKey: 'successTitle' });
       router.push(routes.app.labels.list());
     } catch (e) {
-      showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
+      if (e.response?.status === 422) {
+        showToast({type: 'label', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',
+});
+      } else showToast({ type: 'label', action: 'failedCreate', titleKey: 'errorTitle', toastType: 'error' });
       console.error(e);
     }
   };

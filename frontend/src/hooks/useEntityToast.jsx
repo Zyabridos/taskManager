@@ -5,22 +5,24 @@ import { toast } from 'sonner';
 import CustomToast from '@/components/UI/CustomToast';
 
 /**
- * Displays a custom toast message for a given entity type and action.
+ * Displays a custom toast with translations and visual style.
  *
- * @param type - The entity type (e.g. 'status', 'user', 'label')
- * @param action - The action performed (e.g. 'created', 'updated', 'deleted', 'failedCreate', 'failedDelete)
- * @param titleKey - The translation key for the toast title (e.g. 'successTitle', 'errorTitle')
+ * @param {Object} params - Toast config.
+ * @param {string} params.type - Entity type: 'user' | 'label' | 'task' | etc.
+ * @param {string} params.action - Action key: 'created' | 'updated' | 'alreadyExists' | etc.
+ * @param {string} params.titleKey - Translation key for title: 'successTitle' | 'errorTitle'
+ * @param {'success' | 'error'} [params.toastType='success'] - Visual toast type (color/icon)
  */
-
 const useEntityToast = () => {
   const { t: tToast } = useTranslation('toast');
 
-  const showToast = ({ type, action, titleKey }) => {
+  const showToast = ({ type, action, titleKey, toastType = 'success' }) => {
     toast.custom(tId => (
       <CustomToast
         title={tToast(titleKey)}
         message={tToast(`${action}.${type}`)}
         onClick={() => toast.dismiss(tId)}
+        toastType={toastType}
       />
     ));
   };

@@ -16,17 +16,14 @@ const CustomToast = ({
   title = 'Success!',
   message = 'Your action has been successfully completed',
   onClick,
-  type = 'success',
+  toastType = 'success', // ← default = success
 }) => {
-  const isError = type === 'error';
+  const isError = toastType === 'error';
 
   const containerClass = isError ? 'border-red-300 bg-red-100' : 'border-green-300 bg-green-100';
-
   const iconClass = isError ? 'text-red-600' : 'text-green-600';
-
   const titleClass = isError ? 'text-red-700' : 'text-green-700';
   const messageClass = isError ? 'text-red-800' : 'text-green-800';
-
   const Icon = isError ? XCircle : CheckCircle;
 
   return (

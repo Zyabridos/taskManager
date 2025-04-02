@@ -3,7 +3,7 @@ import routes from '../src/routes';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 import { LogInExistingUser } from './helpers/session.js';
 
-test.describe('labels CRUD visual (UI)', () => {
+test.describe('statuses CRUD visual (UI)', () => {
   const baseUrl = 'http://localhost:3000';
 
   test.beforeEach(async ({ page }) => {

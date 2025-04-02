@@ -43,6 +43,8 @@ test.describe('labels CRUD visual (UI)', () => {
     await expect(page.locator('text=Имя обязательно')).toBeVisible();
   });
 
+  // TODO: Should show error if label name already exists
+
   test('Should edit a specific label', async ({ page }) => {
     await page.goto(`${baseUrl}${routes.app.labels.list()}`);
 

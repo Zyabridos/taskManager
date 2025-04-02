@@ -6,7 +6,7 @@ test.describe('Auth tests', () => {
   test('Sign in existing user', async ({ page }) => {
     await page.goto(`${baseUrl}${routes.app.session.new()}`);
 
-    await page.getByLabel('Email').fill('testuser@example.com');
+    await page.getByLabel('Email').fill('example@example.com');
     await page.getByLabel('Пароль').fill('qwerty');
 
     await page.getByRole('button', { name: 'Войти' }).click();

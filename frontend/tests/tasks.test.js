@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import routes from '../src/routes';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 import { LogInExistingUser } from './helpers/session.js';
-import faker from 'faker';
+import { faker } from '@faker-js/faker';
 
 test.describe('tasks CRUD visual (UI)', () => {
   const baseUrl = 'http://localhost:3000';
