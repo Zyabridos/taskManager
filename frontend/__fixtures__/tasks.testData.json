@@ -1,0 +1,32 @@
+{
+  "user": {
+    "email": "example@example.com"
+  },
+  "task": {
+    "name": "New test task",
+    "updated": "Updated test Task",
+    "status": "New status"
+  },
+  "labels": {
+    "name": "Наименование",
+    "status": "Статус"
+  },
+  "buttons": {
+    "create": "Создать",
+    "edit": "Изменить",
+    "delete": "Удалить"
+  },
+  "messages": {
+    "created": "Задача создана",
+    "updated": "Задача обновлена",
+    "deleted": "Задача удалена"
+  },
+  "errors": {
+    "nameRequired": "Имя обязательно",
+    "statusRequired": "Статус обязателен"
+  },
+  "url": {
+    "create": "http://localhost:3000/tasks/new",
+    "list": "http://localhost:3000/tasks"
+  }
+}

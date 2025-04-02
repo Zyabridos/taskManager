@@ -1,81 +1,86 @@
 import { test, expect } from '@playwright/test';
-import routes from '../src/routes';
-import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import readFixture from './helpers/readFixture.js';
 import { LogInExistingUser } from './helpers/session.js';
-import { faker } from '@faker-js/faker';
+import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 
-test.describe('tasks CRUD visual (UI)', () => {
-  const baseUrl = 'http://localhost:3000';
+let taskData;
+let statusData;
 
+test.beforeAll(async () => {
+  taskData = await readFixture('tasks.testData.json');
+  statusData = await readFixture('statuses.testData.json');
+});
+
+test.describe('Tasks CRUD visual (UI)', () => {
   test.beforeEach(async ({ page }) => {
-    await LogInExistingUser(page, 'example@example.com');
+    await LogInExistingUser(page, taskData.user.email);
+
+    await page.goto(statusData.url.list);
+    await clickLinkByName(page, statusData.buttons.create);
+    await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
+    await clickButtonByName(page, statusData.buttons.create);
   });
 
-  test('Should show list of tasks from backend', async ({ page }) => {
-    await page.goto(`${baseUrl}${routes.app.tasks.list()}`);
+  test('Should create new task with required fields', async ({ page }) => {
+    await page.goto(taskData.url.create);
 
-    const rows = page.locator('table tbody tr');
-    await expect(rows).not.toHaveCount(0);
+    await page.getByLabel(taskData.labels.name).fill(taskData.task.name);
+    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
+
+    await clickButtonByName(page, taskData.buttons.create);
+
+    await expect(page).toHaveURL(taskData.url.list);
+    await expect(page.locator(`text=${taskData.messages.created}`)).toBeVisible();
+    await expect(page.locator(`text=${taskData.task.name}`)).toBeVisible();
   });
 
-  test('Should create new task', async ({ page }) => {
-    await page.goto(`${baseUrl}${routes.app.task.list()}`);
+  test('Should show validation errors if required fields - name and status - are empty', async ({
+    page,
+  }) => {
+    await page.goto(taskData.url.create);
 
-    await clickLinkByName(page, 'Создать задачу');
-    await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
+    await clickButtonByName(page, taskData.buttons.create);
 
-    await page.getByLabel('Наименование').fill('Test Task');
-    await page.getByRole('select').fill('Test Task');
-    await page.getByLabel('Наименование').fill('Test Task');
-    await page.getByLabel('Наименование').fill('Test Task');
-    await page.getByLabel('Наименование').fill('Test Task');
-    await clickButtonByName(page, 'Создать задачу');
+    await expect(page).toHaveURL(taskData.url.create);
 
-    await expect(page).toHaveURL(`${baseUrl}${routes.app.tasks.list()}`);
-    await expect(page.locator('text=Задача создана')).toBeVisible();
-    await expect(page.locator('text=Test Task')).toBeVisible();
+    await expect(page.locator(`text=${taskData.errors.nameRequired}`)).toBeVisible();
+    await expect(page.locator(`text=${taskData.errors.statusRequired}`)).toBeVisible();
   });
 
-  // test('Should show error if status name is empty', async ({ page }) => {
-  //   await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
+  test('Should update a specific task', async ({ page }) => {
+    await page.goto(taskData.url.list);
 
-  //   await clickLinkByName(page, 'Создать статус');
-  //   await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
+    const taskRow = page.locator('table tbody tr', { hasText: taskData.task.name });
+    await expect(taskRow).toBeVisible();
 
-  //   await clickButtonByName(page, 'Создать статус');
+    const editLink = taskRow.getByRole('link', { name: taskData.buttons.edit });
+    await editLink.click();
 
-  //   await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.create()}`);
-  //   await expect(page.locator('text=Имя обязательно')).toBeVisible();
-  // });
+    const updatedName = taskData.task.updated;
+    await page.getByLabel(taskData.labels.name).fill(updatedName);
 
-  // test('Should edit a specific status', async ({ page }) => {
-  //   await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
+    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
 
-  //   const row = page.locator('table tbody tr', { hasText: 'Test Status' });
-  //   const editLink = row.getByRole('link', { name: 'Изменить' });
+    await clickButtonByName(page, taskData.buttons.edit);
 
-  //   await editLink.click();
+    await expect(page).toHaveURL(taskData.url.list);
+    await expect(page.locator(`text=${taskData.messages.updated}`)).toBeVisible();
+    await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+  });
 
-  //   const updatedName = 'Updated Test Status';
-  //   const nameInput = page.getByLabel('Наименование');
+  test('Should delete a specific task', async ({ page }) => {
+    await page.goto(taskData.url.list);
 
-  //   await nameInput.fill(updatedName);
-  //   await clickButtonByName(page, 'Изменить');
+    const row = page.locator('table tbody tr', { hasText: taskData.task.updated });
 
-  //   await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
-  //   await expect(page.locator('text=Статус обновлён')).toBeVisible();
-  //   await expect(page.locator(`text=${updatedName}`)).toBeVisible();
-  // });
+    await expect(row).toBeVisible();
 
-  // test('Should delete a specific status', async ({ page }) => {
-  //   await page.goto(`${baseUrl}${routes.app.statuses.list()}`);
+    const deleteButton = row.getByRole('button', { name: taskData.buttons.delete });
 
-  //   const row = page.locator('table tbody tr', { hasText: 'Test Status' });
-  //   const deleteButton = row.getByRole('button', { name: 'Удалить' });
-  //   await deleteButton.click();
+    await deleteButton.click();
 
-  //   await expect(page).toHaveURL(`${baseUrl}${routes.app.statuses.list()}`);
-  //   await expect(page.locator('text=Статус удалён')).toBeVisible();
-  //   await expect(page.locator('text=Test Status')).not.toBeVisible();
-  // });
+    await expect(page).toHaveURL(taskData.url.list);
+    await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
+    await expect(page.locator(`text=${taskData.task.name}`)).not.toBeVisible();
+  });
 });

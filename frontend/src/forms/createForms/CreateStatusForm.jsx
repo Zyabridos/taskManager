@@ -20,10 +20,19 @@ const CreateStatusPage = () => {
       router.push(routes.app.statuses.list());
     } catch (e) {
       if (e.response?.status === 422) {
-        showToast({type: 'status', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',
-});
-      } else 
-      showToast({ type: 'status', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
+        showToast({
+          type: 'status',
+          action: 'alreadyExists',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
+      } else
+        showToast({
+          type: 'status',
+          action: 'failedDelete',
+          titleKey: 'errorTitle',
+          type: 'error',
+        });
       console.error(e);
     }
   };

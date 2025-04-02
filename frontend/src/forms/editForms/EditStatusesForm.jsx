@@ -42,10 +42,19 @@ const EditStatusForm = () => {
       router.push(routes.app.statuses.list());
     } catch (e) {
       if (e.response?.status === 422) {
-        showToast({type: 'status', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',
-});
-      } else 
-      showToast({ type: 'status', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
+        showToast({
+          type: 'status',
+          action: 'alreadyExists',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
+      } else
+        showToast({
+          type: 'status',
+          action: 'failedUpdate',
+          titleKey: 'errorTitle',
+          type: 'error',
+        });
       console.error(e);
     }
   };
@@ -78,7 +87,7 @@ const EditStatusForm = () => {
           />
           <FloatingLabel htmlFor={field} text={tStatuses(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
           )}
         </div>
       ))}

@@ -18,7 +18,7 @@ const TaskFilter = ({ statuses, executors, labels, onFilter, initialValues }) =>
       ...initialValues,
     },
     enableReinitialize: true, // follow changes in initialValues
-    onSubmit: (values) => {
+    onSubmit: values => {
       onFilter(values);
     },
   });

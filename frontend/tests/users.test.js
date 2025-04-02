@@ -91,7 +91,9 @@ test.describe('users CRUD visual (UI)', () => {
     await LogInExistingUser(page, email);
 
     await page.goto(userData.url.usersList);
-    const row = page.locator('table tbody tr', { hasText: `${updatedFirstName} ${updatedLastName}` });
+    const row = page.locator('table tbody tr', {
+      hasText: `${updatedFirstName} ${updatedLastName}`,
+    });
     const deleteBtn = row.getByRole('button', { name: userData.buttons.delete });
     await deleteBtn.click();
 
