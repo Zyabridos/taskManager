@@ -83,7 +83,7 @@ describe('test tasks filtering by label, status, and executor (REST API)', () =>
     ],
   ])('should return only tasks matching filters: %p', async (paramSet) => {
     const queryParams = Object.fromEntries(
-      Object.entries(paramSet).map(([key, getValue]) => [key, getValue().toString()])
+      Object.entries(paramSet).map(([key, getValue]) => [key, getValue().toString()]),
     );
 
     const taskNames = await getFilteredTaskNames(queryParams);

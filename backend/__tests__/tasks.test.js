@@ -121,7 +121,6 @@ describe('test tasks CRUD (REST API)', () => {
   //   expect(deleted).toBeUndefined();
   // });
 
-
   afterEach(async () => {
     await knex('task_labels').del();
     await knex('tasks').del();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DeleteButton, HrefButton } from '../Buttons';
 import { format } from 'date-fns';
@@ -9,6 +9,9 @@ import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteTaskThunk, fetchTasks } from '../../store/slices/tasksSlice';
 import useEntityToast from '../../hooks/useEntityToast';
+import TaskFilter from '../TaskFilter';
+import { tasksApi } from '@/api/tasksApi';
+import { useRouter, usePathname } from 'next/navigation';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -16,19 +19,77 @@ const TasksList = () => {
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { t: tTasks } = useTranslation('tasks');
-
   const { showToast } = useEntityToast();
 
+  const [meta, setMeta] = useState({
+    statuses: [],
+    executors: [],
+    labels: [],
+  });
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const parseQuery = () => {
+    const urlSearch = new URLSearchParams(window.location.search);
+    return {
+      ...(urlSearch.get('status') && { status: Number(urlSearch.get('status')) }),
+      ...(urlSearch.get('executor') && { executor: Number(urlSearch.get('executor')) }),
+      ...(urlSearch.get('label') && { label: Number(urlSearch.get('label')) }),
+      ...(urlSearch.get('isCreatorUser') && {
+        isCreatorUser: urlSearch.get('isCreatorUser') === 'true',
+      }),
+    };
+  };
+
+  const [query, setQuery] = useState(parseQuery());
+
   useEffect(() => {
-    dispatch(fetchTasks());
-  }, [dispatch]);
+    dispatch(fetchTasks(query));
+  }, [dispatch, query]);
+
+  useEffect(() => {
+    const loadMeta = async () => {
+      try {
+        const data = await tasksApi.getMeta();
+        setMeta(data);
+      } catch (e) {
+        console.error('Ошибка загрузки meta:', e);
+        showToast({
+          type: 'task',
+          action: 'failedLoadMeta',
+          titleKey: 'errorTitle',
+          type: 'error',
+        });
+      }
+    };
+    loadMeta();
+  }, []);
+
+  const handleFilter = values => {
+    const params = new URLSearchParams();
+
+    if (values.status) params.set('status', values.status);
+    if (values.executor) params.set('executor', values.executor);
+    if (values.label) params.set('label', values.label);
+    if (values.isCreatorUser) params.set('isCreatorUser', 'true');
+
+    const queryString = params.toString();
+    router.replace(`${pathname}?${queryString}`);
+    setQuery(parseQuery()); // обновим query вручную после изменения URL
+  };
 
   const handleDelete = async id => {
     try {
       await dispatch(deleteTaskThunk(id)).unwrap();
       showToast({ type: 'task', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showToast({ type: 'task', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
+      showToast({
+        type: 'task',
+        action: 'failedDelete',
+        titleKey: 'errorTitle',
+        type: 'error',
+      });
       console.error(e);
     }
   };
@@ -46,6 +107,15 @@ const TasksList = () => {
       <div className="pb-2">
         <HrefButton href={routes.app.tasks.create()} buttonText={tTasks('form.createTitle')} />
       </div>
+
+      <TaskFilter
+        statuses={meta.statuses}
+        executors={meta.executors}
+        labels={meta.labels}
+        initialValues={query}
+        onFilter={handleFilter}
+      />
+
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>

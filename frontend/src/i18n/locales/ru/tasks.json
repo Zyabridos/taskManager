@@ -9,5 +9,9 @@
     "description": "Описание",
     "executor": "Исполнитель",
     "labels": "Метка"
+  },
+  "filter": {
+    "show": "Показать",
+    "onlyMyTasks": "Только мои задачи"
   }
 }

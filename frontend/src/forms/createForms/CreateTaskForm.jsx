@@ -10,12 +10,15 @@ import { tasksApi } from '../../api/tasksApi';
 import SelectField from '../UI/SelectField';
 import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
+import useEntityToast from '../../hooks/useEntityToast';
 
 const CreateTaskPage = () => {
   const router = useRouter();
   const { t: tTasks } = useTranslation('tasks');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
+
+  const { showToast } = useEntityToast();
 
   const [meta, setMeta] = useState({
     statuses: [],
@@ -62,10 +65,11 @@ const CreateTaskPage = () => {
 
         console.log('Submitting to API:', preparedValues);
         await tasksApi.create(preparedValues);
-        router.push(`${routes.app.labels.list()}?created=task`);
+        showToast({ type: 'task', action: 'created', titleKey: 'successTitle' });
+        router.push(routes.app.tasks.list());
       } catch (e) {
         console.error('Submit error:', e);
-        router.push(`${routes.app.labels.list()}?failedDelete=task`);
+        showToast({ type: 'task', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
       }
     },
   });

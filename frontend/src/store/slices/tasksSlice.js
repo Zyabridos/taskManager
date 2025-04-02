@@ -1,8 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { tasksApi } from '../../api/tasksApi';
 
-export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async () => {
-  return await tasksApi.getAll();
+export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (params = {}, thunkAPI) => {
+  try {
+    return await tasksApi.getAll(params);
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e.response?.data?.error || 'Unknown error');
+  }
 });
 
 export const deleteTaskThunk = createAsyncThunk('tasks/deleteTask', async id => {

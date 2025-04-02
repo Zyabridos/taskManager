@@ -28,8 +28,22 @@ const StatusesList = () => {
       await dispatch(deleteStatusThunk(id)).unwrap();
       showToast({ type: 'status', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showToast({ type: 'status', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
-      console.error(e);
+      if (e.response?.status === 422) {
+        showToast({
+          type: 'task',
+          action: 'failedDelete',
+          titleKey: 'errorTitle',
+          message: e.response.data?.message ?? 'Нельзя удалить задачу',
+        });
+      } else {
+        showToast({
+          type: 'status',
+          action: 'failedDelete',
+          titleKey: 'errorTitle',
+          type: 'error',
+        });
+        console.error(e);
+      }
     }
   };
 

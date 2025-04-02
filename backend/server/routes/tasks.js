@@ -137,9 +137,22 @@ export default (app) => {
     .delete('/api/tasks/:id', async (req, reply) => {
       try {
         const { id } = req.params;
-        const task = await app.objection.models.task.query().findById(id);
 
-        if (!task) return reply.code(404).send({ error: 'Task not found' });
+        const task = await app.objection.models.task
+          .query()
+          .withGraphFetched('status')
+          .findById(id);
+
+        if (!task) {
+          return reply.code(404).send({ error: 'Task not found' });
+        }
+
+        if (task.statusId) {
+          return reply.code(422).send({
+            error: 'Deletion forbidden',
+            message: 'You can not delete a status that has an assignet task',
+          });
+        }
 
         await task.$query().delete();
         reply.send({ success: true });

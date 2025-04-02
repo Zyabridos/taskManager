@@ -3,8 +3,10 @@ import axiosInstance from './axiosInstance';
 const base = `${process.env.NEXT_PUBLIC_API_BASE}/api/tasks`;
 
 export const tasksApi = {
-  getAll: async () => {
-    const response = await axiosInstance.get(base);
+  getAll: async (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    console.log('query params: ', query);
+    const response = await axiosInstance.get(`${base}?${query}`);
     return response.data;
   },
 
