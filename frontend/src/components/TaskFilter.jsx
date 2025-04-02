@@ -17,7 +17,8 @@ const TaskFilter = ({ statuses, executors, labels, onFilter, initialValues }) =>
       isCreatorUser: false,
       ...initialValues,
     },
-    onSubmit: values => {
+    enableReinitialize: true, // follow changes in initialValues
+    onSubmit: (values) => {
       onFilter(values);
     },
   });
@@ -31,6 +32,8 @@ const TaskFilter = ({ statuses, executors, labels, onFilter, initialValues }) =>
             label={tTasks('form.status')}
             options={statuses}
             field={formik.getFieldProps('status')}
+            error={formik.errors.status}
+            touched={formik.touched.status}
           />
 
           <SelectField
@@ -38,6 +41,8 @@ const TaskFilter = ({ statuses, executors, labels, onFilter, initialValues }) =>
             label={tTasks('form.executor')}
             options={executors}
             field={formik.getFieldProps('executor')}
+            error={formik.errors.executor}
+            touched={formik.touched.executor}
           />
 
           <SelectField
@@ -45,6 +50,8 @@ const TaskFilter = ({ statuses, executors, labels, onFilter, initialValues }) =>
             label={tTasks('form.labels')}
             options={labels}
             field={formik.getFieldProps('label')}
+            error={formik.errors.label}
+            touched={formik.touched.label}
           />
         </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DeleteButton, HrefButton } from '../Buttons';
 import { format } from 'date-fns';
@@ -11,7 +11,7 @@ import { deleteTaskThunk, fetchTasks } from '../../store/slices/tasksSlice';
 import useEntityToast from '../../hooks/useEntityToast';
 import TaskFilter from '../TaskFilter';
 import { tasksApi } from '@/api/tasksApi';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -27,10 +27,11 @@ const TasksList = () => {
     labels: [],
   });
 
-  const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const parseQuery = () => {
+  const parseQuery = useCallback(() => {
     const urlSearch = new URLSearchParams(window.location.search);
     return {
       ...(urlSearch.get('status') && { status: Number(urlSearch.get('status')) }),
@@ -40,13 +41,18 @@ const TasksList = () => {
         isCreatorUser: urlSearch.get('isCreatorUser') === 'true',
       }),
     };
-  };
+  }, []);
 
-  const [query, setQuery] = useState(parseQuery());
+  const [query, setQuery] = useState(parseQuery);
 
   useEffect(() => {
     dispatch(fetchTasks(query));
   }, [dispatch, query]);
+
+  useEffect(() => {
+    const newQuery = parseQuery();
+    setQuery(newQuery);
+  }, [searchParams, parseQuery]);
 
   useEffect(() => {
     const loadMeta = async () => {
@@ -76,7 +82,7 @@ const TasksList = () => {
 
     const queryString = params.toString();
     router.replace(`${pathname}?${queryString}`);
-    setQuery(parseQuery()); // обновим query вручную после изменения URL
+    setQuery({ ...values });
   };
 
   const handleDelete = async id => {
@@ -119,22 +125,22 @@ const TasksList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('common.columns.id')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('tasks.columns.name')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('tasks.columns.status')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('tasks.columns.executor')}
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
