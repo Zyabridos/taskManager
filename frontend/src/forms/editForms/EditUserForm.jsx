@@ -46,6 +46,10 @@ const EditUserForm = () => {
       showToast({ type: 'user', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.users.list());
     } catch (e) {
+      if (e.response?.status === 422) {
+        showToast({type: 'user', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',
+});
+      } else {
       showToast({ type: 'user', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }

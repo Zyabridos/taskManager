@@ -1,0 +1,23 @@
+{
+  "labels": {
+    "email": "Email",
+    "password": "Пароль"
+  },
+  "buttons": {
+    "signIn": "Войти",
+    "signOut": "Выход"
+  },
+  "messages": {
+    "signedIn": "Вы вошли в систему",
+    "signedOut": "Вы вышли из системы"
+  },
+  "user": {
+    "email": "example@example.com",
+    "password": "qwerty"
+  },
+  "url": {
+    "root": "http://localhost:3000",
+    "signIn": "http://localhost:3000/session/new",
+    "usersList": "http://localhost:3000/users"
+  }
+}

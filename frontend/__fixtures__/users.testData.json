@@ -1,0 +1,33 @@
+{
+  "labels": {
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "email": "Email",
+    "password": "Пароль"
+  },
+  "buttons": {
+    "signUp": "Войти",
+    "edit": "Изменить",
+    "delete": "Удалить"
+  },
+  "links": {
+    "signUp": "Регистрация"
+  },
+  "messages": {
+    "signedUp": "Вы зарегистрированы",
+    "updated": "Пользователь обновлён",
+    "deleted": "Пользователь удалён"
+  },
+  "errors": {
+    "emailExists": "Пользователь с таким email уже существует"
+  },
+  "testUser": {
+    "password": "qwerty"
+  },
+  "url": {
+    "root": "http://localhost:3000",
+    "signUp": "http://localhost:3000/users/new",
+    "signIn": "http://localhost:3000/session/new",
+    "usersList": "http://localhost:3000/users"
+  }
+}

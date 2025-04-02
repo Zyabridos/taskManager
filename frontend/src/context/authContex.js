@@ -63,6 +63,9 @@ const AuthProvider = ({ children }) => {
 
       router.push(routes.app.users.list());
     } catch (error) {
+      if (error.response?.status === 422) {
+        showToast({type: 'user', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',})
+      }
       setIsAuthenticated(false);
       setServerError('WrongEmailOrPassword');
 

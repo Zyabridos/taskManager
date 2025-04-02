@@ -1,0 +1,30 @@
+{
+  "labels": {
+    "name": "Наименование"
+  },
+  "buttons": {
+    "create": "Создать статус",
+    "edit": "Изменить",
+    "delete": "Удалить"
+  },
+  "messages": {
+    "created": "Статус создан",
+    "updated": "Статус обновлён",
+    "deleted": "Статус удалён"
+  },
+  "errors": {
+    "validation": {
+      "required": "Имя обязательно",
+      "duplicate": "Статус с таким названием уже существует"
+    }
+  },
+  "statuses": {
+    "new": "Test Status",
+    "updated": "Updated Test Status"
+  },
+  "url": {
+    "list": "http://localhost:3000/statuses",
+    "new": "http://localhost:3000/statuses/new",
+    "editPattern": "http://localhost:3000/statuses/:id/edit"
+  }
+}

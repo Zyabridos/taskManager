@@ -1,23 +1,36 @@
 import { test, expect } from '@playwright/test';
-import routes from '../src/routes';
+import readFixture from './helpers/readFixture.js';
 
-test.describe('Auth tests', () => {
-  const baseUrl = 'http://localhost:3000';
+let sessionData;
+
+test.beforeAll(async () => {
+  sessionData = await readFixture('session.testData.json');
+});
+
+test.describe('Auth tests (UI)', () => {
   test('Sign in existing user', async ({ page }) => {
-    await page.goto(`${baseUrl}${routes.app.session.new()}`);
+    await page.goto(sessionData.url.signIn);
 
-    await page.getByLabel('Email').fill('example@example.com');
-    await page.getByLabel('Пароль').fill('qwerty');
+    await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
+    await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
 
-    await page.getByRole('button', { name: 'Войти' }).click();
+    await page.getByRole('button', { name: sessionData.buttons.signIn }).click();
 
-    await expect(page).toHaveURL(`${baseUrl}/users`);
-    await expect(page.locator('text=Вы вошли в систему')).toBeVisible();
+    await expect(page).toHaveURL(sessionData.url.usersList);
+    await expect(page.locator(`text=${sessionData.messages.signedIn}`)).toBeVisible();
   });
 
-  // TODO: Add log out test
+  test('Sign out after login', async ({ page }) => {
+    await page.goto(sessionData.url.signIn);
 
-  // TODO: Add test on checking errors (sign in and sign out)
+    await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
+    await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
+    await page.getByRole('button', { name: sessionData.buttons.signIn }).click();
+    await expect(page).toHaveURL(sessionData.url.usersList);
 
-  // TODO: Add test on checking of the err 422 on sigm in
+    await page.getByRole('link', { name: sessionData.buttons.signOut }).click();
+
+    await expect(page).toHaveURL(sessionData.url.root);
+    await expect(page.locator(`text=${sessionData.messages.signedOut}`)).toBeVisible();
+  });
 });

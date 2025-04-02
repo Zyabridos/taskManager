@@ -43,6 +43,10 @@ const EditLabelForm = () => {
       showToast({ type: 'label', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.labels.list());
     } catch (e) {
+      if (e.response?.status === 422) {
+        showToast({type: 'label', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',
+});
+      } else 
       showToast({ type: 'label', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
       console.error(e);
     }
@@ -77,7 +81,7 @@ const EditLabelForm = () => {
         />
         <FloatingLabel htmlFor="name" text={tLabels('form.name')} />
         {formik.touched.name && formik.errors.name && (
-          <p className="mt-1 text-xs text-red-500 italic">{formik.errors.name}</p>
+          <p className="mt-1 text-xs italic text-red-500">{formik.errors.name}</p>
         )}
       </div>
     </EditFormWrapper>
