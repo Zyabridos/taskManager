@@ -1,5 +1,4 @@
 include ../mixins/forms.pug
-include ../mixins/changeLanguage.pug
 
 doctype html
 html(lang="en")
@@ -30,13 +29,11 @@ html(lang="en")
                 a.nav-link(href="/labels")= t('layouts.application.labels')
               li.nav-item
                 +buttonTo("/session", 'delete')(class="btn nav-link" value=t('layouts.application.signOut'))
-              +changeLanguage()
             else
               li.nav-item
                 a.nav-link(href=app.reverse('newSession'))= t('layouts.application.signIn')
               li.nav-item
                 a.nav-link(href=app.reverse('newUser'))= t('layouts.application.signUp')
-              +changeLanguage()
 
     .container.wrapper.flex-grow-1
       each messages, type in reply.flash() || []
