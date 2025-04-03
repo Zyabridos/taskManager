@@ -59,7 +59,7 @@ To install project dependencies, run:
 make install
 ```
 
-This will run `npm ci` to install dependencies.
+This will run `npm install` to install dependencies.
 
 ## Building the Project
 
