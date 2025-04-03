@@ -5,10 +5,17 @@ export const fetchStatuses = createAsyncThunk('statuses/fetchStatuses', async ()
   return await statusesApi.getAll();
 });
 
-export const deleteStatusThunk = createAsyncThunk('statuses/deleteStatus', async id => {
-  await statusesApi.remove(id);
-  return id;
-});
+export const deleteStatusThunk = createAsyncThunk(
+  'statuses/delete',
+  async (id, { rejectWithMessage }) => {
+    try {
+      await statusesApi.remove(id);
+      return id;
+    } catch (err) {
+      return rejectWithMessage(err);
+    }
+  }
+);
 
 const statusesSlice = createSlice({
   name: 'statuses',

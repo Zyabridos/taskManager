@@ -26,29 +26,42 @@ const StatusesList = () => {
 
   const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
 
-  const handleDelete = async id => {
-    try {
-      await dispatch(deleteStatusThunk(id)).unwrap();
-      showToast({ type: 'status', action: 'deleted', titleKey: 'successTitle' });
-    } catch (e) {
-      if (e.response?.status === 422) {
-        showToast({
-          type: 'task',
-          action: 'failedDelete',
-          titleKey: 'errorTitle',
-          message: e.response.data?.message ?? 'Нельзя удалить задачу',
-        });
-      } else {
-        showToast({
-          type: 'status',
-          action: 'failedDelete',
-          titleKey: 'errorTitle',
-          type: 'error',
-        });
-        console.error(e);
-      }
+  const handleDelete = async (id) => {
+  try {
+    await dispatch(deleteStatusThunk(id)).unwrap();
+    showToast({
+      type: 'status',
+      action: 'deleted',
+      titleKey: 'successTitle',
+    });
+  } catch (e) {
+    const response = e?.response;
+
+    const serverMessage = response?.data?.error;
+    const isStatusInUse =
+      typeof serverMessage === 'string' && (serverMessage.includes('in use'));
+
+    if (response?.status === 422 && isStatusInUse) {
+      showToast({
+        type: 'status',
+        action: 'hasTasks',
+        titleKey: 'errorTitle',
+        messageKey: 'hasTasks.status',
+        toastType: 'error',
+      });
+    } else {
+      showToast({
+        type: 'status',
+        action: 'failedDelete',
+        titleKey: 'errorTitle',
+        messageKey: 'failedDelete.status',
+        toastType: 'error',
+      });
     }
-  };
+  }
+};
+
+
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
   if (status === 'failed') {
@@ -91,7 +104,7 @@ const StatusesList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

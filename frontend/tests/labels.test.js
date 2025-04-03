@@ -11,7 +11,7 @@ test.beforeAll(async () => {
 
 test.describe('labels CRUD visual (UI)', () => {
   test.beforeEach(async ({ page }) => {
-    await LogInExistingUser(page, 'example@example.com');
+    await LogInExistingUser(page, labelData.user.email);
   });
 
   test('Should show list of labels from backend', async ({ page }) => {

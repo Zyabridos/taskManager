@@ -1,4 +1,7 @@
 {
+  "user": {
+    "email": "example@example.com"
+  },
   "labels": {
     "name": "Наименование"
   },
