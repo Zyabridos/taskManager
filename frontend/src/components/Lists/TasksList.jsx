@@ -12,6 +12,7 @@ import useEntityToast from '../../hooks/useEntityToast';
 import TaskFilter from '../TaskFilter';
 import { tasksApi } from '@/api/tasksApi';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -149,13 +150,17 @@ const TasksList = () => {
           {list.map(task => (
             <tr key={task.id}>
               <td className="px-6 py-4 text-sm text-gray-900">{task.id}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">{task.name}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">
-                {task.status?.name ?? 'here should be status name'}
+              <td className="px-6 py-4 text-sm text-blue-600 hover:underline">
+                <Link
+                  href={routes.app.tasks.show(task.id)}
+                  className="text-blue-600 hover:underline"
+                >
+                  {task.name}
+                </Link>
               </td>
+              <td className="px-6 py-4 text-sm text-gray-900">{task.status?.name ?? '—'}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
-                {task.executor?.firstName}{' '}
-                {task.executor?.lastName ?? 'here should be executor name'}
+                {task.executor?.firstName} {task.executor?.lastName ?? ''}
               </td>
               <td className="px-6 py-4 text-sm text-gray-500">
                 {format(new Date(task.createdAt), 'dd.MM.yyyy HH:mm', { locale: ruLocale })}

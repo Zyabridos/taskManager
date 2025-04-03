@@ -77,7 +77,7 @@ export default (app) => {
           name,
           description,
           statusId,
-          executorId,
+          executorId: executorId ?? authorId,
           authorId,
         };
 
@@ -145,13 +145,6 @@ export default (app) => {
 
         if (!task) {
           return reply.code(404).send({ error: 'Task not found' });
-        }
-
-        if (task.statusId) {
-          return reply.code(422).send({
-            error: 'Deletion forbidden',
-            message: 'You can not delete a status that has an assignet task',
-          });
         }
 
         await task.$query().delete();

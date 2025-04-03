@@ -57,6 +57,7 @@ const frontendRoutes = {
     list: () => '/tasks',
     create: () => '/tasks/new',
     edit: id => `/tasks/${id}/edit`,
+    show: id => `/tasks/${id}`,
   },
 };
 

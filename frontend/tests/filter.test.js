@@ -7,7 +7,7 @@ test.setTimeout(20000);
 
 let taskData;
 let statusData;
-let labelsData
+let labelsData;
 
 test.beforeAll(async () => {
   taskData = await readFixture('tasks.testData.json');
@@ -23,7 +23,7 @@ test.describe('Tasks List Filter UI', () => {
     await clickLinkByName(page, statusData.buttons.create);
     await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
     await clickButtonByName(page, statusData.buttons.create);
-    
+
     await page.goto(labelsData.url.list);
     await clickLinkByName(page, labelsData.buttons.create);
     await page.getByLabel(labelsData.labels.name).fill(taskData.task.label);

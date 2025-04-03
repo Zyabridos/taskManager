@@ -39,13 +39,16 @@ export default async (app) => {
     const status = await Status.query().findById(id);
     if (!status) return reply.code(404).send({ error: 'status not found' });
 
-    const hasTasks = await Task.query()
-      .where('authorId', id)
-      .orWhere('executorId', id)
+    const hasTasks = await app.objection.models.task
+      .query()
+      .where('statusId', id)
       .resultSize();
 
     if (hasTasks > 0) {
-      return reply.code(400).send({ error: 'status has related tasks' });
+      return reply.code(422).send({
+        error: 'Status in use',
+        message: 'Cannot delete status with existing tasks',
+      });
     }
 
     await status.$query().delete();
