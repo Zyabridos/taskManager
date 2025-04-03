@@ -94,6 +94,14 @@ const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
       removeUserFromStorage();
+
+      showToast({
+        type: 'user',
+        action: 'loggedOut.success',
+        titleKey: 'successTitle',
+      });
+
+      router.push(routes.app.home());
     }
   };
 

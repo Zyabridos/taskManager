@@ -27,7 +27,7 @@ const GuestNavbar = () => {
         </div>
 
         <div className="flex space-x-4">
-          {/* <LanguageSwitcher /> */}
+          <LanguageSwitcher />
           <Link href={`${baseURL}${routes.app.session.new()}`} className={linkClasses}>
             {t('navbar.signIn')}
           </Link>

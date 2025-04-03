@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 import { LogInExistingUser } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
+import { deleteTaskByName, deleteStatusByName } from './helpers/deleteEntity.js';
 
 let statusData;
 let taskData;
@@ -37,40 +38,43 @@ test.describe('statuses CRUD visual (UI)', () => {
     await expect(page.locator(`text=${statusData.statuses.new}`)).toBeVisible();
   });
 
-    test('Should NOT allow deleting a status that has a related task', async ({ page }) => {
-      await page.goto(statusData.url.list);
+  test('Should NOT allow deleting a status that has a related task', async ({ page }) => {
+    await page.goto(statusData.url.list);
 
-      const protectedStatusName = 'Used Status';
-      await clickLinkByName(page, statusData.buttons.create);
-      await expect(page).toHaveURL(statusData.url.new);
-      await page.getByLabel(statusData.labels.name).fill(protectedStatusName);
-      await clickButtonByName(page, statusData.buttons.create);
-      await expect(page).toHaveURL(statusData.url.list);
-      await expect(page.locator(`text=${protectedStatusName}`)).toBeVisible();
+    const protectedStatusName = 'Used Status';
+    await clickLinkByName(page, statusData.buttons.create);
+    await expect(page).toHaveURL(statusData.url.new);
+    await page.getByLabel(statusData.labels.name).fill(protectedStatusName);
+    await clickButtonByName(page, statusData.buttons.create);
+    await expect(page).toHaveURL(statusData.url.list);
+    await expect(page.locator(`text=${protectedStatusName}`)).toBeVisible();
 
-      await page.goto(taskData.url.list);
-      await clickLinkByName(page, taskData.buttons.create);
+    await page.goto(taskData.url.list);
+    await clickLinkByName(page, taskData.buttons.create);
 
-      const taskName = 'Test Task with Status';
-      await page.getByLabel(taskData.labels.name).fill(taskName);
+    const taskName = 'Test Task with Status';
+    await page.getByLabel(taskData.labels.name).fill(taskName);
 
-      const statusSelect = page.getByLabel(taskData.labels.status);
-      await statusSelect.selectOption({ label: protectedStatusName });
+    const statusSelect = page.getByLabel(taskData.labels.status);
+    await statusSelect.selectOption({ label: protectedStatusName });
 
-      await clickButtonByName(page, taskData.buttons.create);
-      await expect(page).toHaveURL(taskData.url.list);
-      await expect(page.locator(`text=${taskName}`)).toBeVisible();
+    await clickButtonByName(page, taskData.buttons.create);
+    await expect(page).toHaveURL(taskData.url.list);
+    await expect(page.locator(`text=${taskName}`)).toBeVisible();
 
-      await page.goto(statusData.url.list);
+    await page.goto(statusData.url.list);
 
-      const row = page.locator('table tbody tr', { hasText: protectedStatusName });
-      const deleteButton = row.getByRole('button', { name: statusData.buttons.delete });
-      await deleteButton.click();
+    const row = page.locator('table tbody tr', { hasText: protectedStatusName });
+    const deleteButton = row.getByRole('button', { name: statusData.buttons.delete });
+    await deleteButton.click();
 
-      await expect(page.locator(`text=${statusData.errors.hasTasks}`)).toBeVisible();
-      await expect(page.locator(`text=${protectedStatusName}`)).toBeVisible();
-    });
+    await expect(page.locator(`text=${statusData.errors.hasTasks}`)).toBeVisible();
+    await expect(page.locator(`text=${protectedStatusName}`)).toBeVisible();
 
+    await deleteTaskByName(page, taskName, taskData);
+
+    await deleteStatusByName(page, protectedStatusName, statusData);
+  });
 
   test('Should show error if status name is empty', async ({ page }) => {
     await page.goto(statusData.url.list);
@@ -117,14 +121,6 @@ test.describe('statuses CRUD visual (UI)', () => {
   });
 
   test('Should delete a specific status', async ({ page }) => {
-    await page.goto(statusData.url.list);
-
-    const row = page.locator('table tbody tr', { hasText: statusData.statuses.updated });
-    const deleteButton = row.getByRole('button', { name: statusData.buttons.delete });
-    await deleteButton.click();
-
-    await expect(page).toHaveURL(statusData.url.list);
-    await expect(page.locator(`text=${statusData.messages.deleted}`)).toBeVisible();
-    await expect(page.locator(`text=${statusData.statuses.updated}`)).not.toBeVisible();
+    await deleteStatusByName(page, statusData.statuses.new, statusData);
   });
 });

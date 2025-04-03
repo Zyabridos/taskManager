@@ -20,11 +20,11 @@ test.describe('Tasks CRUD visual (UI)', () => {
     await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
     await clickButtonByName(page, statusData.buttons.create);
 
-    // await page.goto(taskData.url.list);
-    // const deleteButtons = await page.locator(`button:has-text("${taskData.buttons.delete}")`).all();
-    // for (const btn of deleteButtons) {
-    //   await btn.click();
-    // }
+    await page.goto(taskData.url.list);
+    const deleteButtons = await page.locator(`button:has-text("${taskData.buttons.delete}")`).all();
+    for (const btn of deleteButtons) {
+      await btn.click();
+    }
   });
 
   test('Should create new task with required fields', async ({ page }) => {
@@ -54,6 +54,7 @@ test.describe('Tasks CRUD visual (UI)', () => {
   });
 
   test('Should update a specific task', async ({ page }) => {
+    const updatedName = taskData.task.updated;
     await page.goto(taskData.url.list);
 
     const taskRow = page.locator('table tbody tr', { hasText: taskData.task.name });
@@ -62,7 +63,6 @@ test.describe('Tasks CRUD visual (UI)', () => {
     const editLink = taskRow.getByRole('link', { name: taskData.buttons.edit });
     await editLink.click();
 
-    const updatedName = taskData.task.updated;
     await page.getByLabel(taskData.labels.name).fill(updatedName);
 
     await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });

@@ -32,13 +32,19 @@ const EditUserForm = () => {
           email: user.email,
           password: '',
         });
-      } catch {
-        showError('user', 'failedUpdate');
+      } catch (e) {
+        showToast({
+          type: 'user',
+          action: 'failedUpdate',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
         router.push(routes.app.users.list());
       }
     };
+
     fetchUser();
-  }, [id, router]);
+  }, [id, router, showToast]);
 
   const handleSubmit = async values => {
     try {
@@ -46,11 +52,12 @@ const EditUserForm = () => {
       showToast({ type: 'user', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.users.list());
     } catch (e) {
-      if (e.response?.status === 422) {
-        showToast({type: 'user', action: 'alreadyExists', titleKey: 'errorTitle', toastType: 'error',
-});
-      } else {
-      showToast({ type: 'user', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
+      showToast({
+        type: 'user',
+        action: 'failedUpdate',
+        titleKey: 'errorTitle',
+        toastType: 'error',
+      });
       console.error(e);
     }
   };

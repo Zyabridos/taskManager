@@ -4,6 +4,15 @@ import { LogInExistingUser } from './helpers/session.js';
 import { faker } from '@faker-js/faker';
 import readFixture from './helpers/readFixture.js';
 
+const email = faker.internet.email();
+const firstName = faker.person.firstName();
+const lastName = faker.person.lastName();
+
+const updatedFirstName = faker.person.firstName();
+const updatedLastName = faker.person.lastName();
+const updatedEmail = faker.internet.email();
+const updatedPassword = faker.internet.password(8);
+
 let userData;
 
 test.beforeAll(async () => {
@@ -11,15 +20,6 @@ test.beforeAll(async () => {
 });
 
 test.describe('users CRUD visual (UI)', () => {
-  const email = faker.internet.email();
-  const firstName = faker.person.firstName();
-  const lastName = faker.person.lastName();
-
-  const updatedFirstName = faker.person.firstName();
-  const updatedLastName = faker.person.lastName();
-  const updatedEmail = faker.internet.email();
-  const updatedPassword = faker.internet.password(8);
-
   test('Should create new user from home page', async ({ page }) => {
     await page.goto(userData.url.root);
     await page.getByRole('link', { name: userData.links.signUp }).click();

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
+import { clickButtonByName } from './helpers/selectors.js';
 
 let sessionData;
 
@@ -14,7 +15,7 @@ test.describe('Auth tests (UI)', () => {
     await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
     await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
 
-    await page.getByRole('button', { name: sessionData.buttons.signIn }).click();
+    clickButtonByName(sessionData.buttons.signIn);
 
     await expect(page).toHaveURL(sessionData.url.usersList);
     await expect(page.locator(`text=${sessionData.messages.signedIn}`)).toBeVisible();
@@ -25,10 +26,10 @@ test.describe('Auth tests (UI)', () => {
 
     await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
     await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
-    await page.getByRole('button', { name: sessionData.buttons.signIn }).click();
+    clickButtonByName(sessionData.buttons.signIn);
     await expect(page).toHaveURL(sessionData.url.usersList);
 
-    await page.getByRole('link', { name: sessionData.buttons.signOut }).click();
+    clickButtonByName(sessionData.buttons.signOut);
 
     await expect(page).toHaveURL(sessionData.url.root);
     await expect(page.locator(`text=${sessionData.messages.signedOut}`)).toBeVisible();

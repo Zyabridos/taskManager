@@ -7,14 +7,14 @@ export const fetchStatuses = createAsyncThunk('statuses/fetchStatuses', async ()
 
 export const deleteStatusThunk = createAsyncThunk(
   'statuses/delete',
-  async (id, { rejectWithMessage }) => {
+  async (id, { rejectWithValue }) => {
     try {
       await statusesApi.remove(id);
       return id;
     } catch (err) {
-      return rejectWithMessage(err);
+      return rejectWithValue(err);
     }
-  }
+  },
 );
 
 const statusesSlice = createSlice({

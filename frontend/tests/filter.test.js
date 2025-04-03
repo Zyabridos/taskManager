@@ -29,18 +29,19 @@ test.describe('Tasks List Filter UI', () => {
     await page.getByLabel(labelsData.labels.name).fill(taskData.task.label);
     await clickButtonByName(page, labelsData.buttons.create);
 
+    await page.goto(taskData.url.create);
+    taskData.task.name = `Task ${Date.now()}`;
+    await page.getByLabel(taskData.labels.name).fill(taskData.task.name);
+    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
+    await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
+    await clickButtonByName(page, taskData.buttons.create);
+    await expect(page.locator(`text=${taskData.messages.created}`)).toBeVisible();
+
     await page.goto(taskData.url.list);
     const deleteButtons = await page.locator(`button:has-text("${taskData.buttons.delete}")`).all();
     for (const btn of deleteButtons) {
       await btn.click();
     }
-
-    await page.goto(taskData.url.create);
-    taskData.task.name = `Task ${Date.now()}`;
-    await page.getByLabel(taskData.labels.name).fill(taskData.task.name);
-    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
-    await clickButtonByName(page, taskData.buttons.create);
-    await expect(page.locator(`text=${taskData.messages.created}`)).toBeVisible();
   });
 
   test('Should filter tasks by status', async ({ page }) => {

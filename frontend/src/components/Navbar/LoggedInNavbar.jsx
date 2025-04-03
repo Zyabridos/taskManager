@@ -29,7 +29,7 @@ const LoggedInNavbar = () => {
         </div>
 
         <div className="flex space-x-4">
-          {/* <LanguageSwitcher /> */}
+          <LanguageSwitcher />
           <Link href={`${baseURL}${routes.app.statuses.list()}`} className={linkClasses}>
             {t('navbar.statuses')}
           </Link>
