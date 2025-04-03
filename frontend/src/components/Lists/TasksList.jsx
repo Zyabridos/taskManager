@@ -9,10 +9,12 @@ import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { deleteTaskThunk, fetchTasks } from '../../store/slices/tasksSlice';
 import useEntityToast from '../../hooks/useEntityToast';
+import useSortedTasks from '../../hooks/useSortableList';
 import TaskFilter from '../TaskFilter';
 import { tasksApi } from '@/api/tasksApi';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import SortableHeader from '../UI/SortableHeader';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -45,6 +47,7 @@ const TasksList = () => {
   }, []);
 
   const [query, setQuery] = useState(parseQuery);
+  const { sortedList, sortField, sortOrder, handleSort } = useSortedTasks(list, 'id', 'asc');
 
   useEffect(() => {
     dispatch(fetchTasks(query));
@@ -126,18 +129,34 @@ const TasksList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
-              {t('common.columns.id')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
-              {t('tasks.columns.name')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
-              {t('tasks.columns.status')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
-              {t('tasks.columns.executor')}
-            </th>
+            <SortableHeader
+              label={t('common.columns.id')}
+              field="id"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              label={t('tasks.columns.name')}
+              field="name"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              label={t('tasks.columns.status')}
+              field="status.name"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              label={t('tasks.columns.executor')}
+              field="executor.firstName"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
               {t('common.columns.createdAt')}
             </th>
@@ -146,14 +165,15 @@ const TasksList = () => {
             </th>
           </tr>
         </thead>
+
         <tbody className="divide-y divide-gray-200 bg-white">
-          {list.map(task => (
+          {sortedList.map(task => (
             <tr key={task.id}>
               <td className="px-6 py-4 text-sm text-gray-900">{task.id}</td>
-              <td className="px-6 py-4 text-sm text-blue-600 hover:underline">
+              <td className="px-6 py-4 text-sm text-gray-900 hover:underline">
                 <Link
                   href={routes.app.tasks.show(task.id)}
-                  className="text-blue-600 hover:underline"
+                  className="text-gray-900 hover:underline"
                 >
                   {task.name}
                 </Link>

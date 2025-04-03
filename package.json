@@ -1,5 +1,5 @@
 {
-  "name": "@hexlet/code",
+  "name": "@taskmanager/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
   "main": "./server/plugin/init.js",

@@ -9,6 +9,8 @@ import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
+import useSortedList from '../../hooks/useSortableList';
+import SortableHeader from '../UI/SortableHeader';
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -20,6 +22,8 @@ const UserList = () => {
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
 
   const handleDelete = async id => {
     try {
@@ -44,25 +48,41 @@ const UserList = () => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('common.columns.id')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('users.columns.fullName')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('users.columns.email')}
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">
-              {t('common.columns.createdAt')}
-            </th>
+            <SortableHeader
+              label={t('common.columns.id')}
+              field="id"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              label={t('users.columns.fullName')}
+              field="firstName"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              label={t('users.columns.email')}
+              field="email"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <SortableHeader
+              label={t('common.columns.createdAt')}
+              field="createdAt"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
             <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {list.map(user => (
+          {sortedList.map(user => (
             <tr key={user.id}>
               <td className="px-6 py-4 text-sm text-gray-900">{user.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
@@ -70,9 +90,7 @@ const UserList = () => {
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {format(new Date(user.createdAt), 'dd.MM.yyyy HH:mm', {
-                  locale: ruLocale,
-                })}
+                {format(new Date(user.createdAt), 'dd.MM.yyyy HH:mm', { locale: ruLocale })}
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">

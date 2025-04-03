@@ -2,6 +2,22 @@
   "user": {
     "email": "example@example.com"
   },
+  "users": [
+    {
+      "firstName": "Anna",
+      "lastName": "Ivanova",
+      "email": "anna@example.com",
+      "password": "qwerty"
+    },
+    {
+      "firstName": "Boris",
+      "lastName": "Johnson",
+      "email": "boris@example.com",
+      "password": "qwerty"
+    }
+  ],
+  "statuses": [{ "name": "New" }, { "name": "Completed" }],
+  "labelsList": [{ "name": "Frontend" }, { "name": "Backend" }],
   "task": {
     "name": "New test task",
     "updated": "Updated test Task",
@@ -31,6 +47,15 @@
   },
   "url": {
     "create": "http://localhost:3000/tasks/new",
-    "list": "http://localhost:3000/tasks"
+    "list": "http://localhost:3000/tasks",
+    "users": "http://localhost:3000/users",
+    "statuses": "http://localhost:3000/statuses",
+    "labels": "http://localhost:3000/labels"
+  },
+  "columns": {
+    "id": "ID",
+    "executor": "Исполнитель",
+    "status": "Статус",
+    "createdAt": "Дата создания"
   }
 }
