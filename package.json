@@ -11,6 +11,7 @@
     "prebuild": "rm -rf dist",
     "build": "webpack",
     "start": "node server/bin/startServer.js",
+    "migrate": "knex migrate:latest",
     "setup": "npm install && npm start",
     "test": "jest",
     "dev": "NODE_ENV=development nodemon server/index.js",
