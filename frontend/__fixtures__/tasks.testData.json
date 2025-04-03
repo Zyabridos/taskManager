@@ -5,16 +5,20 @@
   "task": {
     "name": "New test task",
     "updated": "Updated test Task",
-    "status": "New status"
+    "status": "New status",
+    "label": "Test label"
   },
   "labels": {
     "name": "Наименование",
-    "status": "Статус"
+    "status": "Статус",
+    "label": "Метка",
+    "onlyMyTasks": "Только мои задачи"
   },
   "buttons": {
     "create": "Создать",
     "edit": "Изменить",
-    "delete": "Удалить"
+    "delete": "Удалить",
+    "applyFilter": "Показать"
   },
   "messages": {
     "created": "Задача создана",

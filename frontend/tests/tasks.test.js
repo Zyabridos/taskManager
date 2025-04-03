@@ -19,6 +19,12 @@ test.describe('Tasks CRUD visual (UI)', () => {
     await clickLinkByName(page, statusData.buttons.create);
     await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
     await clickButtonByName(page, statusData.buttons.create);
+
+    // await page.goto(taskData.url.list);
+    // const deleteButtons = await page.locator(`button:has-text("${taskData.buttons.delete}")`).all();
+    // for (const btn of deleteButtons) {
+    //   await btn.click();
+    // }
   });
 
   test('Should create new task with required fields', async ({ page }) => {
