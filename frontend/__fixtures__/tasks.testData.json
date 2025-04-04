@@ -1,6 +1,7 @@
 {
   "user": {
-    "email": "example@example.com"
+    "email": "example@example.com",
+    "password": "qwerty"
   },
   "users": [
     {

@@ -28,10 +28,7 @@ const Footer = () => {
           >
             Telegram <FaTelegram className="ml-2 text-2xl" />
           </Link>
-          <Link
-            href="mailto:zyabrina95@gmail.com"
-            className={`${baseClasses} flex items-center`}
-          >
+          <Link href="mailto:zyabrina95@gmail.com" className={`${baseClasses} flex items-center`}>
             Email <HiOutlineMail className="ml-2 text-2xl" />
           </Link>
         </div>

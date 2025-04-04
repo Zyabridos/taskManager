@@ -9,8 +9,14 @@ export default async (app) => {
   app.get('/api/users/:id', async (req, reply) => {
     const user = await User.query().findById(req.params.id);
     if (!user) return reply.status(404).send({ error: 'User not found' });
+
+    if (req.user.id !== Number(req.params.id)) {
+      return reply.code(403).send({ error: 'You can only view your own account' });
+    }
+
     reply.send(user);
   });
+
 
   app.post('/api/users', async (req, reply) => {
   const { email } = req.body;
@@ -33,16 +39,18 @@ export default async (app) => {
 });
 
   app.patch('/api/users/:id', async (req, reply) => {
-    const { id } = req.params;
-    try {
-      const user = await User.query().findById(id);
-      if (!user) return reply.code(404).send({ error: 'User not found' });
+    console.log('req.user.id:', req.user?.id, '| trying to edit id:', req.params.id);
 
-      await user.$query().patch(req.body);
-      reply.send({ success: true });
-    } catch ({ data }) {
-      reply.code(422).send({ error: 'Update failed', errors: data });
+    const { id } = req.params;
+    const user = await User.query().findById(id);
+    if (!user) return reply.code(404).send({ error: 'User not found' });
+
+    if (req.user.id !== Number(id)) {
+      return reply.code(403).send({ error: 'You can only update your own account' });
     }
+
+    await user.$query().patch(req.body);
+    reply.send({ success: true });
   });
 
   app.delete('/api/users/:id', async (req, reply) => {
@@ -51,7 +59,7 @@ export default async (app) => {
     if (!user) return reply.code(404).send({ error: 'User not found' });
 
     if (req.user.id !== Number(id)) {
-      return reply.code(403).send({ error: 'You can only delete your own account' });
+      return reply.code(403).send({ error: 'Can not edit', message: 'You can not edit other users' });
     }
 
     const hasTasks = await Task.query()
@@ -60,7 +68,7 @@ export default async (app) => {
       .resultSize();
 
      if (hasTasks > 0) {
-      return reply.code(422).send({ error: 'Cannot delete user with related tasks' });
+      return reply.code(403).send({ error: 'Can not delete', message: 'You can not delete other users' });
     }
 
     await user.$query().delete();

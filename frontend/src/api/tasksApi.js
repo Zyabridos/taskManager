@@ -1,5 +1,5 @@
 import axiosInstance from './axiosInstance';
-import routes from '../routes'
+import routes from '../routes';
 
 const base = `${process.env.NEXT_PUBLIC_API_BASE}${routes.api.tasks.list()}`;
 

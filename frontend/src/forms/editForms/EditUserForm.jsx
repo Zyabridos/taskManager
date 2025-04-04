@@ -32,18 +32,15 @@ const EditUserForm = () => {
           password: '',
         });
       } catch (e) {
-        showToast({
-          type: 'user',
-          action: 'failedUpdate',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
+        if (e?.response?.status === 403) {
+          sessionStorage.setItem('toast_forbidden_edit', 'true');
+        }
         router.push(routes.app.users.list());
       }
     };
 
     fetchUser();
-  }, [id, router, showToast]);
+  }, [id, router]);
 
   const handleSubmit = async values => {
     try {
