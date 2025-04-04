@@ -8,16 +8,20 @@ import i18n from '../i18n/i18n.js';
 import Navbar from '../components/Navbar/Navbar.jsx';
 import AuthProvider from '../context/authContex.js';
 import { Toaster } from 'sonner';
+import Footer from '../components/Footer.jsx';
 
 const RootLayout = ({ children }) => {
   return (
     <html lang="ru">
-      <body className="h-24">
+      <body className="flex min-h-screen flex-col">
         <Provider store={store}>
           <AuthProvider>
-            <Navbar />
-            <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-            <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+            <I18nextProvider i18n={i18n}>
+              <Navbar />
+              <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </I18nextProvider>
           </AuthProvider>
         </Provider>
       </body>
