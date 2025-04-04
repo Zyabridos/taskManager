@@ -3,3 +3,6 @@ localization:
 
 p:
 	npx prettier --write .
+
+t:
+	npx playwright test

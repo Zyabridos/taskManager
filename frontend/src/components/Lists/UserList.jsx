@@ -30,18 +30,30 @@ const UserList = () => {
       await dispatch(deleteUserThunk(id)).unwrap();
       showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      showToast({ type: 'user', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
-      console.error(e);
+      const response = e?.response;
+      const serverMessage = response?.data?.error;
+
+      const hasUserTasks = typeof serverMessage === 'string' && serverMessage.includes('related tasks');
+      const isUserNotOwner = typeof serverMessage === 'string' && serverMessage.includes('own account');
+
+      if (response?.status === 422 && hasUserTasks) {
+        showToast({ type: 'user', action: 'hasTasks', titleKey: 'errorTitle', toastType: 'error' });
+      } else if (response?.status === 403 && isUserNotOwner) {
+        showToast({ type: 'user', action: 'notOwner', titleKey: 'errorTitle', toastType: 'error' });
+      } else {
+        showToast({
+          type: 'user',
+          action: 'failedDelete',
+          titleKey: 'errorTitle',
+          messageKey: 'failedDelete.user',
+          toastType: 'error',
+        });
+      }
     }
   };
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
-  if (status === 'failed')
-    return (
-      <p>
-        {t('common.error')}: {error}
-      </p>
-    );
+  if (status === 'failed') return <p>{t('common.error')}: {error}</p>;
 
   return (
     <div className="mt-6 overflow-x-auto">
@@ -76,14 +88,19 @@ const UserList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {sortedList.map(user => (
-            <tr key={user.id}>
+            <tr
+              key={user.id}
+              data-id={user.id}
+              data-email={user.email}
+              data-name={`${user.firstName} ${user.lastName}`}
+            >
               <td className="px-6 py-4 text-sm text-gray-900">{user.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
                 {user.firstName} {user.lastName}

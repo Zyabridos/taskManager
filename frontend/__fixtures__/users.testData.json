@@ -19,7 +19,8 @@
     "deleted": "Пользователь удалён"
   },
   "errors": {
-    "emailExists": "Пользователь с таким email уже существует"
+    "emailExists": "Пользователь с таким email уже существует",
+    "notOwner": "Вы не можете удалять других пользователей"
   },
   "testUser": {
     "password": "qwerty"

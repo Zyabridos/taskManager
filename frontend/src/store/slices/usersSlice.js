@@ -5,10 +5,17 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   return await usersApi.getAll();
 });
 
-export const deleteUserThunk = createAsyncThunk('users/deleteUser', async id => {
-  await usersApi.remove(id);
-  return id;
-});
+export const deleteUserThunk = createAsyncThunk(
+  'users/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await usersApi.remove(id);
+      return id;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  },
+);
 
 const usersSlice = createSlice({
   name: 'users',

@@ -25,7 +25,7 @@ prepare:
 start-backend:
 	cd backend && npm run start
 
-# Local-comands - backend
+# Local-comands - frontend
 
 install-frontend:
 	cd frontend && npm ci

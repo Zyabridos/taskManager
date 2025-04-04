@@ -39,13 +39,17 @@ export default async (app) => {
     const user = await User.query().findById(id);
     if (!user) return reply.code(404).send({ error: 'User not found' });
 
+    if (req.user.id !== Number(id)) {
+      return reply.code(403).send({ error: 'You can only delete your own account' });
+    }
+
     const hasTasks = await Task.query()
       .where('authorId', id)
       .orWhere('executorId', id)
       .resultSize();
 
-    if (hasTasks > 0) {
-      return reply.code(400).send({ error: 'User has related tasks' });
+     if (hasTasks > 0) {
+      return reply.code(422).send({ error: 'Cannot delete user with related tasks' });
     }
 
     await user.$query().delete();

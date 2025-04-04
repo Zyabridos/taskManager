@@ -18,7 +18,6 @@ const EditUserForm = () => {
   const { showToast } = useEntityToast();
   const { t: tUsers } = useTranslation('users');
   const { t: tValidation } = useTranslation('validation');
-  const { t: tErrors } = useTranslation('errors');
 
   const [initialValues, setInitialValues] = useState(null);
 
@@ -97,10 +96,11 @@ const EditUserForm = () => {
             field={formik.getFieldProps(field)}
             touched={formik.touched[field]}
             error={formik.errors[field]}
+            {...{ [`data-${field.toLowerCase()}`]: true }}
           />
           <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
           )}
         </div>
       ))}
