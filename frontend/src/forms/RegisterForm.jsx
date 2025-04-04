@@ -11,6 +11,7 @@ import signUpImage from '../../public/signUp_picture.jpg';
 import Image from 'next/image';
 import routes from '../routes';
 import { useAuth } from '../context/authContex';
+import useEntityToast from '../hooks/useEntityToast';
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -18,6 +19,7 @@ const RegisterForm = () => {
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
   const { login } = useAuth();
+  const { showToast } = useEntityToast();
 
   const formik = useFormik({
     initialValues: {
@@ -35,13 +37,38 @@ const RegisterForm = () => {
         .required(tValidation('passwordRequired')),
     }),
     onSubmit: async values => {
-      try {
-        await usersApi.create(values);
-        await login(values.email, values.password, true);
-      } catch (e) {
-        router.push(`${routes.app.users.new()}?failedCreate=user`);
-      }
-    },
+  try {
+    await usersApi.create(values);
+    await login(values.email, values.password, true);
+
+    showToast({
+      type: 'user',
+      action: 'registered.success.user',
+      titleKey: 'successTitle',
+      toastType: 'success',
+    });
+  } catch (e) {
+    const message = e?.response?.data?.message;
+    console.log('e', e)
+    console.log('err mess', message)
+
+    if (message.includes('already exists')) {
+      showToast({
+        type: 'user',
+        action: 'registered.errors.alreadyInUse',
+        titleKey: 'errorTitle',
+        toastType: 'error',
+      });
+    } else {
+      showToast({
+        type: 'user',
+        action: 'failedCreate',
+        titleKey: 'errorTitle',
+        toastType: 'error',
+      });
+    }
+  }
+},
   });
 
   return (
@@ -63,7 +90,7 @@ const RegisterForm = () => {
                 id={field}
                 type={field === 'password' ? 'password' : 'text'}
                 placeholder=" "
-                className={`peer h-14 w-full rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
+                className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
                   formik.touched[field] && formik.errors[field]
                     ? 'border-red-500'
                     : 'border-gray-300'
@@ -71,14 +98,14 @@ const RegisterForm = () => {
               />
               <label
                 htmlFor={field}
-                className="absolute top-2 left-3 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
+                className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
               >
                 {tAuth(`form.${field}`)}
               </label>
 
               <div className="min-h-[20px] overflow-hidden">
                 {formik.touched[field] && formik.errors[field] && (
-                  <p className="text-xs text-red-500 italic">{formik.errors[field]}</p>
+                  <p className="text-xs italic text-red-500">{formik.errors[field]}</p>
                 )}
               </div>
             </div>

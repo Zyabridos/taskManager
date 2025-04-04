@@ -13,13 +13,24 @@ export default async (app) => {
   });
 
   app.post('/api/users', async (req, reply) => {
-    try {
-      const newUser = await User.query().insert(req.body);
-      reply.code(201).send(newUser);
-    } catch ({ data }) {
-      reply.code(422).send({ error: 'Validation failed', errors: data });
+  const { email } = req.body;
+
+  try {
+    const existingUser = await User.query().findOne({ email });
+
+    if (existingUser) {
+      return reply.code(422).send({
+        error: 'Email already exists',
+        message: 'Email already exists'
+      });
     }
-  });
+
+    const newUser = await User.query().insert(req.body);
+    reply.code(201).send(newUser);
+  } catch ({ data }) {
+    reply.code(422).send({ error: 'Validation failed', errors: data });
+  }
+});
 
   app.patch('/api/users/:id', async (req, reply) => {
     const { id } = req.params;

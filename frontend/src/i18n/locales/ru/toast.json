@@ -4,6 +4,11 @@
   "registered": {
     "success": {
       "user": "Вы зарегистрированы"
+    },
+    "errors": {
+      "alreadyInUse": {
+        "user": "Пользователь с таким email уже существует"
+      }
     }
   },
   "loggedIn": {
