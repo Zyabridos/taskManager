@@ -11,6 +11,7 @@ import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedList from '../../hooks/useSortableList';
 import SortableHeader from '../UI/SortableHeader';
+import useHandleToastError from '../../hooks/useHandleErrorToast';
 
 const StatusesList = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const StatusesList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tStatuses } = useTranslation('statuses');
   const { showToast } = useEntityToast();
+  const handleToastError = useHandleToastError(showToast);
 
   useEffect(() => {
     dispatch(fetchStatuses());
@@ -27,38 +29,25 @@ const StatusesList = () => {
   const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
 
   const handleDelete = async id => {
-    try {
-      await dispatch(deleteStatusThunk(id)).unwrap();
-      showToast({
-        type: 'status',
-        action: 'deleted',
-        titleKey: 'successTitle',
-      });
-    } catch (e) {
-      const response = e?.response;
+  try {
+    await dispatch(deleteStatusThunk(id)).unwrap();
+    showToast({
+      type: 'status',
+      action: 'deleted',
+      titleKey: 'successTitle',
+    });
+  } catch (e) {
+    const message = e?.response?.data?.error;
 
-      const serverMessage = response?.data?.error;
-      const isStatusInUse = typeof serverMessage === 'string' && serverMessage.includes('in use');
+    const isInUse = typeof message === 'string' && message.includes('in use');
 
-      if (response?.status === 422 && isStatusInUse) {
-        showToast({
-          type: 'status',
-          action: 'hasTasks',
-          titleKey: 'errorTitle',
-          messageKey: 'hasTasks.status',
-          toastType: 'error',
-        });
-      } else {
-        showToast({
-          type: 'status',
-          action: 'failedDelete',
-          titleKey: 'errorTitle',
-          messageKey: 'failedDelete.status',
-          toastType: 'error',
-        });
-      }
-    }
-  };
+    handleToastError(e, {
+      type: 'status',
+      action: isInUse ? 'hasTasks' : 'failedDelete',
+      titleKey: 'errorTitle',
+    });
+  }
+};
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
   if (status === 'failed') {
@@ -101,7 +90,7 @@ const StatusesList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

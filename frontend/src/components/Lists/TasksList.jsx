@@ -157,10 +157,10 @@ const TasksList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-700">
               {t('common.columns.createdAt')}
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

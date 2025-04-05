@@ -32,7 +32,6 @@ const LabelsList = () => {
       showToast({ type: 'label', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
       showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
-      console.error(e);
     }
   };
 
@@ -74,7 +73,7 @@ const LabelsList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

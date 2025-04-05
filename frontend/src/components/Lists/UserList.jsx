@@ -11,17 +11,17 @@ import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedList from '../../hooks/useSortableList';
 import SortableHeader from '../UI/SortableHeader';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/authContex';
-import Link from 'next/link';
+import { HrefButton } from '../Buttons';
+import useHandleToastError from '../../hooks/useHandleErrorToast';
 
 const UserList = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { list, status, error } = useSelector((state) => state.users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { showToast } = useEntityToast();
+  const handleToastError = useHandleToastError(showToast);
   const { user: currentUser } = useAuth();
 
   useEffect(() => {
@@ -46,33 +46,8 @@ const UserList = () => {
       await dispatch(deleteUserThunk(id)).unwrap();
       showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      const response = e?.response;
-      const message = response?.data?.message;
-
-      if (response?.status === 403) {
-        showToast({
-          type: 'user',
-          action: 'notOwner',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-          message,
-        });
-      } else if (response?.status === 422) {
-        showToast({
-          type: 'user',
-          action: 'hasTasks',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      } else {
-        showToast({
-          type: 'user',
-          action: 'failedDelete',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      }
-    }
+  handleToastError(e, { type: 'user', action: 'failedDelete', titleKey: 'errorTitle' });
+}
   };
 
   return (
@@ -102,22 +77,11 @@ const UserList = () => {
                 <div className="flex flex-wrap justify-end gap-2">
                   {user.id === currentUser?.id ? (
                     <>
-                      <button
-                        type="button"
-                        className="rounded border border-gray-600 px-3 py-1 text-sm text-gray-800 hover:bg-gray-800 hover:text-white"
-                        onClick={() => router.push(routes.app.users.edit(user.id))}
-                      >
-                        {tButtons('edit')}
-                      </button>
+                      <HrefButton href={routes.app.users.edit(user.id)} buttonText={tButtons('edit')} />
                       <DeleteButton onClick={() => handleDelete(user.id)} />
                     </>
                   ) : (
-                    <a
-                      href={`mailto:${user.email}`}
-                      className="block w-full rounded border border-blue-600 px-4 py-2 text-center text-sm text-blue-600 hover:bg-blue-600 hover:text-white"
-                    >
-                      {tButtons('sendEmail')}
-                    </a>
+                    <HrefButton href={`mailto:${user.email}`} buttonText={tButtons('sendEmail')} />
                   )}
                 </div>
               </td>
