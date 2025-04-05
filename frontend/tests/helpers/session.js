@@ -2,9 +2,7 @@ import routes from '../../src/routes';
 import { clickButtonByName } from './selectors.js';
 
 const baseUrl = 'http://localhost:3000';
-const password = 'qwerty';
 
-// export const LogInExistingUser = async (page, email = 'example@example.com') => {
 export const LogInExistingUser = async (
   page,
   email = 'example@example.com',

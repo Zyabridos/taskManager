@@ -29,25 +29,25 @@ const StatusesList = () => {
   const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
 
   const handleDelete = async id => {
-  try {
-    await dispatch(deleteStatusThunk(id)).unwrap();
-    showToast({
-      type: 'status',
-      action: 'deleted',
-      titleKey: 'successTitle',
-    });
-  } catch (e) {
-    const message = e?.response?.data?.error;
+    try {
+      await dispatch(deleteStatusThunk(id)).unwrap();
+      showToast({
+        type: 'status',
+        action: 'deleted',
+        titleKey: 'successTitle',
+      });
+    } catch (e) {
+      const message = e?.response?.data?.error;
 
-    const isInUse = typeof message === 'string' && message.includes('in use');
+      const isInUse = typeof message === 'string' && message.includes('in use');
 
-    handleToastError(e, {
-      type: 'status',
-      action: isInUse ? 'hasTasks' : 'failedDelete',
-      titleKey: 'errorTitle',
-    });
-  }
-};
+      handleToastError(e, {
+        type: 'status',
+        action: isInUse ? 'hasTasks' : 'failedDelete',
+        titleKey: 'errorTitle',
+      });
+    }
+  };
 
   if (status === 'loading') return <p>{t('common.loading')}</p>;
   if (status === 'failed') {
@@ -90,7 +90,7 @@ const StatusesList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>

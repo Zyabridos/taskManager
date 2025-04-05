@@ -3,7 +3,7 @@
 import SignInForm from '../../../forms/SignInForm';
 import { useTranslation } from 'react-i18next';
 
-export default function NewUserPage() {
+const NewUserPage = () => {
   const { t: tAuth } = useTranslation('auth');
   return (
     <div>
@@ -12,3 +12,5 @@ export default function NewUserPage() {
     </div>
   );
 }
+
+export default NewUserPage;

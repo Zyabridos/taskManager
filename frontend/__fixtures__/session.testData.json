@@ -13,7 +13,15 @@
   },
   "user": {
     "email": "example@example.com",
-    "password": "qwerty"
+    "password": "qwerty",
+    "wrongEmailFormat": "a",
+    "shortPassword": "1"
+  },
+  "errors": {
+    "requieredPassword": "Пароль обязателен",
+    "requieredEmail": "Email обязателен",
+    "wrongEmailFormat": "Неверный Email",
+    "min3symbols": "Минимум 3 символа"
   },
   "url": {
     "root": "http://localhost:3000",

@@ -76,7 +76,7 @@ const AuthProvider = ({ children }) => {
 
       showToast({
         type: 'user',
-        action: 'failedLogin',
+        action: 'loggedIn.error',
         titleKey: 'errorTitle',
         toastType: 'error',
       });

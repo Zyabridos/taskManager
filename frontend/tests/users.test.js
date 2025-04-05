@@ -104,7 +104,9 @@ test.describe('users CRUD visual (UI)', () => {
     await expect(page.locator(`text=${updatedFirstName}`)).toBeVisible();
   });
 
-  test('Should redirect with toast when trying to access edit of another user', async ({ page }) => {
+  test('Should redirect with toast when trying to access edit of another user', async ({
+    page,
+  }) => {
     const otherEmail = faker.internet.email();
     const otherFirstName = faker.person.firstName();
     const otherLastName = faker.person.lastName();

@@ -14,6 +14,14 @@
   "loggedIn": {
     "success": {
       "user": "Вы вошли в систему"
+    },
+    "error": {
+      "user": "Неверный Email или пароль"
+    }
+  },
+  "loggedOut": {
+    "success": {
+      "user": "Вы вышли из системы"
     }
   },
   "created": {
