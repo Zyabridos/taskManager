@@ -13,7 +13,8 @@
     "setup": "npm install && npm start",
     "test": "jest",
     "dev": "NODE_ENV=development nodemon server/index.js",
-    "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info"
+    "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info",
+    "lint": "eslint ."
   },
   "jest": {
     "modulePathIgnorePatterns": [

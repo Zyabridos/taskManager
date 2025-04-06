@@ -11,6 +11,6 @@ const NewUserPage = () => {
       <SignInForm />
     </div>
   );
-}
+};
 
 export default NewUserPage;

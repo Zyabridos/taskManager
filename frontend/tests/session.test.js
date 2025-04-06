@@ -55,7 +55,7 @@ test.describe('Auth tests (UI)', () => {
     await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
     clickButtonByName(page, sessionData.buttons.signIn);
     await expect(page).toHaveURL(sessionData.url.usersList);
-    await page.goto(sessionData.url.root)
+    await page.goto(sessionData.url.root);
 
     clickButtonByName(page, sessionData.buttons.signOut);
 

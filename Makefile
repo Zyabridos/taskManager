@@ -17,7 +17,7 @@ docker-restart:
 	make docker-stop
 	make docker-build
 	make docker-start
-	
+
 # Local-comands - common
 install:
 	make install-backend && make install-frontend
@@ -34,10 +34,13 @@ dev:
 setup:
 	make prepare && make install && make db-migrate
 
-# Local-comands - backend
-setup:
-	prepare install db-migrate
+format:
+	make format-backend && make format-frontend
 
+lint:
+	make lint-backend && make lint-frontend
+
+# Local-comands - backend
 install-backend:
 	cd backend && npm install
 
@@ -61,6 +64,12 @@ prepare:
 start-backend:
 	cd backend && npm run start
 
+lint-backend:
+	cd backend && npm run lint
+
+format-backend:
+	cd backend && npx prettier --write .
+
 # Local-comands - frontend
 install-frontend:
 	cd frontend && npm ci
@@ -76,3 +85,10 @@ dev-frontend:
 
 test-frontend-e2e:
 	cd frontend && npx playwright test
+
+lint-frontend:
+	cd frontend && npm run lint
+
+
+format-frontend:
+	cd frontend && npm run format

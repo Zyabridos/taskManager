@@ -4,10 +4,14 @@ export default (app) => {
       reply.send({ message: 'Welcome to the API root' });
     })
 
-    .get('/api/protected', {
-      name: 'protected',
-      preValidation: app.authenticate,
-    }, async (req, reply) => {
-      reply.send({ message: 'You have accessed a protected route', user: req.user });
-    });
+    .get(
+      '/api/protected',
+      {
+        name: 'protected',
+        preValidation: app.authenticate,
+      },
+      async (req, reply) => {
+        reply.send({ message: 'You have accessed a protected route', user: req.user });
+      },
+    );
 };

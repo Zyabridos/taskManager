@@ -85,7 +85,7 @@ const EditLabelForm = () => {
         />
         <FloatingLabel htmlFor="name" text={tLabels('form.name')} />
         {formik.touched.name && formik.errors.name && (
-          <p className="mt-1 text-xs italic text-red-500">{formik.errors.name}</p>
+          <p className="mt-1 text-xs text-red-500 italic">{formik.errors.name}</p>
         )}
       </div>
     </EditFormWrapper>
