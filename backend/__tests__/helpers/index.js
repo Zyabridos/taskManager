@@ -52,6 +52,10 @@ export const makeLogin = async (app, userData) => {
     payload: { data: userData },
   });
 
+  if (responseSignIn.statusCode !== 200) {
+    throw new Error(`Login failed for ${userData.email}. Status: ${response.statusCode}`);
+  }
+
   const setCookieHeader = responseSignIn.headers['set-cookie'];
 
   const cookies = setCookieHeader.map((cookieString) => {

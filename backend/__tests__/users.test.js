@@ -55,12 +55,14 @@ describe('test users CRUD (API)', () => {
     const user = await models.user.query().findOne({ email: params.email });
     const newLastName = 'Golovach';
 
-    cookie = await makeLogin(app, params);
+    const cookie = await makeLogin(app, params);
 
     const response = await app.inject({
       method: 'PATCH',
       url: `/api/users/${user.id}`,
-      cookies: cookie,
+      headers: {
+        cookie: `session=${cookie.session}`,
+      },
       payload: { ...params, lastName: newLastName },
     });
 
@@ -70,20 +72,31 @@ describe('test users CRUD (API)', () => {
     expect(updatedUser.lastName).toBe(newLastName);
   });
 
-  it('user should NOT be able to get to page to edit another user', async () => {
-    const params = testData.users.existing.fixed;
-    const user = await models.user.query().findOne({ email: params.email });
+  it('user should NOT be able to update another user — should return 403', async () => {
+    const { existing } = testData.users;
 
-    cookie = await makeLogin(app, params);
+    const otherUser = await models.user.query().whereNot('email', existing.fixed.email).first();
+
+    const cookie = await makeLogin(app, existing.fixed);
 
     const response = await app.inject({
       method: 'PATCH',
-      url: `/api/users/${user.id}`,
-      cookies: cookie,
-      payload: { ...params, lastName: newLastName },
+      url: `/api/users/${otherUser.id}`,
+      headers: {
+        cookie: `session=${cookie.session}`,
+      },
+      payload: {
+        firstName: 'Hacker',
+      },
     });
 
-    expect(response.statusCode).toBe(422);
+    expect(response.statusCode).toBe(403);
+
+    const responseBody = JSON.parse(response.body);
+    expect(responseBody).toHaveProperty('error');
+    expect(responseBody.error).toBe('Forbidden');
+    expect(responseBody).toHaveProperty('message');
+    expect(responseBody.message).toMatch('You can not edit other users');
   });
 
   it('user should be able to delete itself', async () => {
@@ -95,7 +108,9 @@ describe('test users CRUD (API)', () => {
     const response = await app.inject({
       method: 'DELETE',
       url: `/api/users/${user.id}`,
-      cookies: cookie,
+      headers: {
+        cookie: `session=${cookie.session}`,
+      },
     });
 
     expect(response.statusCode).toBe(200);
@@ -119,12 +134,17 @@ describe('test users CRUD (API)', () => {
     const response = await app.inject({
       method: 'DELETE',
       url: `/api/users/${user.id}`,
-      cookies: cookie,
+      headers: {
+        cookie: `session=${cookie.session}`,
+      },
     });
 
-    expect(response.statusCode).toBe(400);
-    const body = JSON.parse(response.body);
-    expect(body.error).toMatch(/related tasks/i);
+    expect(response.statusCode).toBe(403);
+
+    const responseBody = JSON.parse(response.body);
+    expect(responseBody).toHaveProperty('error', 'UserHasTasks');
+    expect(responseBody).toHaveProperty('message');
+    expect(responseBody.message).toMatch(/delete this user.*tasks/i);
 
     const stillExists = await models.user.query().findById(user.id);
     expect(stillExists).toBeDefined();
