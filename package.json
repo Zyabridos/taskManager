@@ -7,7 +7,6 @@
     "backend"
   ],
   "scripts": {
-    "install": "npm run install -w backend && npm run install -w frontend",
     "build": "npm run build -w backend && npm run build -w frontend",
     "dev": "concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "start": "concurrently \"npm run start -w backend\" \"npm run start -w frontend\"",

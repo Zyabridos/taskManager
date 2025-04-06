@@ -27,6 +27,33 @@ This project follows a mostly open-access approach:
 
 This policy promotes openness for task management while protecting user profiles.
 
+## 🐳 Docker Usage
+You can also run the app inside a Docker container. This is especially useful for testing or deploying in a consistent environment.
+
+### Build Docker Image
+```bash
+make docker-build
+```
+This builds the Docker image and tags it as chat-frontend.
+
+### Start Docker Container
+```bash
+make docker-start
+```
+Runs the container and exposes the app on [http://localhost:3000](http://localhost:3000)
+
+### Stop Docker Container
+```bash
+make docker-stop
+```
+Stops and removes the container.
+
+### Clean Up Docker Resources
+```bash
+make docker-clean
+```
+Stops and removes the container and image, and prunes volumes.
+
 ## Setting Up Environment Variables
 
 The project uses environment variables stored in `.env` files.  

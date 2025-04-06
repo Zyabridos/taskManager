@@ -1,3 +1,23 @@
+# Docker-commands
+docker-build:
+	docker compose build
+
+docker-start:
+	docker compose up -d
+
+docker-stop:
+	docker compose down
+
+docker-clean:
+	docker compose down --volumes --remove-orphans
+	docker image prune -f
+	docker volume prune -f
+
+docker-restart:
+	make docker-stop
+	make docker-build
+	make docker-start
+	
 # Local-comands - common
 install:
 	make install-backend && make install-frontend
