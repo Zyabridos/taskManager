@@ -14,15 +14,18 @@ This project is designed to be straightforward and accessible. It allows users t
 - Create, edit, and delete **labels**, **statuses**, and **tasks**.
 - Sort tasks based on different attributes.
 - View and manage tasks created by any user.
+- View and manage tasks created by any user.
+- Edit and delete their own user profile.
 
-### Open Access Policy
+### Access Policy
 
-In this project, all users have full access to all functionalities. This means that any user can:
+This project follows a mostly open-access approach:
 
-- Create, update, and delete **any** task, label, or status.
-- Edit and delete other users' tasks.
+- All users can create, update, and delete any task, label, or status.
+- Only the logged-in user can edit or delete their own profile.
+- Attempts to edit or delete other users will result in an access denied error.
 
-This design makes it an open-access system where all data is shared among users.
+This policy promotes openness for task management while protecting user profiles.
 
 ## Setting Up Environment Variables
 
@@ -85,18 +88,12 @@ make dev
 
 | Command                  | Description                                    |
 | ------------------------ | ---------------------------------------------- |
-| `make install`           | Installs frontend and backend dependencies.    |
 | `make build`             | Builds the frontend for production.            |
 | `make start`             | Starts the built application.                  |
 | `make dev`               | Runs backend and frontend in development mode. |
 | `make setup`             | Runs prepare, install, and db-migrate.         |
-| `make install-backend`   | Installs backend dependencies.                 |
-| `make test-backend`      | Runs backend tests.                            |
+| `make prepare`           | Prepares environment files.                    |
 | `make db-migrate`        | Runs latest database migrations.               |
 | `make db-rollback`       | Rolls back the last database migration.        |
-| `make build-backend`     | Builds the backend.                            |
-| `make prepare`           | Prepares environment files.                    |
-| `make start-backend`     | Starts the backend server.                     |
-| `make install-frontend`  | Installs frontend dependencies.                |
-| `make dev-frontend`      | Runs frontend in development mode.             |
+| `make test-backend`      | Runs backend tests.                            |
 | `make test-frontend-e2e` | Runs frontend e2e tests using Playwright.      |
