@@ -4,6 +4,7 @@ import { FlatCompat } from '@eslint/eslintrc';
 import eslintPluginReact from 'eslint-plugin-react';
 import eslintPluginTailwindcss from 'eslint-plugin-tailwindcss';
 import eslintPluginI18next from 'eslint-plugin-i18next';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,10 +15,10 @@ const compat = new FlatCompat({
 });
 
 export default [
-  // ✅ Подключаем базовые правила Next.js + React
+  // Next.js defaults
   ...compat.extends('next/core-web-vitals'),
 
-  // ✅ Поддержка JSX, функциональных компонентов и React best practices
+  // Common config
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -26,8 +27,12 @@ export default [
     },
     plugins: {
       react: eslintPluginReact,
+      tailwindcss: eslintPluginTailwindcss,
+      i18next: eslintPluginI18next,
+      prettier: eslintPluginPrettier,
     },
     rules: {
+      // React rules
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
       'react/jsx-filename-extension': ['warn', { extensions: ['.js', '.jsx'] }],
@@ -38,26 +43,12 @@ export default [
           unnamedComponents: 'arrow-function',
         },
       ],
-    },
-  },
 
-  // ✅ TailwindCSS — порядок классов и доп. проверки
-  {
-    plugins: {
-      tailwindcss: eslintPluginTailwindcss,
-    },
-    rules: {
+      // Tailwind rules
       'tailwindcss/classnames-order': 'warn',
       'tailwindcss/no-custom-classname': 'off',
-    },
-  },
 
-  // ✅ i18next — запрет на строки в JSX
-  {
-    plugins: {
-      i18next: eslintPluginI18next,
-    },
-    rules: {
+      // i18next rules
       'i18next/no-literal-string': [
         'warn',
         {
@@ -65,10 +56,13 @@ export default [
           ignoreAttribute: ['data-testid', 'key'],
         },
       ],
+
+      // Prettier integration
+      'prettier/prettier': 'warn',
     },
   },
 
-  // ✅ Prettier — форматирование
+  // Disable ESLint rules that conflict with Prettier
   {
     name: 'prettier-compat',
     rules: eslintConfigPrettier.rules,
