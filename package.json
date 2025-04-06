@@ -1,106 +1,16 @@
 {
-  "name": "@taskmanager/code",
+  "name": "taskmanager",
   "version": "1.0.0",
-  "description": "[![Actions Status](https://github.com/Zyabridos/backend-project-6/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Zyabridos/backend-project-6/actions)",
-  "main": "./server/plugin/init.js",
-  "type": "module",
-  "engines": {
-    "node": "20.17.0"
-  },
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "prebuild": "rm -rf dist",
-    "build": "webpack",
-    "start": "node server/bin/startServer.js",
-    "migrate": "cd backend && migrate:latest",
-    "setup": "npm install && npm start",
-    "test": "jest",
-    "dev": "NODE_ENV=development nodemon server/index.js",
-    "test-report": "jest --coverage && codeclimate-test-reporter < coverage/lcov.info"
-  },
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "<rootDir>/__tests__/helpers/"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Zyabridos/taskManager.git"
-  },
-  "author": "Nina Zyabrina",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Zyabridos/taskManager/issues"
-  },
-<<<<<<< HEAD
-  "homepage": "https://github.com/Zyabridos/taskManager#readme",
-  "dependencies": {
-    "@fastify/cookie": "6.0.0",
-    "@fastify/cors": "8.5.0",
-    "@fastify/flash": "5.2.0",
-    "@fastify/formbody": "7.4.0",
-    "@fastify/passport": "2.3.0",
-    "@fastify/secure-session": "5.2.0",
-    "@fastify/sensible": "5.2.0",
-    "@fastify/session": "6.5.2",
-    "@fastify/static": "6.12.0",
-    "@fastify/view": "7.0.0",
-    "axios": "1.7.9",
-    "bcrypt": "5.1.1",
-    "bootstrap": "^5.3.3",
-    "dotenv": "16.4.7",
-    "express-session": "1.18.1",
-    "fast-json-stringify": "6.0.0",
-    "fast-redact": "^3.5.0",
-    "fastify": "^4.29.0",
-    "fastify-method-override": "^1.5.10",
-    "fastify-objectionjs": "^1.0.0",
-    "fastify-plugin": "^5.0.1",
-    "fastify-reverse-routes": "^3.0.0",
-    "i": "^0.3.7",
-    "i18n": "^0.15.1",
-    "i18next": "^24.2.2",
-    "i18next-fs-backend": "^2.6.0",
-    "i18next-http-middleware": "^3.7.1",
-    "lodash": "^4.17.21",
-    "method-override": "^3.0.0",
-    "objection": "^3.0.1",
-    "objection-unique": "^1.2.2",
-    "passport": "^0.7.0",
-    "passport-local": "^1.0.0",
-    "pg": "^8.14.1",
-    "point-of-view": "^6.3.0",
-    "pug": "^3.0.3",
-    "qs": "6.14.0",
-    "rollbar": "^2.26.4",
-    "sqlite": "5.1.1",
-    "sqlite3": "5.1.7",
-    "yup": "1.6.1"
-  },
-  "devDependencies": {
-    "@babel/preset-env": "7.26.7",
-    "@eslint/js": "^9.17.0",
-    "@faker-js/faker": "9.4.0",
-    "@jest/globals": "29.7.0",
-    "babel-loader": "9.2.1",
-    "codeclimate-test-reporter": "^0.5.1",
-    "copy-webpack-plugin": "^13.0.0",
-    "css-loader": "^7.1.2",
-    "eslint": "^8.57.1",
-    "eslint-config-airbnb-base": "15.0.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jest": "^26.8.7",
-    "globals": "^15.14.0",
-    "husky": "^9.1.7",
-    "jest": "29.7.0",
-    "mini-css-extract-plugin": "2.6.1",
-    "nodemon": "^3.1.9",
-    "prettier": "^3.4.2",
-    "style-loader": "^4.0.0",
-    "webpack": "5.74.0",
-    "webpack-cli": "4.10.0"
+    "install": "npm run install -w backend && npm run install -w frontend",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "dev": "concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "start": "concurrently \"npm run start -w backend\" \"npm run start -w frontend\"",
+    "test": "npm run test -w backend && npm run test -w frontend"
   }
-=======
-  "homepage": "https://github.com/Zyabridos/taskManager#readme"
->>>>>>> feature/split-frontend-backend
 }

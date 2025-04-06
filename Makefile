@@ -3,10 +3,10 @@ install:
 	make install-backend && make install-frontend
 
 build:
-	make build-backend && cd frontend && npm run build
+	make build-frontend
 
 start:
-	make start-backend & cd frontend && npm run start
+	make start-backend & make start-frontend
 
 dev:
 	make start-backend & cd frontend && npm run dev
@@ -44,6 +44,12 @@ start-backend:
 # Local-comands - frontend
 install-frontend:
 	cd frontend && npm ci
+
+build-frontend:
+	cd frontend && npm run build
+
+start-frontend:
+	cd frontend && npm run start
 
 dev-frontend:
 	cd frontend && npm run dev
