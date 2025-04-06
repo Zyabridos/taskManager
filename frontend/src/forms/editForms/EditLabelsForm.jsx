@@ -7,8 +7,8 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import EditFormWrapper from './EditFormWrapper';
 import { labelsApi } from '../../api/labelsApi';
-import FormInput from '../ui/FormInput';
-import FloatingLabel from '../ui/FloatingLabel';
+import FormInput from '../UI/FormInput';
+import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 
@@ -85,7 +85,7 @@ const EditLabelForm = () => {
         />
         <FloatingLabel htmlFor="name" text={tLabels('form.name')} />
         {formik.touched.name && formik.errors.name && (
-          <p className="mt-1 text-xs text-red-500 italic">{formik.errors.name}</p>
+          <p className="mt-1 text-xs italic text-red-500">{formik.errors.name}</p>
         )}
       </div>
     </EditFormWrapper>
