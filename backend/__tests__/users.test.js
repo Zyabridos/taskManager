@@ -3,8 +3,15 @@ import _ from 'lodash';
 import encrypt from '../server/lib/secure.cjs';
 import { makeLogin } from './helpers/index.js';
 import { setStandardBeforeEach } from './helpers/setUpTestsEnv.js';
+import readFixture from './helpers/readFixture.js';
 
 dotenv.config({ path: '.env.test' });
+
+let messages;
+
+beforeAll(async () => {
+  messages = await readFixture('messages.testData.json');
+});
 
 describe('test users CRUD (API)', () => {
   let app;
@@ -74,29 +81,20 @@ describe('test users CRUD (API)', () => {
 
   it('user should NOT be able to update another user — should return 403', async () => {
     const { existing } = testData.users;
-
     const otherUser = await models.user.query().whereNot('email', existing.fixed.email).first();
-
     const cookie = await makeLogin(app, existing.fixed);
 
     const response = await app.inject({
       method: 'PATCH',
       url: `/api/users/${otherUser.id}`,
-      headers: {
-        cookie: `session=${cookie.session}`,
-      },
-      payload: {
-        firstName: 'Hacker',
-      },
+      headers: { cookie: `session=${cookie.session}` },
+      payload: { firstName: 'Hacker' },
     });
 
     expect(response.statusCode).toBe(403);
-
     const responseBody = JSON.parse(response.body);
-    expect(responseBody).toHaveProperty('error');
-    expect(responseBody.error).toBe('Forbidden');
-    expect(responseBody).toHaveProperty('message');
-    expect(responseBody.message).toMatch('You can not edit other users');
+    expect(responseBody.error).toBe(messages.errors.forbidden);
+    expect(responseBody.message).toBe(messages.errors.notOwner);
   });
 
   it('user should be able to delete itself', async () => {
@@ -134,17 +132,13 @@ describe('test users CRUD (API)', () => {
     const response = await app.inject({
       method: 'DELETE',
       url: `/api/users/${user.id}`,
-      headers: {
-        cookie: `session=${cookie.session}`,
-      },
+      headers: { cookie: `session=${cookie.session}` },
     });
 
     expect(response.statusCode).toBe(403);
-
     const responseBody = JSON.parse(response.body);
-    expect(responseBody).toHaveProperty('error', 'UserHasTasks');
-    expect(responseBody).toHaveProperty('message');
-    expect(responseBody.message).toMatch(/delete this user.*tasks/i);
+    expect(responseBody.error).toBe('UserHasTasks');
+    expect(responseBody.message).toBe(messages.errors.userHasTasks);
 
     const stillExists = await models.user.query().findById(user.id);
     expect(stillExists).toBeDefined();

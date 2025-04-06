@@ -81,12 +81,10 @@ export default async (app) => {
       .resultSize();
 
     if (hasTasks > 0) {
-      return reply
-        .code(403)
-        .send({
-          error: 'UserHasTasks',
-          message: 'You can not delete this user because it has tasks',
-        });
+      return reply.code(403).send({
+        error: 'UserHasTasks',
+        message: 'You can not delete this user because it has tasks',
+      });
     }
 
     await user.$query().delete();
