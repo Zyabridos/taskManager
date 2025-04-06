@@ -1,0 +1,34 @@
+{
+  "user": {
+    "email": "example@example.com",
+    "password": "qwerty"
+  },
+  "labels": {
+    "name": "Наименование"
+  },
+  "buttons": {
+    "create": "Создать метку",
+    "edit": "Изменить",
+    "delete": "Удалить"
+  },
+  "messages": {
+    "created": "Метка создана",
+    "updated": "Метка обновлена",
+    "deleted": "Метка удалена"
+  },
+  "errors": {
+    "validation": {
+      "required": "Имя обязательно",
+      "duplicate": "Метка с таким названием уже существует"
+    }
+  },
+  "labelsData": {
+    "new": "Test label",
+    "updated": "Updated Test label"
+  },
+  "url": {
+    "list": "http://localhost:3000/labels",
+    "new": "http://localhost:3000/labels/new",
+    "editPattern": "http://localhost:3000/labels/:id/edit"
+  }
+}

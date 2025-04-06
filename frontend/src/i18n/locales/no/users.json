@@ -1,0 +1,12 @@
+{
+  "form": {
+    "createTitle": "Brukerregistrering",
+    "editTitle": "Rediger bruker",
+    "firstName": "Fornavn",
+    "lastName": "Etternavn",
+    "email": "E-post",
+    "password": "Passord",
+    "submit": "Registrer",
+    "update": "Oppdater"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "pageTitle": "Менеджер задач",
+  "heading": "Привет!",
+  "description": {
+    "main": "Практический fullstack-проект на базе <1>Next.js</1> (frontend), <3>Fastify</3> (backend) и <5>TailwindCSS</5> (стили).",
+    "secondary": "Чистый интерфейс. Мощный бэкенд. Современный стек."
+  },
+  "button": "Узнать больше"
+}

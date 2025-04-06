@@ -1,0 +1,62 @@
+{
+  "user": {
+    "email": "example@example.com",
+    "password": "qwerty"
+  },
+  "users": [
+    {
+      "firstName": "Anna",
+      "lastName": "Ivanova",
+      "email": "anna@example.com",
+      "password": "qwerty"
+    },
+    {
+      "firstName": "Boris",
+      "lastName": "Johnson",
+      "email": "boris@example.com",
+      "password": "qwerty"
+    }
+  ],
+  "statuses": [{ "name": "New" }, { "name": "Completed" }],
+  "labelsList": [{ "name": "Frontend" }, { "name": "Backend" }],
+  "task": {
+    "name": "New test task",
+    "updated": "Updated test Task",
+    "status": "New status",
+    "label": "Test label"
+  },
+  "labels": {
+    "name": "Наименование",
+    "status": "Статус",
+    "label": "Метка",
+    "onlyMyTasks": "Только мои задачи"
+  },
+  "buttons": {
+    "create": "Создать задачу",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "applyFilter": "Показать"
+  },
+  "messages": {
+    "created": "Задача создана",
+    "updated": "Задача обновлена",
+    "deleted": "Задача удалена"
+  },
+  "errors": {
+    "nameRequired": "Имя обязательно",
+    "statusRequired": "Статус обязателен"
+  },
+  "url": {
+    "create": "http://localhost:3000/tasks/new",
+    "list": "http://localhost:3000/tasks",
+    "users": "http://localhost:3000/users",
+    "statuses": "http://localhost:3000/statuses",
+    "labels": "http://localhost:3000/labels"
+  },
+  "columns": {
+    "id": "ID",
+    "executor": "Исполнитель",
+    "status": "Статус",
+    "createdAt": "Дата создания"
+  }
+}

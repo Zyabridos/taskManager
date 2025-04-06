@@ -1,0 +1,8 @@
+{
+  "heading": "Hello!",
+  "description": {
+    "main": "A practical fullstack project built with <1>Next.js</1> (frontend), <3>Fastify</3> (backend), and <5>TailwindCSS</5> (styles).",
+    "secondary": "Clean UI. Powerful backend. Modern stack."
+  },
+  "button": "Learn more"
+}

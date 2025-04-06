@@ -1,0 +1,36 @@
+{
+  "common": {
+    "columns": {
+      "id": "ID",
+      "createdAt": "Дата создания",
+      "actions": "Действия"
+    }
+  },
+  "users": {
+    "pageTitle": "Список пользователей",
+    "columns": {
+      "fullName": "ФИО",
+      "email": "Email"
+    }
+  },
+  "statuses": {
+    "pageTitle": "Список статусов",
+    "columns": {
+      "name": "Наименование"
+    }
+  },
+  "labels": {
+    "pageTitle": "Список меток",
+    "columns": {
+      "name": "Наименование"
+    }
+  },
+  "tasks": {
+    "pageTitle": "Список задач",
+    "columns": {
+      "name": "Наименование",
+      "status": "Статус",
+      "executor": "Исполнитель"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "errors": {
+    "forbidden": "Forbidden",
+    "notOwner": "You can not edit other users",
+    "userHasTasks": "You can not delete this user because it has tasks",
+    "userNotFound": "User not found",
+    "emailExists": "Email already in use"
+  },
+  "messages": {
+    "signedUp": "You have successfully signed up",
+    "updated": "User updated successfully",
+    "deleted": "User deleted successfully"
+  }
+}

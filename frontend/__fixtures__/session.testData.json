@@ -1,0 +1,31 @@
+{
+  "labels": {
+    "email": "Email",
+    "password": "Пароль"
+  },
+  "buttons": {
+    "signIn": "Войти",
+    "signOut": "Выход"
+  },
+  "messages": {
+    "signedIn": "Вы вошли в систему",
+    "signedOut": "Вы вышли из системы"
+  },
+  "user": {
+    "email": "example@example.com",
+    "password": "qwerty",
+    "wrongEmailFormat": "a",
+    "shortPassword": "1"
+  },
+  "errors": {
+    "requieredPassword": "Пароль обязателен",
+    "requieredEmail": "Email обязателен",
+    "wrongEmailFormat": "Неверный Email",
+    "min3symbols": "Минимум 3 символа"
+  },
+  "url": {
+    "root": "http://localhost:3000",
+    "signIn": "http://localhost:3000/session/new",
+    "usersList": "http://localhost:3000/users"
+  }
+}

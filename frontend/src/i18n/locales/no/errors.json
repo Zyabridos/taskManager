@@ -1,0 +1,6 @@
+{
+  "createUserFailed": "Kunne ikke opprette bruker",
+  "userNotFound": "Brukeren ble ikke funnet",
+  "unauthorized": "Du er ikke autorisert",
+  "signInFailed": "Innlogging mislyktes"
+}

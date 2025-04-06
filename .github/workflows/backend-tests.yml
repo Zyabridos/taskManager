@@ -1,0 +1,29 @@
+name: My Backend Tests Workflow
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  user-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: make install-backend
+
+      - name: Prepare env
+        run: make prepare
+
+      - name: Apply database migrations
+        run: make db-migrate
+
+      - name: Run tests
+        run: make test-backend
