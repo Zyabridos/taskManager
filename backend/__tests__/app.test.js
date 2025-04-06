@@ -17,7 +17,7 @@ describe('requests', () => {
     await init(app);
   });
 
-  it('GET / should return 200', async () => {
+  it('GET /api should return 200', async () => {
     await setUpTestsEnv(app, 'GET', '/');
   });
 
