@@ -50,7 +50,7 @@ describe('test users CRUD (API)', () => {
     expect(user).toMatchObject(expected);
   });
 
-  it('should update a user', async () => {
+  it('user should be able to update itself', async () => {
     const params = testData.users.existing.fixed;
     const user = await models.user.query().findOne({ email: params.email });
     const newLastName = 'Golovach';
@@ -70,7 +70,23 @@ describe('test users CRUD (API)', () => {
     expect(updatedUser.lastName).toBe(newLastName);
   });
 
-  it('should delete a user', async () => {
+  it('user should NOT be able to get to page to edit another user', async () => {
+    const params = testData.users.existing.fixed;
+    const user = await models.user.query().findOne({ email: params.email });
+
+    cookie = await makeLogin(app, params);
+
+    const response = await app.inject({
+      method: 'PATCH',
+      url: `/api/users/${user.id}`,
+      cookies: cookie,
+      payload: { ...params, lastName: newLastName },
+    });
+
+    expect(response.statusCode).toBe(422);
+  });
+
+  it('user should be able to delete itself', async () => {
     const params = testData.users.existing.fixed;
     const user = await models.user.query().findOne({ email: params.email });
 

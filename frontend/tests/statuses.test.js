@@ -49,10 +49,13 @@ test.describe('statuses CRUD visual (UI)', () => {
     await expect(page).toHaveURL(statusData.url.list);
     await expect(page.locator(`text=${protectedStatusName}`)).toBeVisible();
 
+    console.log('asjd')
     await page.goto(taskData.url.list);
+    console.log('taskData.buttons.create', taskData.buttons.create)
     await clickLinkByName(page, taskData.buttons.create);
 
     const taskName = 'Test Task with Status';
+    console.log('taskData.labels.name', taskData.labels.name)
     await page.getByLabel(taskData.labels.name).fill(taskName);
 
     const statusSelect = page.getByLabel(taskData.labels.status);

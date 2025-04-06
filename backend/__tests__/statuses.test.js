@@ -106,7 +106,7 @@ describe('test statuses CRUD (REST API)', () => {
       headers: { cookie: `session=${cookie.session}` },
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(422);
 
     const stillExists = await models.status.query().findById(statusToDelete.id);
     expect(stillExists).toBeDefined();

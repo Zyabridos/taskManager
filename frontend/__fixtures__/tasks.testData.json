@@ -32,7 +32,7 @@
     "onlyMyTasks": "Только мои задачи"
   },
   "buttons": {
-    "create": "Создать",
+    "create": "Создать задачу",
     "edit": "Изменить",
     "delete": "Удалить",
     "applyFilter": "Показать"
