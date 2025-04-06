@@ -1,10 +1,10 @@
-### Hexlet tests and linter status:
+### Codeclimate
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/dd3b0c8de30f780cffa1/maintainability)](https://codeclimate.com/github/Zyabridos/taskManager/maintainability)
 
 # Task Manager
 
-Task Manager is a simple task management system built with **PostgreSQL** and **Fastify**. It provides basic task management functionalities, including user authentication and the ability to create, edit, and delete labels, statuses, and tasks. Tasks can also be sorted based on various criteria
+Task Manager is a simple task management system built with **PostgreSQL** and **Fastify**. It provides basic task management functionalities, including user authentication and the ability to create, edit, and delete labels, statuses, and tasks. Tasks can also be sorted based on various criteria.
 
 ## Project Overview
 
@@ -26,19 +26,14 @@ This design makes it an open-access system where all data is shared among users.
 
 ## Setting Up Environment Variables
 
-The project uses environment variables stored in `.env` files.
+The project uses environment variables stored in `.env` files.  
 For running tests, create a `.env.test` file by copying `.env.example`:
 
 ```bash
 cp .env.example .env.test
 ```
 
-Then update the values in .env.test if necessary.
-
-# Deployed version
-
-[Deployed project](https://taskmanager-tnpn.onrender.com/)
-You can Sign in by creating an account
+Then update the values in `.env.test` if necessary.
 
 # Project Setup Locally
 
@@ -59,30 +54,26 @@ To install project dependencies, run:
 make install
 ```
 
-This will run `npm install` to install dependencies.
+This will install dependencies for both backend and frontend.
 
-## Building the Project
+## 🛠️ Build the Project
 
-Run:
+To build the frontend for production:
 
 ```bash
 make build
 ```
 
-This will:
-
-1. Remove the existing `dist` directory.
-2. Build the frontend using `npm run build`.
-
-## Start the Project
-
-To start the built app, run:
+To start the built app:
 
 ```bash
 make start
 ```
 
-This command will launch the app. By default, the app should be accessible at [http://localhost:5001](http://localhost:5001/). If you cannot access the app, check the terminal output for the correct URL or any errors related to the server startup.
+By default:
+
+- Frontend is available at: [http://localhost:5001](http://localhost:5001)
+- Backend API runs at: [http://localhost:3000](http://localhost:3000)
 
 ## Run in development mode
 
@@ -92,9 +83,20 @@ make dev
 
 ## Summary of Makefile Commands
 
-| Command        | Description                           |
-| -------------- | ------------------------------------- |
-| `make install` | Installs dependencies using `npm ci`. |
-| `make build`   | Builds the frontend for production.   |
-| `make start`   | Starts the built application.         |
-| `make dev`     | Run in development mode               |
+| Command                  | Description                                    |
+| ------------------------ | ---------------------------------------------- |
+| `make install`           | Installs frontend and backend dependencies.    |
+| `make build`             | Builds the frontend for production.            |
+| `make start`             | Starts the built application.                  |
+| `make dev`               | Runs backend and frontend in development mode. |
+| `make setup`             | Runs prepare, install, and db-migrate.         |
+| `make install-backend`   | Installs backend dependencies.                 |
+| `make test-backend`      | Runs backend tests.                            |
+| `make db-migrate`        | Runs latest database migrations.               |
+| `make db-rollback`       | Rolls back the last database migration.        |
+| `make build-backend`     | Builds the backend.                            |
+| `make prepare`           | Prepares environment files.                    |
+| `make start-backend`     | Starts the backend server.                     |
+| `make install-frontend`  | Installs frontend dependencies.                |
+| `make dev-frontend`      | Runs frontend in development mode.             |
+| `make test-frontend-e2e` | Runs frontend e2e tests using Playwright.      |
