@@ -1,3 +1,19 @@
+# Local-comands - common
+install:
+	make install-backend && make install-frontend
+
+build:
+	make build-backend && cd frontend && npm run build
+
+start:
+	make start-backend & cd frontend && npm run start
+
+dev:
+	make start-backend & cd frontend && npm run dev
+
+setup:
+	make prepare && make install && make db-migrate
+
 # Local-comands - backend
 setup:
 	prepare install db-migrate
@@ -26,7 +42,6 @@ start-backend:
 	cd backend && npm run start
 
 # Local-comands - frontend
-
 install-frontend:
 	cd frontend && npm ci
 
