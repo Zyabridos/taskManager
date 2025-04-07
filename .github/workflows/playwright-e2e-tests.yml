@@ -38,6 +38,7 @@ jobs:
         run: make start-frontend &
         env:
           NODE_ENV: test
+          PORT: 3000
 
       - name: Wait for backend to be ready
         run: |
