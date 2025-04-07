@@ -35,7 +35,7 @@ jobs:
           NODE_ENV: test
 
       - name: Start frontend
-        run: make start-frontend &
+        run: cd frontend && PORT=3000 npm run start &
         env:
           NODE_ENV: test
           PORT: 3000
