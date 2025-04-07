@@ -89,6 +89,5 @@ test-frontend-e2e:
 lint-frontend:
 	cd frontend && npm run lint
 
-
 format-frontend:
 	cd frontend && npm run format

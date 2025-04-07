@@ -5,6 +5,7 @@ import fastifySecureSession from '@fastify/secure-session';
 import fastifyPassport from '@fastify/passport';
 import fastifySensible from '@fastify/sensible';
 import fastifyMethodOverride from 'fastify-method-override';
+import fastifyCors from '@fastify/cors';
 import qs from 'qs';
 import dotenv from 'dotenv';
 
@@ -15,6 +16,11 @@ import models from '../../models/index.js';
 dotenv.config();
 
 const registerPlugins = async (app) => {
+  await app.register(fastifyCors, {
+  origin: true,
+  credentials: true,
+});
+
   await app.register(fastifySensible);
 
   await app.register(fastifyFormbody, { parser: qs.parse });
