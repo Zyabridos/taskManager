@@ -30,18 +30,12 @@ jobs:
         run: cd frontend && npx playwright install --with-deps
 
       - name: Start backend
-        run: |
-          cd backend
-          nohup npm run dev &
-
+        run: make start-backend
         env:
           NODE_ENV: test
 
       - name: Start frontend
-        run: |
-          cd frontend
-          npm run build
-          nohup npm run dev &
+        run: make start-frontend
         env:
           NODE_ENV: test
 
