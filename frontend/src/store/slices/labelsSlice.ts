@@ -22,10 +22,19 @@ export const fetchLabel = createAsyncThunk<Label[]>('labels/fetchLabels', async 
   return await labelsApi.getAll();
 });
 
-export const deleteLabelThunk = createAsyncThunk<number, number>('labels/deleteLabel', async id => {
-  await labelsApi.remove(id);
-  return id;
-});
+export const deleteLabelThunk = createAsyncThunk<number, number, { rejectValue: any }>(
+  'statuses/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await labelsApi.remove(id);
+      return id;
+    } catch (err: any) {
+      const errorData = err?.response?.data;
+      return rejectWithValue(errorData ?? { error: 'Unknown error' });
+    }
+  },
+);
+
 
 const labelsSlice = createSlice({
   name: 'labels',

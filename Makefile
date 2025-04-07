@@ -20,7 +20,7 @@ docker-restart:
 
 # Local-comands - common
 install:
-	npm install
+	npm ci
 
 build:
 	make build-frontend

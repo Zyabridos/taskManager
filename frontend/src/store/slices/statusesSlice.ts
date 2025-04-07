@@ -35,7 +35,6 @@ export const deleteStatusThunk = createAsyncThunk<number, number, { rejectValue:
   },
 );
 
-
 const statusesSlice = createSlice({
   name: 'statuses',
   initialState,

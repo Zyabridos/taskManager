@@ -31,6 +31,7 @@ const LabelsList = () => {
       await dispatch(deleteLabelThunk(id)).unwrap();
       showToast({ type: 'label', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
+      console.log('error during label deleting', e)
       showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
     }
   };
@@ -73,7 +74,7 @@ const LabelsList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
