@@ -20,7 +20,7 @@ docker-restart:
 
 # Local-comands - common
 install:
-	make install-backend && make install-frontend
+	npm install
 
 build:
 	make build-frontend
@@ -41,8 +41,6 @@ lint:
 	make lint-backend && make lint-frontend
 
 # Local-comands - backend
-install-backend:
-	cd backend && npm install
 
 test-backend:
 	cd backend && npm test -s
@@ -71,9 +69,6 @@ format-backend:
 	cd backend && npx prettier --write .
 
 # Local-comands - frontend
-install-frontend:
-	cd frontend && npm ci
-
 build-frontend:
 	cd frontend && npm run build
 
