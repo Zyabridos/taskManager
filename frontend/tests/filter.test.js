@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
-import { LogInExistingUser } from './helpers/session.js';
+import { LogInExistingUser, signUpNewUser } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 
 test.setTimeout(20000);
@@ -17,7 +17,7 @@ test.beforeAll(async () => {
 
 test.describe('Tasks List Filter UI', () => {
   test.beforeEach(async ({ page }) => {
-    await LogInExistingUser(page, taskData.user.email);
+    await signUpNewUser(page, taskData.user.email, taskData.user.password);
 
     await page.goto(statusData.url.list);
     await clickLinkByName(page, statusData.buttons.create);

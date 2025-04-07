@@ -16,6 +16,7 @@ import useHandleToastError from '../../hooks/useHandleErrorToast';
 const StatusesList = () => {
   const dispatch = useDispatch();
   const { list, status, error } = useSelector(state => state.statuses);
+  console.log(status);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { t: tStatuses } = useTranslation('statuses');
@@ -90,7 +91,7 @@ const StatusesList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

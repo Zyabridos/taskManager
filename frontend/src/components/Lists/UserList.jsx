@@ -46,7 +46,20 @@ const UserList = () => {
       await dispatch(deleteUserThunk(id)).unwrap();
       showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      handleToastError(e, { type: 'user', action: 'failedDelete', titleKey: 'errorTitle' });
+      const message = e?.response?.data?.message;
+
+      console.log('error message:', message);
+
+      if (message.includes('edit other users')) {
+        showToast({
+          type: 'user',
+          action: 'user.errors.notOwnerEdit',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
+      } else {
+        handleToastError(e, { type: 'user', action: 'failedDelete', titleKey: 'errorTitle' });
+      }
     }
   };
 
