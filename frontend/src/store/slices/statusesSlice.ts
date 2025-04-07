@@ -22,17 +22,19 @@ export const fetchStatuses = createAsyncThunk<Status[]>('statuses/fetchStatuses'
   return await statusesApi.getAll();
 });
 
-export const deleteStatusThunk = createAsyncThunk<number, number, { rejectValue: string }>(
+export const deleteStatusThunk = createAsyncThunk<number, number, { rejectValue: any }>(
   'statuses/delete',
   async (id, { rejectWithValue }) => {
     try {
       await statusesApi.remove(id);
       return id;
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to delete status');
+      const errorData = err?.response?.data;
+      return rejectWithValue(errorData ?? { error: 'Unknown error' });
     }
   },
 );
+
 
 const statusesSlice = createSlice({
   name: 'statuses',

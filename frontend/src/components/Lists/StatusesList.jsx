@@ -38,9 +38,8 @@ const StatusesList = () => {
         titleKey: 'successTitle',
       });
     } catch (e) {
-      const message = e?.response?.data?.error;
 
-      const isInUse = typeof message === 'string' && message.includes('in use');
+      const isInUse = typeof e?.message === 'string' && e.message.includes('in use');
 
       handleToastError(e, {
         type: 'status',
@@ -91,7 +90,7 @@ const StatusesList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>

@@ -3,6 +3,7 @@ import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 import { LogInExistingUser } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 import { deleteTaskByName, deleteStatusByName } from './helpers/deleteEntity.js';
+import { faker } from '@faker-js/faker';
 
 let statusData;
 let taskData;
@@ -14,7 +15,7 @@ test.beforeAll(async () => {
 
 test.describe('statuses CRUD visual (UI)', () => {
   test.beforeEach(async ({ page }) => {
-    await LogInExistingUser(page, statusData.user.email);
+    await LogInExistingUser(page, statusData.user.email, statusData.user.password);
   });
 
   test('Should show list of statuses from backend', async ({ page }) => {
@@ -41,7 +42,7 @@ test.describe('statuses CRUD visual (UI)', () => {
   test('Should NOT allow deleting a status that has a related task', async ({ page }) => {
     await page.goto(statusData.url.list);
 
-    const protectedStatusName = 'Used Status';
+    const protectedStatusName = `Used Status ${faker.string.uuid()}`;
     await clickLinkByName(page, statusData.buttons.create);
     await expect(page).toHaveURL(statusData.url.new);
     await page.getByLabel(statusData.labels.name).fill(protectedStatusName);
@@ -54,7 +55,7 @@ test.describe('statuses CRUD visual (UI)', () => {
     console.log('taskData.buttons.create', taskData.buttons.create);
     await clickLinkByName(page, taskData.buttons.create);
 
-    const taskName = 'Test Task with Status';
+    const taskName = `Test Task With Status ${faker.string.uuid()}`;
     console.log('taskData.labels.name', taskData.labels.name);
     await page.getByLabel(taskData.labels.name).fill(taskName);
 
