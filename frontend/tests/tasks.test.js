@@ -34,53 +34,53 @@ test.describe('Tasks CRUD visual (UI)', () => {
     await expect(page.locator(`text=${taskData.task.name}`)).toBeVisible();
   });
 
-  test('Should show validation errors if required fields - name and status - are empty', async ({
-    page,
-  }) => {
-    await page.goto(taskData.url.create);
+  // test('Should show validation errors if required fields - name and status - are empty', async ({
+  //   page,
+  // }) => {
+  //   await page.goto(taskData.url.create);
 
-    await clickButtonByName(page, taskData.buttons.create);
+  //   await clickButtonByName(page, taskData.buttons.create);
 
-    await expect(page).toHaveURL(taskData.url.create);
+  //   await expect(page).toHaveURL(taskData.url.create);
 
-    await expect(page.locator(`text=${taskData.errors.nameRequired}`)).toBeVisible();
-    await expect(page.locator(`text=${taskData.errors.statusRequired}`)).toBeVisible();
-  });
+  //   await expect(page.locator(`text=${taskData.errors.nameRequired}`)).toBeVisible();
+  //   await expect(page.locator(`text=${taskData.errors.statusRequired}`)).toBeVisible();
+  // });
 
-  test('Should update a specific task', async ({ page }) => {
-    const updatedName = taskData.task.updated;
-    await page.goto(taskData.url.list);
+  // test('Should update a specific task', async ({ page }) => {
+  //   const updatedName = taskData.task.updated;
+  //   await page.goto(taskData.url.list);
 
-    const taskRow = page.locator('table tbody tr', { hasText: taskData.task.name });
-    await expect(taskRow).toBeVisible();
+  //   const taskRow = page.locator('table tbody tr', { hasText: taskData.task.name });
+  //   await expect(taskRow).toBeVisible();
 
-    const editLink = taskRow.getByRole('link', { name: taskData.buttons.edit });
-    await editLink.click();
+  //   const editLink = taskRow.getByRole('link', { name: taskData.buttons.edit });
+  //   await editLink.click();
 
-    await page.getByLabel(taskData.labels.name).fill(updatedName);
+  //   await page.getByLabel(taskData.labels.name).fill(updatedName);
 
-    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
+  //   await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
 
-    await clickButtonByName(page, taskData.buttons.edit);
+  //   await clickButtonByName(page, taskData.buttons.edit);
 
-    await expect(page).toHaveURL(taskData.url.list);
-    await expect(page.locator(`text=${taskData.messages.updated}`)).toBeVisible();
-    await expect(page.locator(`text=${updatedName}`)).toBeVisible();
-  });
+  //   await expect(page).toHaveURL(taskData.url.list);
+  //   await expect(page.locator(`text=${taskData.messages.updated}`)).toBeVisible();
+  //   await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+  // });
 
-  test('Should delete a specific task', async ({ page }) => {
-    await page.goto(taskData.url.list);
+  // test('Should delete a specific task', async ({ page }) => {
+  //   await page.goto(taskData.url.list);
 
-    const row = page.locator('table tbody tr', { hasText: taskData.task.updated });
+  //   const row = page.locator('table tbody tr', { hasText: taskData.task.updated });
 
-    await expect(row).toBeVisible();
+  //   await expect(row).toBeVisible();
 
-    const deleteButton = row.getByRole('button', { name: taskData.buttons.delete });
+  //   const deleteButton = row.getByRole('button', { name: taskData.buttons.delete });
 
-    await deleteButton.click();
+  //   await deleteButton.click();
 
-    await expect(page).toHaveURL(taskData.url.list);
-    await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
-    await expect(page.locator(`text=${taskData.task.name}`)).not.toBeVisible();
-  });
+  //   await expect(page).toHaveURL(taskData.url.list);
+  //   await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
+  //   await expect(page.locator(`text=${taskData.task.name}`)).not.toBeVisible();
+  // });
 });

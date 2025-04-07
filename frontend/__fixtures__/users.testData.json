@@ -1,4 +1,8 @@
 {
+  "existing": {
+    "email": "example@example.com",
+    "password": "qwerty"
+  },
   "labels": {
     "firstName": "Имя",
     "lastName": "Фамилия",
@@ -29,6 +33,7 @@
     "root": "http://localhost:3000",
     "signUp": "http://localhost:3000/users/new",
     "signIn": "http://localhost:3000/session/new",
-    "usersList": "http://localhost:3000/users"
+    "usersList": "http://localhost:3000/users",
+    "afterSignUp": "http://localhost:3000/users"
   }
 }

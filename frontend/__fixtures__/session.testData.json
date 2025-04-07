@@ -26,6 +26,8 @@
   "url": {
     "root": "http://localhost:3000",
     "signIn": "http://localhost:3000/session/new",
-    "usersList": "http://localhost:3000/users"
+    "usersList": "http://localhost:3000/users",
+    "afterLogin": "http://localhost:3000/users",
+    "afterLogout": "http://localhost:3000/session/new"
   }
 }

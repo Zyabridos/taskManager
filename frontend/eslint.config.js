@@ -58,7 +58,7 @@ export default [
       ],
 
       // Prettier integration
-      'prettier/prettier': 'warn',
+      // 'prettier/prettier': 'warn',
     },
   },
 

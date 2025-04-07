@@ -1,20 +1,15 @@
-import routes from '../../src/routes';
-import { clickButtonByName } from './selectors.js';
 import readFixture from './readFixture.js';
+import { clickButtonByName } from './selectors.js';
 
-const userData = await readFixture('users.testData.json');
-const baseUrl = 'http://localhost:3000';
+const sessionData = await readFixture('session.testData.json');
 
-export const LogInExistingUser = async (
-  page,
-  email = 'example@example.com',
-  password = 'qwerty',
-) => {
-  await page.goto(`${baseUrl}${routes.app.session.new()}`);
+export const LogInExistingUser = async (page, email, password) => {
+  await page.goto(sessionData.url.signIn);
 
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Пароль').fill(password);
-  await clickButtonByName(page, 'Войти');
+  await page.getByLabel(sessionData.labels.email).fill(email ?? sessionData.user.email);
+  await page.getByLabel(sessionData.labels.password).fill(password ?? sessionData.user.password);
+
+  await clickButtonByName(page, sessionData.buttons.signIn);
 };
 
 export const signUpNewUser = async (
@@ -24,6 +19,8 @@ export const signUpNewUser = async (
   firstName = 'Name',
   lastName = 'Surname',
 ) => {
+  const userData = await readFixture('users.testData.json');
+
   await page.goto(userData.url.signUp);
 
   await page.getByLabel(userData.labels.firstName).fill(firstName);
@@ -31,9 +28,9 @@ export const signUpNewUser = async (
   await page.getByLabel(userData.labels.email).fill(email);
   await page.getByLabel(userData.labels.password).fill(password);
 
-  await page.getByRole('button', { name: userData.buttons.signUp }).click();
+  await clickButtonByName(page, userData.buttons.signUp);
 };
 
 export const logOutUser = async page => {
-  clickButtonByName(page, 'Выход');
+  await clickButtonByName(page, sessionData.buttons.signOut);
 };
