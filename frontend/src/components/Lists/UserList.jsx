@@ -16,7 +16,7 @@ import useHandleToastError from '../../hooks/useHandleErrorToast';
 
 const UserList = () => {
   const dispatch = useDispatch();
-  const { list, status, error } = useSelector((state) => state.users);
+  const { list, status, error } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { showToast } = useEntityToast();
@@ -29,29 +29,32 @@ const UserList = () => {
 
   const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
 
-  const handleDelete = useCallback(async (id) => {
-    try {
-      await dispatch(deleteUserThunk(id)).unwrap();
-      showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
-    } catch (e) {
-      const message = e?.response?.data?.message;
+  const handleDelete = useCallback(
+    async id => {
+      try {
+        await dispatch(deleteUserThunk(id)).unwrap();
+        showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
+      } catch (e) {
+        const message = e?.response?.data?.message;
 
-      if (message?.includes?.('edit other users')) {
-        showToast({
-          type: 'user',
-          action: 'user.errors.notOwnerEdit',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      } else {
-        handleToastError(e, {
-          type: 'user',
-          action: 'failedDelete',
-          titleKey: 'errorTitle',
-        });
+        if (message?.includes?.('edit other users')) {
+          showToast({
+            type: 'user',
+            action: 'user.errors.notOwnerEdit',
+            titleKey: 'errorTitle',
+            toastType: 'error',
+          });
+        } else {
+          handleToastError(e, {
+            type: 'user',
+            action: 'failedDelete',
+            titleKey: 'errorTitle',
+          });
+        }
       }
-    }
-  }, [dispatch, showToast, handleToastError]);
+    },
+    [dispatch, showToast, handleToastError],
+  );
 
   return (
     <div className="mt-6 overflow-x-auto">
@@ -86,14 +89,20 @@ const UserList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {sortedList.map((user) => (
-            <tr key={user.id}>
+          {sortedList.map(user => (
+            <tr
+              key={user.id}
+              data-id={user.id}
+              data-email={user.email}
+              data-name={`${user.firstName} ${user.lastName}`}
+              data-created-at={user.createdAt}
+            >
               <td className="px-6 py-4 text-sm text-gray-900">{user.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
                 {user.firstName} {user.lastName}

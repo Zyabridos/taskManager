@@ -17,9 +17,9 @@ dotenv.config();
 
 const registerPlugins = async (app) => {
   await app.register(fastifyCors, {
-  origin: true,
-  credentials: true,
-});
+    origin: true,
+    credentials: true,
+  });
 
   await app.register(fastifySensible);
 

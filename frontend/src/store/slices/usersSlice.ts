@@ -18,13 +18,9 @@ const initialState: UsersState = {
   error: null,
 };
 
-
-export const fetchUsers = createAsyncThunk<User[]>(
-  'users/fetchUsers',
-  async () => {
-    return await usersApi.getAll();
-  }
-);
+export const fetchUsers = createAsyncThunk<User[]>('users/fetchUsers', async () => {
+  return await usersApi.getAll();
+});
 
 export const deleteUserThunk = createAsyncThunk<number, number, { rejectValue: string }>(
   'users/delete',
@@ -42,9 +38,9 @@ const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
+      .addCase(fetchUsers.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {

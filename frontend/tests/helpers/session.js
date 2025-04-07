@@ -1,5 +1,6 @@
 import readFixture from './readFixture.js';
 import { clickButtonByName } from './selectors.js';
+import { faker } from '@faker-js/faker';
 
 const sessionData = await readFixture('session.testData.json');
 
@@ -14,8 +15,8 @@ export const LogInExistingUser = async (page, email, password) => {
 
 export const signUpNewUser = async (
   page,
-  email,
-  password,
+  email = faker.internet.email(),
+  password = faker.internet.password(8),
   firstName = 'Name',
   lastName = 'Surname',
 ) => {
@@ -29,6 +30,8 @@ export const signUpNewUser = async (
   await page.getByLabel(userData.labels.password).fill(password);
 
   await clickButtonByName(page, userData.buttons.signUp);
+
+  return { email, password, firstName, lastName };
 };
 
 export const logOutUser = async page => {

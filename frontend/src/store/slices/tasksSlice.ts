@@ -43,21 +43,18 @@ export const fetchTasks = createAsyncThunk<
   }
 });
 
-export const deleteTaskThunk = createAsyncThunk<number, number>(
-  'tasks/deleteTask',
-  async (id) => {
-    await tasksApi.remove(id);
-    return id;
-  }
-);
+export const deleteTaskThunk = createAsyncThunk<number, number>('tasks/deleteTask', async id => {
+  await tasksApi.remove(id);
+  return id;
+});
 
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchTasks.pending, (state) => {
+      .addCase(fetchTasks.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchTasks.fulfilled, (state, action: PayloadAction<Task[]>) => {

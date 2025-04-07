@@ -18,28 +18,22 @@ const initialState: LabelsState = {
   error: null,
 };
 
-export const fetchLabel = createAsyncThunk<Label[]>(
-  'labels/fetchLabels',
-  async () => {
-    return await labelsApi.getAll();
-  }
-);
+export const fetchLabel = createAsyncThunk<Label[]>('labels/fetchLabels', async () => {
+  return await labelsApi.getAll();
+});
 
-export const deleteLabelThunk = createAsyncThunk<number, number>(
-  'labels/deleteLabel',
-  async (id) => {
-    await labelsApi.remove(id);
-    return id;
-  }
-);
+export const deleteLabelThunk = createAsyncThunk<number, number>('labels/deleteLabel', async id => {
+  await labelsApi.remove(id);
+  return id;
+});
 
 const labelsSlice = createSlice({
   name: 'labels',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchLabel.pending, (state) => {
+      .addCase(fetchLabel.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchLabel.fulfilled, (state, action: PayloadAction<Label[]>) => {
