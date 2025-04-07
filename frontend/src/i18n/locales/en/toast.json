@@ -1,0 +1,79 @@
+{
+  "successTitle": "Success",
+  "errorTitle": "Error",
+  "registered": {
+    "success": {
+      "user": "You are registered"
+    },
+    "errors": {
+      "alreadyInUse": {
+        "user": "A user with this email already exists"
+      }
+    }
+  },
+  "loggedIn": {
+    "success": {
+      "user": "You are logged in"
+    },
+    "error": {
+      "user": "Incorrect Email or Password"
+    }
+  },
+  "loggedOut": {
+    "success": {
+      "user": "You are logged out"
+    }
+  },
+  "created": {
+    "status": "Status created",
+    "user": "User created",
+    "label": "Label created",
+    "task": "Task created"
+  },
+  "updated": {
+    "status": "Status updated",
+    "user": "User updated",
+    "label": "Label updated",
+    "task": "Task updated"
+  },
+  "deleted": {
+    "status": "Status deleted",
+    "user": "User deleted",
+    "label": "Label deleted",
+    "task": "Task deleted"
+  },
+  "failedCreate": {
+    "status": "Error creating status",
+    "user": "Error creating user",
+    "label": "Error creating label",
+    "task": "Error creating task"
+  },
+  "failedDelete": {
+    "status": "Error deleting status",
+    "user": "Error deleting user",
+    "label": "Error deleting label",
+    "task": "Error deleting task"
+  },
+  "failedUpdate": {
+    "status": "Error updating status",
+    "user": "Error updating user",
+    "label": "Error updating label",
+    "task": "Error updating task"
+  },
+  "alreadyExists": {
+    "status": "A status with this name already exists",
+    "user": "A user with this email is already registered",
+    "label": "A label with this name already exists",
+    "task": "A task with this name already exists"
+  },
+  "hasTasks": {
+    "status": "Cannot delete status as it is used in one or more tasks",
+    "user": "Cannot delete user as they have one or more tasks"
+  },
+  "notOwner": {
+    "user": "You cannot delete other users"
+  },
+  "notOwnerEdit": {
+    "user": "You cannot edit other users"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "form": {
+    "createTitle": "Create Label",
+    "editTitle": "Edit Label",
+    "name": "Name",
+    "update": "Update",
+    "create": "Create Label"
+  }
+}

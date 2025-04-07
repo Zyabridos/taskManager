@@ -1,6 +1,6 @@
 {
-  "createUserFailed": "Failed to create user",
+  "createUserFailed": "Error creating user",
   "userNotFound": "User not found",
   "unauthorized": "You are not authorized",
-  "signInFailed": "Sign in failed"
+  "signInFailed": "Error signing in"
 }

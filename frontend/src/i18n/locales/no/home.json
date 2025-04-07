@@ -1,8 +1,9 @@
 {
+  "pageTitle": "Oppgavebehandler",
   "heading": "Hei!",
   "description": {
-    "main": "Et praktisk fullstack-prosjekt bygget med <1>Next.js</1> (frontend), <3>Fastify</3> (backend) og <5>TailwindCSS</5> (stiler).",
-    "secondary": "Rent grensesnitt. Kraftig backend. Moderne stack."
+    "main": "Praktisk fullstack-prosjekt basert på <1>Next.js</1> (frontend), <3>Fastify</3> (backend) og <5>TailwindCSS</5> (stiler).",
+    "secondary": "Ren grensesnitt. Kraftig backend. Moderne stack."
   },
-  "button": "Les mer"
+  "button": "Lær mer"
 }

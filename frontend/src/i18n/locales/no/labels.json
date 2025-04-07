@@ -1,0 +1,9 @@
+{
+  "form": {
+    "createTitle": "Opprett merkelapp",
+    "editTitle": "Rediger merkelapp",
+    "name": "Navn",
+    "update": "Oppdater",
+    "create": "Opprett merkelapp"
+  }
+}

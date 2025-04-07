@@ -1,0 +1,18 @@
+{
+  "form": {
+    "createTitle": "Create Task",
+    "editTitle": "Edit Task",
+    "name": "Name",
+    "update": "Update",
+    "edit": "Edit",
+    "create": "Create Task",
+    "status": "Status",
+    "description": "Description",
+    "executor": "Executor",
+    "labels": "Label"
+  },
+  "filter": {
+    "show": "Show",
+    "onlyMyTasks": "Only My Tasks"
+  }
+}

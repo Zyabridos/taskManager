@@ -3,6 +3,7 @@
     "createTitle": "Opprett status",
     "editTitle": "Rediger status",
     "name": "Navn",
-    "update": "Oppdater"
+    "update": "Oppdater",
+    "create": "Opprett status"
   }
 }

@@ -1,0 +1,79 @@
+{
+  "successTitle": "Suksess",
+  "errorTitle": "Feil",
+  "registered": {
+    "success": {
+      "user": "Du er registrert"
+    },
+    "errors": {
+      "alreadyInUse": {
+        "user": "En bruker med denne e-posten eksisterer allerede"
+      }
+    }
+  },
+  "loggedIn": {
+    "success": {
+      "user": "Du er logget inn"
+    },
+    "error": {
+      "user": "Feil e-post eller passord"
+    }
+  },
+  "loggedOut": {
+    "success": {
+      "user": "Du er logget ut"
+    }
+  },
+  "created": {
+    "status": "Status opprettet",
+    "user": "Bruker opprettet",
+    "label": "Merkelapp opprettet",
+    "task": "Oppgave opprettet"
+  },
+  "updated": {
+    "status": "Status oppdatert",
+    "user": "Bruker oppdatert",
+    "label": "Merkelapp oppdatert",
+    "task": "Oppgave oppdatert"
+  },
+  "deleted": {
+    "status": "Status slettet",
+    "user": "Bruker slettet",
+    "label": "Merkelapp slettet",
+    "task": "Oppgave slettet"
+  },
+  "failedCreate": {
+    "status": "Feil ved oppretting av status",
+    "user": "Feil ved oppretting av bruker",
+    "label": "Feil ved oppretting av merkelapp",
+    "task": "Feil ved oppretting av oppgave"
+  },
+  "failedDelete": {
+    "status": "Feil ved sletting av status",
+    "user": "Feil ved sletting av bruker",
+    "label": "Feil ved sletting av merkelapp",
+    "task": "Feil ved sletting av oppgave"
+  },
+  "failedUpdate": {
+    "status": "Feil ved oppdatering av status",
+    "user": "Feil ved oppdatering av bruker",
+    "label": "Feil ved oppdatering av merkelapp",
+    "task": "Feil ved oppdatering av oppgave"
+  },
+  "alreadyExists": {
+    "status": "En status med dette navnet eksisterer allerede",
+    "user": "En bruker med denne e-posten er allerede registrert",
+    "label": "En merkelapp med dette navnet eksisterer allerede",
+    "task": "En oppgave med dette navnet eksisterer allerede"
+  },
+  "hasTasks": {
+    "status": "Kan ikke slette status da den er brukt i en eller flere oppgaver",
+    "user": "Kan ikke slette bruker da de har en eller flere oppgaver"
+  },
+  "notOwner": {
+    "user": "Du kan ikke slette andre brukere"
+  },
+  "notOwnerEdit": {
+    "user": "Du kan ikke redigere andre brukere"
+  }
+}

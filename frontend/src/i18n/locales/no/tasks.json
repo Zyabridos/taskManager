@@ -1,0 +1,18 @@
+{
+  "form": {
+    "createTitle": "Opprett oppgave",
+    "editTitle": "Rediger oppgave",
+    "name": "Navn",
+    "update": "Oppdater",
+    "edit": "Rediger",
+    "create": "Opprett oppgave",
+    "status": "Status",
+    "description": "Beskrivelse",
+    "executor": "Utfører",
+    "labels": "Merkelapp"
+  },
+  "filter": {
+    "show": "Vis",
+    "onlyMyTasks": "Kun mine oppgaver"
+  }
+}

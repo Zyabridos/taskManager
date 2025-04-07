@@ -3,6 +3,7 @@
     "createTitle": "Create Status",
     "editTitle": "Edit Status",
     "name": "Name",
-    "update": "Update"
+    "update": "Update",
+    "create": "Create Status"
   }
 }

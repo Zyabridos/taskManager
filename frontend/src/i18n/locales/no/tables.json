@@ -2,7 +2,7 @@
   "common": {
     "columns": {
       "id": "ID",
-      "createdAt": "Opprettet",
+      "createdAt": "Opprettelsesdato",
       "actions": "Handlinger"
     }
   },
@@ -17,6 +17,20 @@
     "pageTitle": "Statusliste",
     "columns": {
       "name": "Navn"
+    }
+  },
+  "labels": {
+    "pageTitle": "Merkelappliste",
+    "columns": {
+      "name": "Navn"
+    }
+  },
+  "tasks": {
+    "pageTitle": "Oppgaveliste",
+    "columns": {
+      "name": "Navn",
+      "status": "Status",
+      "executor": "Utfører"
     }
   }
 }

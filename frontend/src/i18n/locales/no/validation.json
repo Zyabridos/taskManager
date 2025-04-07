@@ -1,8 +1,11 @@
 {
-  "firstNameRequired": "Имя обязательно",
-  "lastNameRequired": "Фамилия обязательна",
-  "emailRequired": "Email обязателен",
-  "invalidEmail": "Неверный email",
-  "passwordRequired": "Пароль обязателен",
-  "passwordMin": "Минимум 3 символа"
+  "firstNameRequired": "Fornavn er påkrevd",
+  "lastNameRequired": "Etternavn er påkrevd",
+  "emailRequired": "E-post er påkrevd",
+  "invalidEmail": "Ugyldig e-post",
+  "passwordRequired": "Passord er påkrevd",
+  "passwordMin": "Minimum 3 tegn",
+  "nameRequired": "Navn er påkrevd",
+  "statusRequired": "Status er påkrevd",
+  "min1Symbol": "Minimum 1 tegn"
 }

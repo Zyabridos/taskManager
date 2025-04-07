@@ -2,7 +2,7 @@
   "common": {
     "columns": {
       "id": "ID",
-      "createdAt": "Created At",
+      "createdAt": "Creation Date",
       "actions": "Actions"
     }
   },
@@ -14,9 +14,23 @@
     }
   },
   "statuses": {
-    "pageTitle": "Status list",
+    "pageTitle": "Status List",
     "columns": {
       "name": "Name"
+    }
+  },
+  "labels": {
+    "pageTitle": "Label List",
+    "columns": {
+      "name": "Name"
+    }
+  },
+  "tasks": {
+    "pageTitle": "Task List",
+    "columns": {
+      "name": "Name",
+      "status": "Status",
+      "executor": "Executor"
     }
   }
 }
