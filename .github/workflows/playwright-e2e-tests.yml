@@ -30,12 +30,12 @@ jobs:
         run: make prepare
 
       - name: Start backend
-        run: make start-backend
+        run: make start-backend &
         env:
           NODE_ENV: test
 
       - name: Start frontend
-        run: make start-frontend
+        run: make start-frontend &
         env:
           NODE_ENV: test
 
