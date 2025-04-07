@@ -35,7 +35,10 @@
     "create": "Создать задачу",
     "edit": "Изменить",
     "delete": "Удалить",
-    "applyFilter": "Показать"
+    "applyFilter": "Показать",
+    "createUser": "Войти",
+    "createStatus": "Создать статус",
+    "createLabel": "Создать метку"
   },
   "messages": {
     "created": "Задача создана",

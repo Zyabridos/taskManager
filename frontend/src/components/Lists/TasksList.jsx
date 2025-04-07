@@ -64,7 +64,7 @@ const TasksList = () => {
         const data = await tasksApi.getMeta();
         setMeta(data);
       } catch (e) {
-        console.error('Ошибка загрузки meta:', e);
+        console.error('Error during meta uploading:', e);
         showToast({
           type: 'task',
           action: 'failedLoadMeta',
@@ -157,10 +157,14 @@ const TasksList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">
-              {t('common.columns.createdAt')}
-            </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase">
+            <SortableHeader
+              label={t('common.columns.createdAt')}
+              field="createdAt"
+              currentSortField={sortField}
+              sortOrder={sortOrder}
+              onSort={handleSort}
+            />
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-700">
               {t('common.columns.actions')}
             </th>
           </tr>
@@ -168,7 +172,13 @@ const TasksList = () => {
 
         <tbody className="divide-y divide-gray-200 bg-white">
           {sortedList.map(task => (
-            <tr key={task.id}>
+            <tr
+              key={task.id}
+              data-id={task.id}
+              data-name={task.name}
+              data-executor={`${task.executor?.firstName ?? ''} ${task.executor?.lastName ?? ''}`.trim()}
+              data-created-at={task.createdAt}
+            >
               <td className="px-6 py-4 text-sm text-gray-900">{task.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900 hover:underline">
                 <Link

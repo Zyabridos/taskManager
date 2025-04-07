@@ -2,7 +2,7 @@
 
 import buildApp from '../index.js';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5001;
 
 const startServer = async () => {
   try {
