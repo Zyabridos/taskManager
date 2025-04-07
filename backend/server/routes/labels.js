@@ -39,15 +39,6 @@ export default async (app) => {
     const label = await Label.query().findById(id);
     if (!label) return reply.code(404).send({ error: 'label not found' });
 
-    const hasTasks = await Task.query()
-      .where('authorId', id)
-      .orWhere('executorId', id)
-      .resultSize();
-
-    if (hasTasks > 0) {
-      return reply.code(400).send({ error: 'label has related tasks' });
-    }
-
     await label.$query().delete();
     reply.send({ success: true });
   });

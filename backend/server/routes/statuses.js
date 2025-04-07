@@ -43,8 +43,8 @@ export default async (app) => {
 
     if (hasTasks > 0) {
       return reply.code(422).send({
-        error: 'Status in use',
-        message: 'Cannot delete status with existing tasks',
+        error: 'Forbidden',
+        message: 'Status in use',
       });
     }
 
