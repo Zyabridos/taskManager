@@ -2,32 +2,40 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/dd3b0c8de30f780cffa1/maintainability)](https://codeclimate.com/github/Zyabridos/taskManager/maintainability)
 
-# Task Manager
+# 🗂️ Task Manager
+Task Manager is a fullstack task management application built with **Next.js** for the frontend, **Fastify** for the backend, **PostgreSQL** as the database, and styled with **TailwindCSS**. It features user authentication, CRUD operations for tasks, labels, and statuses, and dynamic sorting capabilities.
 
-Task Manager is a simple task management system built with **PostgreSQL** and **Fastify**. It provides basic task management functionalities, including user authentication and the ability to create, edit, and delete labels, statuses, and tasks. Tasks can also be sorted based on various criteria.
-
-## Project Overview
+## 📌 Project Overview
 
 This project is designed to be straightforward and accessible. It allows users to:
 
-- Register and log in.
-- Create, edit, and delete **labels**, **statuses**, and **tasks**.
-- Sort tasks based on different attributes.
-- View and manage tasks created by any user.
-- View and manage tasks created by any user.
-- Edit and delete their own user profile.
+- 🧾 Register and log in.
+- 🏷️ Create, edit, and delete **labels**, **statuses**, and **tasks**.
+- 🔃 Sort tasks based on different attributes.
+- 👀 View and manage tasks created by any user.
+- 👤 Edit and delete their own user profile.
 
-### Access Policy
+### 🔐 Access Policy
 
 This project follows a mostly open-access approach:
 
-- All users can create, update, and delete any task, label, or status.
-- Only the logged-in user can edit or delete their own profile.
-- Attempts to edit or delete other users will result in an access denied error.
+- ✅ All users can create, update, and delete any task, label, or status.
+- 🔒 Only the logged-in user can edit or delete their own profile.
+- 🚫 Attempts to edit or delete other users will result in an access denied error.
 
 This policy promotes openness for task management while protecting user profiles.
 
-## 🐳 Docker Usage
+### 🔄 Entity Relationship Rules
+
+To preserve data integrity, the following restrictions are enforced:
+
+- ✅ Labels can be deleted even if they are assigned to tasks.
+- ❌ Statuses cannot be deleted if at least one task is using them.
+- ❌ Users cannot delete their own profile if they have any associated tasks.
+
+These rules help prevent accidental data loss while maintaining flexibility for label management.
+
+# 🐳 Docker Usage
 You can also run the app inside a Docker container. This is especially useful for testing or deploying in a consistent environment.
 
 ### Build Docker Image
@@ -65,7 +73,7 @@ cp .env.example .env.test
 
 Then update the values in `.env.test` if necessary.
 
-# Project Setup Locally
+# 💻 Project Setup Locally
 
 This project uses a `Makefile` to simplify common development tasks. Below are the steps for installation, development, and building the project.
 
@@ -111,7 +119,7 @@ By default:
 make dev
 ```
 
-## Summary of Makefile Commands
+📘 ## Summary of Makefile Commands
 
 | Command                  | Description                                    |
 | ------------------------ | ---------------------------------------------- |
