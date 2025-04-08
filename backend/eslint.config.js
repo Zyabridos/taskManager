@@ -2,7 +2,6 @@
 import globals from 'globals';
 import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
-import tailwindcss from 'eslint-plugin-tailwindcss';
 import prettier from 'eslint-config-prettier';
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
@@ -71,15 +70,6 @@ export default [
           'newlines-between': 'always',
         },
       ],
-    },
-  },
-  {
-    plugins: {
-      tailwindcss,
-    },
-    rules: {
-      'tailwindcss/classnames-order': 'warn',
-      'tailwindcss/no-custom-classname': 'off',
     },
   },
   js.configs.recommended,
