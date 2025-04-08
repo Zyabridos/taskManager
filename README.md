@@ -1,6 +1,9 @@
 ### Codeclimate
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/dd3b0c8de30f780cffa1/maintainability)](https://codeclimate.com/github/Zyabridos/taskManager/maintainability)
+[![Backend Tests](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml)
+[![E2E Tests](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml)
+[![Lint](https://github.com/Zyabridos/taskManager/actions/workflows/my-lint.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/my-lint.yml)
 
 # 🗂️ Task Manager
 Task Manager is a fullstack task management application built with **Next.js** for the frontend, **Fastify** for the backend, **PostgreSQL** as the database, and styled with **TailwindCSS**. It features user authentication, CRUD operations for tasks, labels, and statuses, and dynamic sorting capabilities.
@@ -119,7 +122,7 @@ By default:
 make dev
 ```
 
-📘 ## Summary of Makefile Commands
+## 📘 Summary of Makefile Commands
 
 | Command                  | Description                                    |
 | ------------------------ | ---------------------------------------------- |
