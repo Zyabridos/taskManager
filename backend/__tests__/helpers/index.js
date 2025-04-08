@@ -66,5 +66,6 @@ export const makeLogin = async (app, userData) => {
 
   const sessionCookie = cookies.find((cookie) => Object.keys(cookie)[0] === 'session');
 
-  return sessionCookie;
+  // return sessionCookie;
+  return `session=${sessionCookie.session}`;
 };
