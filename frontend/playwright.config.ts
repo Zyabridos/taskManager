@@ -12,7 +12,7 @@ export default defineConfig({
   webServer: {
     command: 'make dev-frontend',
     port: 3000,
-    reuseExistingServer: !process.env.CI,
     cwd: '..',
+    reuseExistingServer: true,
   },
 });
