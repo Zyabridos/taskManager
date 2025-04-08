@@ -1,5 +1,6 @@
 export default async (app) => {
-  const { label: Label, task: Task } = app.objection.models;
+  // const { label: Label, task: Task } = app.objection.models;
+  const { label: Label } = app.objection.models;
 
   app.get('/api/labels', async (req, reply) => {
     const labels = await Label.query().select('id', 'name', 'createdAt');
