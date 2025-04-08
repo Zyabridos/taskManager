@@ -42,6 +42,14 @@ To preserve data integrity, the following restrictions are enforced:
 
 These rules help prevent accidental data loss while maintaining flexibility for label management.
 
+## Prerequisites
+
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (with npm)
+- [Make](https://www.gnu.org/software/make/)
+- [Docker](https://www.docker.com/) (for containerized setup)
+
 # 🐳 Docker Usage
 You can also run the app inside a Docker container. This is especially useful for testing or deploying in a consistent environment.
 
@@ -83,13 +91,6 @@ Then update the values in `.env.test` if necessary.
 # 💻 Project Setup Locally
 
 This project uses a `Makefile` to simplify common development tasks. Below are the steps for installation, development, and building the project.
-
-## Prerequisites
-
-Make sure you have the following installed:
-
-- [Node.js](https://nodejs.org/) (with npm)
-- [Make](https://www.gnu.org/software/make/)
 
 ## Installation
 
