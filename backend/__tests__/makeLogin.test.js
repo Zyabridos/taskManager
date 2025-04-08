@@ -50,6 +50,7 @@ describe('makeLogin function', () => {
 
   it('should set a valid session cookie after login', async () => {
     const userData = testData.users.existing.author;
+
     const responseSignIn = await app.inject({
       method: 'POST',
       url: '/api/session',
@@ -60,6 +61,14 @@ describe('makeLogin function', () => {
 
     const setCookieHeader = responseSignIn.headers['set-cookie'];
     expect(setCookieHeader).toBeDefined();
-    expect(setCookieHeader.some((cookie) => cookie.startsWith('session='))).toBe(true);
+
+    // another temp crutch
+    const cookieArray = Array.isArray(setCookieHeader)
+      ? setCookieHeader
+      : [setCookieHeader];
+
+    expect(
+      cookieArray.some((cookie) => cookie.startsWith('session='))
+    ).toBe(true);
   });
 });

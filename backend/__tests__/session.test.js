@@ -26,12 +26,9 @@ describe('test session', () => {
     const response = await app.inject({
       method: 'GET',
       url: '/api/session',
-      // headers: {
-      //   cookie: `session=${cookie.session}`,
-      // },
       headers: {
-  cookie,
-}
+        cookie: `session=${cookie.session}`,
+      },
     });
 
     expect(response.statusCode).toBe(200);

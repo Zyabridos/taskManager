@@ -53,12 +53,19 @@ export const makeLogin = async (app, userData) => {
   });
 
   if (responseSignIn.statusCode !== 200) {
-    throw new Error(`Login failed for ${userData.email}. Status: ${response.statusCode}`);
+    throw new Error(`Login failed for ${userData.email}. Status: ${responseSignIn.statusCode}`);
   }
 
   const setCookieHeader = responseSignIn.headers['set-cookie'];
 
-  const cookies = setCookieHeader.map((cookieString) => {
+  if (!setCookieHeader) {
+    throw new Error(`No Set-Cookie header received on login for ${userData.email}`);
+  }
+
+  // Temp solution
+  const cookieArray = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+
+  const cookies = cookieArray.map((cookieString) => {
     const [nameValue] = cookieString.split(';');
     const [name, value] = nameValue.split('=');
     return { [name]: value };
@@ -66,6 +73,9 @@ export const makeLogin = async (app, userData) => {
 
   const sessionCookie = cookies.find((cookie) => Object.keys(cookie)[0] === 'session');
 
-  // return sessionCookie;
-  return `session=${sessionCookie.session}`;
+  if (!sessionCookie) {
+    throw new Error(`Session cookie not found for ${userData.email}`);
+  }
+
+  return sessionCookie;
 };

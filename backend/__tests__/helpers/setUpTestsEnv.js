@@ -38,6 +38,11 @@ export function setStandardBeforeEach(getAuthor = (data) => data.users.existing.
     cookie = await makeLogin(app, getAuthor(testData));
   });
 
+  afterEach(async () => {
+    await app.close(); // важно!
+    await knex.destroy(); // тоже обязательно
+  });
+
   return () => ({
     app,
     knex,
