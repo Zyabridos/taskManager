@@ -39,8 +39,8 @@ export function setStandardBeforeEach(getAuthor = (data) => data.users.existing.
   });
 
   afterEach(async () => {
-    await app.close(); // важно!
-    await knex.destroy(); // тоже обязательно
+    await app.close();
+    await knex.destroy();
   });
 
   return () => ({

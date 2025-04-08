@@ -2,7 +2,6 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
 import eslintPluginReact from 'eslint-plugin-react';
-import eslintPluginTailwindcss from 'eslint-plugin-tailwindcss';
 import eslintPluginI18next from 'eslint-plugin-i18next';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintConfigPrettier from 'eslint-config-prettier';
@@ -27,7 +26,6 @@ export default [
     },
     plugins: {
       react: eslintPluginReact,
-      tailwindcss: eslintPluginTailwindcss,
       i18next: eslintPluginI18next,
       prettier: eslintPluginPrettier,
     },
@@ -43,10 +41,6 @@ export default [
           unnamedComponents: 'arrow-function',
         },
       ],
-
-      // Tailwind rules
-      'tailwindcss/classnames-order': 'warn',
-      'tailwindcss/no-custom-classname': 'off',
 
       // i18next rules
       'i18next/no-literal-string': [
