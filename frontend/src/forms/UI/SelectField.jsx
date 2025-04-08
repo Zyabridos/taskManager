@@ -13,7 +13,7 @@ const SelectField = ({ id, label, options, field, error, touched }) => {
       <select
         id={id}
         {...field}
-        className={`w-full rounded border p-2 shadow-sm focus:ring focus:outline-none ${
+        className={`w-full rounded border p-2 shadow-sm focus:outline-none focus:ring ${
           hasError ? 'border-red-500' : 'border-gray-300'
         }`}
       >
@@ -24,7 +24,7 @@ const SelectField = ({ id, label, options, field, error, touched }) => {
           </option>
         ))}
       </select>
-      {hasError && <p className="mt-1 text-xs text-red-500 italic">{error}</p>}
+      {hasError && <p className="mt-1 text-xs italic text-red-500">{error}</p>}
     </div>
   );
 };

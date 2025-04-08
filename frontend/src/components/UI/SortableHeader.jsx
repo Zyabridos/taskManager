@@ -19,7 +19,7 @@ const SortableHeader = ({ label, field, currentSortField, sortOrder, onSort }) =
   return (
     <th
       onClick={() => onSort(field)}
-      className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase select-none"
+      className="cursor-pointer select-none px-6 py-3 text-left text-xs font-medium uppercase text-gray-700"
     >
       {label} {arrow}
     </th>

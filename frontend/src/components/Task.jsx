@@ -21,7 +21,7 @@ const TaskDetails = ({ task }) => {
           <p className="text-lg text-gray-800">{task.description}</p>
         </div>
 
-        <div className="border-t border-gray-200 pt-4 md:col-span-1 md:border-t-0 md:border-l md:pt-0 md:pl-6">
+        <div className="border-t border-gray-200 pt-4 md:col-span-1 md:border-l md:border-t-0 md:pl-6 md:pt-0">
           <div className="mb-4 flex flex-wrap gap-2">
             <span className="inline-block rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">
               {task.status?.name}
@@ -46,7 +46,7 @@ const TaskDetails = ({ task }) => {
             {task.executor ? (
               <span>{`${task.executor.firstName} ${task.executor.lastName}`}</span>
             ) : (
-              <span className="text-gray-400 italic">{t('unassigned')}</span>
+              <span className="italic text-gray-400">{t('unassigned')}</span>
             )}
           </div>
 

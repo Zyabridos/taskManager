@@ -11,7 +11,7 @@ import labels from './labels.json';
 import tasks from './tasks.json';
 import toast from './toast.json';
 
-export default {
+const ru = {
   auth,
   errors,
   validation,
@@ -25,3 +25,5 @@ export default {
   tasks,
   toast,
 };
+
+export default ru;

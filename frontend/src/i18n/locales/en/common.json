@@ -8,5 +8,11 @@
     "statuses": "Statuses",
     "labels": "Labels",
     "tasks": "Tasks"
+  },
+  "footer": {
+    "name": "Nina Zyabrina",
+    "github": "GitHub",
+    "telegram": "Telegram",
+    "email": "Email"
   }
 }
