@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import EditFormWrapper from './EditFormWrapper';
@@ -12,15 +12,20 @@ import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 
-const EditLabelForm = () => {
-  const { id } = useParams();
+interface LabelFormValues {
+  name: string;
+}
+
+const EditLabelForm: React.FC = () => {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
+
   const { showToast } = useEntityToast();
   const { t: tLabels } = useTranslation('labels');
   const { t: tValidation } = useTranslation('validation');
-  const { t: tErrors } = useTranslation('errors');
 
-  const [initialValues, setInitialValues] = useState(null);
+  const [initialValues, setInitialValues] = useState<LabelFormValues | null>(null);
 
   useEffect(() => {
     const fetchLabel = async () => {
@@ -29,20 +34,28 @@ const EditLabelForm = () => {
         setInitialValues({ name: label.name });
       } catch (e) {
         console.error(e);
-        showError('label', 'failedUpdate');
+        showToast({
+          type: 'label',
+          action: 'failedUpdate',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
         router.push(routes.app.labels.list());
       }
     };
 
     fetchLabel();
-  }, [id, router]);
+  }, [id, router, showToast]);
 
-  const handleSubmit = async values => {
+  const handleSubmit = async (
+    values: LabelFormValues,
+    _helpers: FormikHelpers<LabelFormValues>
+  ) => {
     try {
       await labelsApi.update(id, values);
       showToast({ type: 'label', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.labels.list());
-    } catch (e) {
+    } catch (e: any) {
       if (e.response?.status === 422) {
         showToast({
           type: 'label',
@@ -50,13 +63,19 @@ const EditLabelForm = () => {
           titleKey: 'errorTitle',
           toastType: 'error',
         });
-      } else
-        showToast({ type: 'label', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
-      console.error(e);
+      } else {
+        console.error(e);
+        showToast({
+          type: 'label',
+          action: 'failedUpdate',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
+      }
     }
   };
 
-  const formik = useFormik({
+  const formik = useFormik<LabelFormValues>({
     enableReinitialize: true,
     initialValues: initialValues || { name: '' },
     validationSchema: Yup.object({

@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import EditFormWrapper from './EditFormWrapper';
@@ -12,14 +12,22 @@ import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 
-const EditUserForm = () => {
-  const { id } = useParams();
+interface UserFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const EditUserForm: React.FC = () => {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
   const { showToast } = useEntityToast();
   const { t: tUsers } = useTranslation('users');
   const { t: tValidation } = useTranslation('validation');
 
-  const [initialValues, setInitialValues] = useState(null);
+  const [initialValues, setInitialValues] = useState<UserFormValues | null>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,7 +39,7 @@ const EditUserForm = () => {
           email: user.email,
           password: '',
         });
-      } catch (e) {
+      } catch (e: any) {
         if (e?.response?.status === 403) {
           sessionStorage.setItem('toast_forbidden_edit', 'true');
         }
@@ -42,25 +50,28 @@ const EditUserForm = () => {
     fetchUser();
   }, [id, router]);
 
-  const handleSubmit = async values => {
+  const handleSubmit = async (
+    values: UserFormValues,
+    _helpers: FormikHelpers<UserFormValues>
+  ) => {
     try {
       await usersApi.update(id, values);
       showToast({ type: 'user', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.users.list());
     } catch (e) {
+      console.error(e);
       showToast({
         type: 'user',
         action: 'failedUpdate',
         titleKey: 'errorTitle',
         toastType: 'error',
       });
-      console.error(e);
     }
   };
 
-  const formik = useFormik({
+  const formik = useFormik<UserFormValues>({
     enableReinitialize: true,
-    initialValues: initialValues || {
+    initialValues: initialValues ?? {
       firstName: '',
       lastName: '',
       email: '',
@@ -85,11 +96,11 @@ const EditUserForm = () => {
       onSubmit={formik.handleSubmit}
       buttonText={tUsers('form.update')}
     >
-      {['firstName', 'lastName', 'email', 'password'].map(field => (
+      {(Object.keys(initialValues) as (keyof UserFormValues)[]).map((field) => (
         <div className="relative mb-6" key={field}>
           <FormInput
             id={field}
-            type={field === 'email' ? 'email' : 'text'}
+            type={field === 'email' ? 'email' : field === 'password' ? 'password' : 'text'}
             field={formik.getFieldProps(field)}
             touched={formik.touched[field]}
             error={formik.errors[field]}
@@ -97,7 +108,7 @@ const EditUserForm = () => {
           />
           <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field] as string}</p>
           )}
         </div>
       ))}

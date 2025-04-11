@@ -2,28 +2,54 @@
 
 import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import { useRouter } from 'next/navigation';
+import { useFormik, FormikHelpers } from 'formik';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 import { tasksApi } from '../../api/tasksApi';
 import SelectField from '../UI/SelectField';
 import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
-import { useParams } from 'next/navigation';
 import useEntityToast from '@/hooks/useEntityToast';
 
-const EditTaskForm = () => {
+interface Option {
+  id: number;
+  name: string;
+}
+
+interface Task {
+  name: string;
+  description: string;
+  statusId: number;
+  executorId: number | null;
+  labels: Option[];
+}
+
+interface MetaData {
+  statuses: Option[];
+  executors: Option[];
+  labels: Option[];
+}
+
+interface TaskFormValues {
+  name: string;
+  description: string;
+  statusId: number | string;
+  executorId: number | string;
+  labels: number[];
+}
+
+const EditTaskForm: React.FC = () => {
   const params = useParams();
-  const taskId = Number(params.id);
+  const taskId = Number(Array.isArray(params.id) ? params.id[0] : params.id);
   const router = useRouter();
   const { t: tTasks } = useTranslation('tasks');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
   const { showToast } = useEntityToast();
 
-  const [task, setTask] = useState(null);
-  const [meta, setMeta] = useState({
+  const [task, setTask] = useState<Task | null>(null);
+  const [meta, setMeta] = useState<MetaData>({
     statuses: [],
     executors: [],
     labels: [],
@@ -36,27 +62,25 @@ const EditTaskForm = () => {
           tasksApi.getById(taskId),
           tasksApi.getMeta(),
         ]);
-        console.log('taskData', taskData);
-        console.log('metaData', metaData);
         setTask(taskData);
         setMeta(metaData);
       } catch (e) {
         console.error(e);
-        showToast({ type: 'task', action: 'failedUpdate', titleKey: 'errorTitle', type: 'error' });
+        showToast({ type: 'task', action: 'failedUpdate', titleKey: 'errorTitle', toastType: 'error' });
       }
     };
     fetchData();
   }, [taskId, tErrors, showToast]);
 
-  const formik = useFormik({
+  const formik = useFormik<TaskFormValues>({
     enableReinitialize: true,
     initialValues: task
       ? {
           name: task.name,
           description: task.description || '',
-          statusId: task.statusId || '',
-          executorId: task.executorId || '',
-          labels: task.labels?.map(label => label.id) || [],
+          statusId: task.statusId,
+          executorId: task.executorId ?? '',
+          labels: task.labels?.map((label) => label.id) || [],
         }
       : {
           name: '',
@@ -72,7 +96,7 @@ const EditTaskForm = () => {
       executorId: Yup.number().nullable(),
       labels: Yup.array().of(Yup.number()),
     }),
-    onSubmit: async values => {
+    onSubmit: async (values: TaskFormValues, _helpers: FormikHelpers<TaskFormValues>) => {
       try {
         const preparedValues = {
           ...values,
@@ -84,7 +108,7 @@ const EditTaskForm = () => {
         await tasksApi.update(taskId, preparedValues);
         showToast({ type: 'task', action: 'updated', titleKey: 'successTitle' });
         router.push(routes.app.tasks.list());
-      } catch (e) {
+      } catch (e: any) {
         if (e.response?.status === 422) {
           showToast({
             type: 'task',
@@ -93,19 +117,21 @@ const EditTaskForm = () => {
             toastType: 'error',
           });
         } else {
+          console.error(e);
           showToast({
             type: 'task',
             action: 'failedUpdate',
             titleKey: 'errorTitle',
-            type: 'error',
+            toastType: 'error',
           });
-          console.error(e);
         }
       }
     },
   });
 
-  if (!task) return <p className="text-center text-gray-500">{tTasks('loading')}</p>;
+  if (!task) {
+    return <p className="text-center text-gray-500">{tTasks('loading')}</p>;
+  }
 
   return (
     <div className="mx-auto mt-8 w-[90%]">
@@ -159,8 +185,8 @@ const EditTaskForm = () => {
             label={tTasks('form.labels')}
             options={meta.labels}
             value={formik.values.labels}
-            onChange={selected => formik.setFieldValue('labels', selected)}
-            error={formik.errors.labels}
+            onChange={(selected: number[]) => formik.setFieldValue('labels', selected)}
+            error={typeof formik.errors.labels === 'string' ? formik.errors.labels : undefined}
             touched={formik.touched.labels}
           />
 

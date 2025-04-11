@@ -1,9 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { ReactNode, FormEventHandler } from 'react';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 
-const EditFormWrapper = ({ title, onSubmit, children, buttonText }) => (
+interface EditFormWrapperProps {
+  title: string;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  children: ReactNode;
+  buttonText: string;
+}
+
+const EditFormWrapper: React.FC<EditFormWrapperProps> = ({
+  title,
+  onSubmit,
+  children,
+  buttonText,
+}) => (
   <div className="max-w-400 mx-auto mt-10">
     <h1 className="flex justify-start pl-10 text-5xl font-bold text-gray-900">{title}</h1>
     <div className="bg-white px-8 pb-8 pt-6">

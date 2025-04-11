@@ -1,9 +1,24 @@
 'use client';
 
 import React from 'react';
+import { FieldInputProps } from 'formik';
 
-const FormInput = ({ id, type = 'text', field, touched, error }) => {
-  const hasError = touched && error;
+interface FormInputProps {
+  id: string;
+  type?: string;
+  field: FieldInputProps<any>; // { name, value, onChange, onBlur }
+  touched?: boolean;
+  error?: string;
+}
+
+const FormInput: React.FC<FormInputProps> = ({
+  id,
+  type = 'text',
+  field,
+  touched,
+  error,
+}) => {
+  const hasError = touched && !!error;
 
   return (
     <input

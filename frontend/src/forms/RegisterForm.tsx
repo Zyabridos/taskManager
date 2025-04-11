@@ -1,33 +1,40 @@
 'use client';
 
 import React from 'react';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { usersApi } from '../api/usersApi';
 import { TransparentGraySubmitBtn } from '../components/Buttons';
-// import signUpImage from '../../public/signUp_picture.jpg';
 import Image from 'next/image';
 import routes from '../routes';
 import { useAuth } from '../context/authContex';
 import useEntityToast from '../hooks/useEntityToast';
 
-const RegisterForm = () => {
+interface RegisterFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const RegisterForm: React.FC = () => {
   const router = useRouter();
   const { t: tAuth } = useTranslation('auth');
   const { t: tValidation } = useTranslation('validation');
-  const { t: tErrors } = useTranslation('errors');
   const { login } = useAuth();
   const { showToast } = useEntityToast();
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    },
+  const initialValues: RegisterFormValues = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  };
+
+  const formik = useFormik<RegisterFormValues>({
+    initialValues,
     validationSchema: Yup.object({
       firstName: Yup.string().required(tValidation('firstNameRequired')),
       lastName: Yup.string().required(tValidation('lastNameRequired')),
@@ -36,7 +43,10 @@ const RegisterForm = () => {
         .min(3, tValidation('passwordMin'))
         .required(tValidation('passwordRequired')),
     }),
-    onSubmit: async values => {
+    onSubmit: async (
+      values: RegisterFormValues,
+      _helpers: FormikHelpers<RegisterFormValues>
+    ) => {
       try {
         await usersApi.create(values);
         await login(values.email, values.password, true);
@@ -47,12 +57,12 @@ const RegisterForm = () => {
           titleKey: 'successTitle',
           toastType: 'success',
         });
-      } catch (e) {
-        const message = e?.response?.data?.message;
-        console.log('e', e);
-        console.log('err mess', message);
 
-        if (message.includes('already exists')) {
+        router.push(routes.app.home());
+      } catch (e: any) {
+        const message = e?.response?.data?.message;
+
+        if (message?.includes('already exists')) {
           showToast({
             type: 'user',
             action: 'registered.errors.alreadyInUse',
@@ -67,6 +77,8 @@ const RegisterForm = () => {
             toastType: 'error',
           });
         }
+
+        console.error('Register error:', e);
       }
     },
   });
@@ -79,7 +91,7 @@ const RegisterForm = () => {
         </div>
 
         <div className="flex min-h-[500px] flex-col justify-between p-8 md:w-1/2">
-          {['firstName', 'lastName', 'email', 'password'].map(field => (
+          {(Object.keys(initialValues) as (keyof RegisterFormValues)[]).map((field) => (
             <div className="relative mb-6" key={field}>
               <input
                 {...formik.getFieldProps(field)}
@@ -101,7 +113,7 @@ const RegisterForm = () => {
 
               <div className="min-h-[20px] overflow-hidden">
                 {formik.touched[field] && formik.errors[field] && (
-                  <p className="text-xs italic text-red-500">{formik.errors[field]}</p>
+                  <p className="text-xs italic text-red-500">{formik.errors[field] as string}</p>
                 )}
               </div>
             </div>

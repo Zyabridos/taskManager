@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import EditFormWrapper from './EditFormWrapper';
@@ -12,35 +12,48 @@ import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 
-const EditStatusForm = () => {
-  const { id } = useParams();
+interface StatusFormValues {
+  name: string;
+}
+
+const EditStatusForm: React.FC = () => {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+
   const router = useRouter();
   const { showToast } = useEntityToast();
   const { t: tStatuses } = useTranslation('statuses');
   const { t: tValidation } = useTranslation('validation');
-  const { t: tErrors } = useTranslation('errors');
 
-  const [initialValues, setInitialValues] = useState(null);
+  const [initialValues, setInitialValues] = useState<StatusFormValues | null>(null);
 
   useEffect(() => {
     const fetchStatus = async () => {
       try {
         const status = await statusesApi.getById(id);
         setInitialValues({ name: status.name });
-      } catch {
-        showError('status', 'failedUpdate');
+      } catch (e) {
+        showToast({
+          type: 'status',
+          action: 'failedUpdate',
+          titleKey: 'errorTitle',
+          toastType: 'error',
+        });
         router.push(routes.app.statuses.list());
       }
     };
     fetchStatus();
-  }, [id, router]);
+  }, [id, router, showToast]);
 
-  const handleSubmit = async values => {
+  const handleSubmit = async (
+    values: StatusFormValues,
+    _helpers: FormikHelpers<StatusFormValues>
+  ) => {
     try {
       await statusesApi.update(id, values);
       showToast({ type: 'status', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.statuses.list());
-    } catch (e) {
+    } catch (e: any) {
       if (e.response?.status === 422) {
         showToast({
           type: 'status',
@@ -48,18 +61,19 @@ const EditStatusForm = () => {
           titleKey: 'errorTitle',
           toastType: 'error',
         });
-      } else
+      } else {
+        console.error(e);
         showToast({
           type: 'status',
           action: 'failedUpdate',
           titleKey: 'errorTitle',
-          type: 'error',
+          toastType: 'error',
         });
-      console.error(e);
+      }
     }
   };
 
-  const formik = useFormik({
+  const formik = useFormik<StatusFormValues>({
     enableReinitialize: true,
     initialValues: initialValues || { name: '' },
     validationSchema: Yup.object({
@@ -76,7 +90,7 @@ const EditStatusForm = () => {
       onSubmit={formik.handleSubmit}
       buttonText={tStatuses('form.update')}
     >
-      {['name'].map(field => (
+      {(Object.keys(initialValues) as (keyof StatusFormValues)[]).map((field) => (
         <div className="relative mb-6" key={field}>
           <FormInput
             id={field}
@@ -87,7 +101,7 @@ const EditStatusForm = () => {
           />
           <FloatingLabel htmlFor={field} text={tStatuses(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
+            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field] as string}</p>
           )}
         </div>
       ))}

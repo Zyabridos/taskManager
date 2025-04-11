@@ -1,9 +1,31 @@
 'use client';
 
 import React from 'react';
+import { FieldInputProps } from 'formik';
 
-const SelectField = ({ id, label, options, field, error, touched }) => {
-  const hasError = touched && error;
+interface Option {
+  id: number;
+  name: string;
+}
+
+interface SelectFieldProps {
+  id: string;
+  label: string;
+  options: Option[];
+  field: FieldInputProps<any>; // можно уточнить тип, если ты знаешь, что это string или number
+  error?: string;
+  touched?: boolean;
+}
+
+const SelectField: React.FC<SelectFieldProps> = ({
+  id,
+  label,
+  options,
+  field,
+  error,
+  touched,
+}) => {
+  const hasError = touched && !!error;
 
   return (
     <div className="mb-3">
@@ -18,8 +40,8 @@ const SelectField = ({ id, label, options, field, error, touched }) => {
         }`}
       >
         <option value="">{label}</option>
-        {options.map(({ id, name }) => (
-          <option key={id} value={id}>
+        {options.map(({ id: optionId, name }) => (
+          <option key={optionId} value={optionId}>
             {name}
           </option>
         ))}

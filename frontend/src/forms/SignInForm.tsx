@@ -1,35 +1,39 @@
 'use client';
 
 import React from 'react';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { TransparentGraySubmitBtn } from '../components/Buttons';
-// import signUpImage from '../../public/signUp_picture.jpg';
 import Image from 'next/image';
 import { useAuth } from '../context/authContex';
 
-const SignInForm = () => {
-  const router = useRouter();
-  const { login, serverError } = useAuth();
+interface SignInFormValues {
+  email: string;
+  password: string;
+}
 
+const SignInForm: React.FC = () => {
+  const { login, serverError } = useAuth();
   const { t: tAuth } = useTranslation('auth');
   const { t: tValidation } = useTranslation('validation');
-  const { t: tErrors } = useTranslation('errors');
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+  const initialValues: SignInFormValues = {
+    email: '',
+    password: '',
+  };
+
+  const formik = useFormik<SignInFormValues>({
+    initialValues,
     validationSchema: Yup.object({
-      email: Yup.string().email(tValidation('invalidEmail')).required(tValidation('emailRequired')),
+      email: Yup.string()
+        .email(tValidation('invalidEmail'))
+        .required(tValidation('emailRequired')),
       password: Yup.string()
         .min(3, tValidation('passwordMin'))
         .required(tValidation('passwordRequired')),
     }),
-    onSubmit: async values => {
+    onSubmit: async (values: SignInFormValues, _helpers: FormikHelpers<SignInFormValues>) => {
       console.log('Submitting with:', values);
       await login(values.email, values.password);
     },
@@ -43,7 +47,7 @@ const SignInForm = () => {
         </div>
 
         <div className="w-full p-8 md:w-1/2">
-          {['email', 'password'].map(field => (
+          {(Object.keys(initialValues) as (keyof SignInFormValues)[]).map((field) => (
             <div className="relative mb-6" key={field}>
               <input
                 {...formik.getFieldProps(field)}
@@ -63,7 +67,9 @@ const SignInForm = () => {
                 {tAuth(`form.${field}`)}
               </label>
               {formik.touched[field] && formik.errors[field] && (
-                <p className="mt-1 text-xs italic text-red-500">{formik.errors[field]}</p>
+                <p className="mt-1 text-xs italic text-red-500">
+                  {formik.errors[field] as string}
+                </p>
               )}
             </div>
           ))}
