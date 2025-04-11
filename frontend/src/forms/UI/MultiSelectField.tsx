@@ -2,13 +2,35 @@
 
 import React from 'react';
 
-const MultiSelectField = ({ id, label, options, value = [], onChange, error, touched }) => {
-  const hasError = touched && error;
+type Option = {
+  id: number;
+  name: string;
+};
 
-  const handleChange = e => {
-    if (!onChange) return;
-    const selectedValues = Array.from(e.target?.selectedOptions || []).map(opt =>
-      Number(opt.value),
+interface MultiSelectFieldProps {
+  id: string;
+  label: string;
+  options: Option[];
+  value: number[];
+  onChange: (selected: number[]) => void;
+  error?: string;
+  touched?: boolean;
+}
+
+const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
+  id,
+  label,
+  options,
+  value = [],
+  onChange,
+  error,
+  touched,
+}) => {
+  const hasError = touched && !!error;
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValues = Array.from(e.target.selectedOptions).map((opt) =>
+      Number(opt.value)
     );
     onChange(selectedValues);
   };
@@ -21,7 +43,7 @@ const MultiSelectField = ({ id, label, options, value = [], onChange, error, tou
       <select
         id={id}
         multiple
-        value={value || []}
+        value={value.map(String)}
         onChange={handleChange}
         className={`w-full rounded border p-2 shadow-sm focus:outline-none focus:ring ${
           hasError ? 'border-red-500' : 'border-gray-300'

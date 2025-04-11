@@ -12,7 +12,6 @@ import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 import useEntityToast from '../../hooks/useEntityToast';
 
-// Типы метаданных
 interface Option {
   id: number;
   name: string;
@@ -24,7 +23,6 @@ interface MetaData {
   labels: Option[];
 }
 
-// Типы формы
 interface FormValues {
   name: string;
   description: string;
@@ -173,7 +171,7 @@ const CreateTaskPage: React.FC = () => {
             options={meta.labels}
             value={formik.values.labels}
             onChange={(selected: number[]) => formik.setFieldValue('labels', selected)}
-            error={formik.errors.labels}
+            error={typeof formik.errors.labels === 'string' ? formik.errors.labels : undefined}
             touched={formik.touched.labels}
           />
 

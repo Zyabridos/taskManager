@@ -7,7 +7,7 @@ import { TransparentGraySubmitBtn } from '../../components/Buttons';
 
 interface CreateFormMixinProps<T> {
   initialValues: T;
-  validationSchema: any; // можно уточнить, если хочешь: Yup.ObjectSchema<...>
+  validationSchema: any;
   onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void | Promise<void>;
   fields: (keyof T)[];
   tNamespace: string;
@@ -37,7 +37,7 @@ const CreateFormMixin = <T extends Record<string, any>>({
           {fields.map((field) => (
             <div className="relative mb-6" key={String(field)}>
               <input
-                {...formik.getFieldProps(field)}
+                {...formik.getFieldProps(field as string)}
                 id={String(field)}
                 type="text"
                 placeholder=" "
@@ -51,7 +51,7 @@ const CreateFormMixin = <T extends Record<string, any>>({
                 htmlFor={String(field)}
                 className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
               >
-                {tNamespaceT(`form.${field}`)}
+                {tNamespaceT(`form.${field as string}`)}
               </label>
 
               <div className="min-h-[20px] overflow-hidden">
