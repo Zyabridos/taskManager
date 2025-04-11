@@ -15,7 +15,7 @@ test.describe('Auth tests (UI)', () => {
     await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
     await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
 
-    clickButtonByName(page, sessionData.buttons.signIn);
+    await clickButtonByName(page, sessionData.buttons.signIn);
 
     await expect(page).toHaveURL(sessionData.url.usersList);
     await expect(page.locator(`text=${sessionData.messages.signedIn}`)).toBeVisible();
@@ -24,7 +24,7 @@ test.describe('Auth tests (UI)', () => {
   test('Should show errors when labels are filled wrong', async ({ page }) => {
     await page.goto(sessionData.url.signIn);
 
-    clickButtonByName(page, sessionData.buttons.signIn);
+    await clickButtonByName(page, sessionData.buttons.signIn);
 
     await expect(page.locator(`text=${sessionData.errors.requieredEmail}`)).toBeVisible();
     await expect(page.locator(`text=${sessionData.errors.requieredPassword}`)).toBeVisible();
@@ -42,7 +42,7 @@ test.describe('Auth tests (UI)', () => {
     await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
     await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
 
-    clickButtonByName(page, sessionData.buttons.signIn);
+    await clickButtonByName(page, sessionData.buttons.signIn);
 
     await expect(page).toHaveURL(sessionData.url.usersList);
     await expect(page.locator(`text=${sessionData.messages.signedIn}`)).toBeVisible();
@@ -53,11 +53,11 @@ test.describe('Auth tests (UI)', () => {
 
     await page.getByLabel(sessionData.labels.email).fill(sessionData.user.email);
     await page.getByLabel(sessionData.labels.password).fill(sessionData.user.password);
-    clickButtonByName(page, sessionData.buttons.signIn);
+    await clickButtonByName(page, sessionData.buttons.signIn);
     await expect(page).toHaveURL(sessionData.url.usersList);
     await page.goto(sessionData.url.root);
 
-    clickButtonByName(page, sessionData.buttons.signOut);
+    await clickButtonByName(page, sessionData.buttons.signOut);
 
     await expect(page).toHaveURL(sessionData.url.root);
     await expect(page.locator(`text=${sessionData.messages.signedOut}`)).toBeVisible();

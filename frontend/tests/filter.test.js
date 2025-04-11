@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
 import { LogInExistingUser } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import { resetAppState } from './helpers/setUpTests.js';
 
 let taskData;
 let statusData;
@@ -16,13 +17,11 @@ test.beforeAll(async () => {
 test.describe('Tasks List Filter UI', () => {
   test.beforeEach(async ({ page }) => {
     await LogInExistingUser(page, labelsData.user.email);
+    await resetAppState(page);
 
-    console.log('going to taskData.url.list', taskData.url.list)
     await page.goto(taskData.url.list);
 
-    console.log('going to statusData.url.list', statusData.url.list)
     await page.goto(statusData.url.list);
-    console.log('clicking create status btn', statusData.buttons.create)
     await clickLinkByName(page, statusData.buttons.create);
     await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
     await clickButtonByName(page, statusData.buttons.create);
