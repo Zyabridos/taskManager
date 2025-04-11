@@ -12,10 +12,15 @@ import useProtectedRoute from '../../hooks/useProtectedRoute';
  *
  * @returns {JSX.Element | null} - Protected content or fallback during loading.
  */
-const Protected = ({ children, fallback = null }) => {
+interface ProtectedProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode | null;
+}
+
+const Protected: React.FC<ProtectedProps> = ({ children, fallback = null }) => {
   const isReady = useProtectedRoute();
 
-  if (!isReady) return fallback;
+  if (!isReady) return <>{fallback}</>;
 
   return <>{children}</>;
 };

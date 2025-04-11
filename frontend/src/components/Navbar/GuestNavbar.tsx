@@ -9,7 +9,11 @@ import { NAVBARHEIGHT } from './Navbar';
 
 const baseURL = 'http://localhost:3000';
 
-const GuestNavbar = () => {
+interface GuestNavbarProps {
+  // This component does not accept any props, but you can extend this if needed
+}
+
+const GuestNavbar: React.FC<GuestNavbarProps> = () => {
   const { t } = useTranslation('common');
   const linkClasses =
     'rounded-md px-3 py-2 text-xl font-medium text-gray-300 hover:bg-gray-700 hover:text-white';

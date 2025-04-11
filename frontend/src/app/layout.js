@@ -2,13 +2,13 @@
 
 import './globals.css';
 import { Provider } from 'react-redux';
-import store from '../store/index.js';
+import store from '../store/index';
 import { I18nextProvider } from 'react-i18next';
-import i18n from '../i18n/i18n.js';
-import Navbar from '../components/Navbar/Navbar.jsx';
-import AuthProvider from '../context/authContex.js';
+import i18n from '../i18n/i18n';
+import Navbar from '../components/Navbar/Navbar';
+import AuthProvider from '../context/authContex';
 import { Toaster } from 'sonner';
-import Footer from '../components/Footer.jsx';
+import Footer from '../components/Footer';
 
 const RootLayout = ({ children }) => {
   return (

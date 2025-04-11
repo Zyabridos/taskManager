@@ -7,8 +7,12 @@ import GuestNavbar from './GuestNavbar';
 
 export const NAVBARHEIGHT = 70;
 
-const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+interface AuthContextType {
+  isAuthenticated: boolean;
+}
+
+const Navbar: React.FC = () => {
+  const { isAuthenticated }: AuthContextType = useAuth();
 
   return isAuthenticated ? <LoggedInNavbar /> : <GuestNavbar />;
 };

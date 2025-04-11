@@ -2,12 +2,41 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import ru from 'date-fns/locale/ru';
+import { ru } from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
 import { DeleteButton, HrefButton } from './Buttons';
 import routes from '../routes';
 
-const TaskDetails = ({ task }) => {
+interface User {
+  firstName: string;
+  lastName: string;
+}
+
+interface Label {
+  id: number;
+  name: string;
+}
+
+interface Status {
+  name: string;
+}
+
+interface Task {
+  id: number;
+  name: string;
+  description: string;
+  status: Status;
+  labels: Label[];
+  author: User;
+  executor: User | null;
+  createdAt: string;
+}
+
+interface TaskDetailsProps {
+  task: Task | null;
+}
+
+const TaskDetails: React.FC<TaskDetailsProps> = ({ task }) => {
   const { t } = useTranslation('tasks');
 
   if (!task) return null;

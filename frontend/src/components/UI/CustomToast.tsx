@@ -1,22 +1,28 @@
 'use client';
 
 import { CheckCircle, XCircle } from 'lucide-react';
-import { NAVBARHEIGHT } from '../../components/Navbar/Navbar';
+import { NAVBARHEIGHT } from '../Navbar/Navbar';
 
 /**
  * CustomToast component for displaying success or error messages.
  *
- * @param {Object} props - The component props.
- * @param {string} props.title - The title of the toast. Default is "Success!".
- * @param {string} props.message - The message body of the toast. Default is a generic success message.
- * @param {() => void} props.onClick - A callback to be triggered when the toast is clicked (usually to dismiss it).
- * @param {'success' | 'error'} props.type - The type of toast, determines the color scheme and icon. Default is 'success'.
+ * @param title - The title of the toast. Default is "Success!".
+ * @param message - The message body of the toast. Default is a generic success message.
+ * @param onClick - A callback to be triggered when the toast is clicked (usually to dismiss it).
+ * @param toastType - The type of toast, determines the color scheme and icon. Default is 'success'.
  */
-const CustomToast = ({
+interface CustomToastProps {
+  title?: string;
+  message?: string;
+  onClick: () => void;
+  toastType?: 'success' | 'error';
+}
+
+const CustomToast: React.FC<CustomToastProps> = ({
   title = 'Success!',
   message = 'Your action has been successfully completed',
   onClick,
-  toastType = 'success', // ← default = success
+  toastType = 'success',
 }) => {
   const isError = toastType === 'error';
 

@@ -5,22 +5,27 @@ import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import arrowDown from '../../public/arrow_down.svg';
 
-const languages = [
+interface Language {
+  code: string;
+  label: string;
+}
+
+const languages: Language[] = [
   { code: 'en', label: 'EN' },
   { code: 'ru', label: 'RU' },
   { code: 'no', label: 'NO' },
 ];
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const changeLanguage = lng => {
+  const changeLanguage = (lng: string): void => {
     i18n.changeLanguage(lng);
     localStorage.setItem('i18nextLng', lng);
     setIsOpen(false);

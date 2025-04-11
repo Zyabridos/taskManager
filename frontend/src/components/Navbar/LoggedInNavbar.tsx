@@ -10,7 +10,10 @@ import { NAVBARHEIGHT } from './Navbar';
 
 const baseURL = 'http://localhost:3000';
 
-const LoggedInNavbar = () => {
+interface LoggedInNavbarProps {
+}
+
+const LoggedInNavbar: React.FC<LoggedInNavbarProps> = () => {
   const { logOut } = useAuth();
   const { t } = useTranslation('common');
   const linkClasses =

@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { FaGithub, FaTelegram } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
+import Link from 'next/link';
 
-const Footer = () => {
-  const { t } = useTranslation();
+const Footer: React.FC = () => {
+  const { t } = useTranslation('common');
   const baseClasses =
     'rounded-md px-3 py-2 text-xl font-medium text-gray-300 hover:bg-gray-700 hover:text-white';
 

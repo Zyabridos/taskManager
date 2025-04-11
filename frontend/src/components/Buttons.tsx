@@ -4,7 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
-export const HrefButton = ({ href, buttonText, className = '' }) => {
+interface HrefButtonProps {
+  href: string;
+  buttonText: string;
+  className?: string;
+}
+
+export const HrefButton: React.FC<HrefButtonProps> = ({ href, buttonText, className = '' }) => {
   return (
     <Link
       href={href}
@@ -15,7 +21,11 @@ export const HrefButton = ({ href, buttonText, className = '' }) => {
   );
 };
 
-export const DeleteButton = ({ onClick }) => {
+interface DeleteButtonProps {
+  onClick: () => void;
+}
+
+export const DeleteButton: React.FC<DeleteButtonProps> = ({ onClick }) => {
   const { t: tButtons } = useTranslation('buttons');
 
   return (
@@ -29,7 +39,12 @@ export const DeleteButton = ({ onClick }) => {
   );
 };
 
-export const TransparentGraySubmitBtn = ({ buttonText, className = '' }) => {
+interface TransparentGraySubmitBtnProps {
+  buttonText: string;
+  className?: string;
+}
+
+export const TransparentGraySubmitBtn: React.FC<TransparentGraySubmitBtnProps> = ({ buttonText, className = '' }) => {
   return (
     <button
       type="submit"
