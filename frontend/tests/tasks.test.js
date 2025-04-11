@@ -43,7 +43,6 @@ test.describe('tasks CRUD visual (UI)', () => {
     await page.goto(taskData.url.create);
     await page.getByLabel(taskData.labels.name).fill(taskName);
     await page.getByLabel(taskData.labels.status).selectOption({ label: statusName });
-    await page.getByLabel(taskData.labels.labels).selectOption({ label: labelName });
     await clickButtonByName(page, taskData.buttons.create);
     await expect(page.locator(`text=${taskName}`)).toBeVisible();
   });
@@ -53,45 +52,45 @@ test.describe('tasks CRUD visual (UI)', () => {
     await expect(page.locator(`text=${taskName}`)).toBeVisible();
   });
 
-  // test('Should show error if task name is empty', async ({ page }) => {
-  //   await page.goto(taskData.url.create);
-  //   await clickButtonByName(page, taskData.buttons.create);
-  //   await expect(page.locator(`text=${taskData.errors.nameRequired}`)).toBeVisible();
-  //   await expect(page.locator(`text=${taskData.errors.statusRequired}`)).toBeVisible();
-  // });
+  test('Should show error if task name is empty', async ({ page }) => {
+    await page.goto(taskData.url.create);
+    await clickButtonByName(page, taskData.buttons.create);
+    await expect(page.locator(`text=${taskData.errors.nameRequired}`)).toBeVisible();
+    await expect(page.locator(`text=${taskData.errors.statusRequired}`)).toBeVisible();
+  });
 
-  // test('Should show error if task name already exists', async ({ page }) => {
-  //   await page.goto(taskData.url.create);
-  //   await page.getByLabel(taskData.labels.name).fill(taskName);
-  //   await page.getByLabel(taskData.labels.status).selectOption({ label: statusName });
-  //   await clickButtonByName(page, taskData.buttons.create);
-  //   await expect(page.locator(`text=${taskData.errors.duplicate}`)).toBeVisible();
-  // });
+  test('Should show error if task name already exists', async ({ page }) => {
+    await page.goto(taskData.url.create);
+    await page.getByLabel(taskData.labels.name).fill(taskName);
+    await page.getByLabel(taskData.labels.status).selectOption({ label: statusName });
+    await clickButtonByName(page, taskData.buttons.create);
+    await expect(page.locator(`text=${taskData.errors.duplicate}`)).toBeVisible();
+  });
 
-  // test('Should edit created task', async ({ page }) => {
-  //   const updatedName = `${taskName} Updated`;
+  test('Should edit created task', async ({ page }) => {
+    const updatedName = `${taskName} Updated`;
 
-  //   await page.goto(taskData.url.list);
-  //   const row = page.locator('table tbody tr', { hasText: taskName });
-  //   const editLink = row.getByRole('link', { name: taskData.buttons.edit });
-  //   await editLink.click();
+    await page.goto(taskData.url.list);
+    const row = page.locator('table tbody tr', { hasText: taskName });
+    const editLink = row.getByRole('link', { name: taskData.buttons.edit });
+    await editLink.click();
 
-  //   await page.getByLabel(taskData.labels.name).fill(updatedName);
-  //   await clickButtonByName(page, taskData.buttons.edit);
+    await page.getByLabel(taskData.labels.name).fill(updatedName);
+    await clickButtonByName(page, taskData.buttons.edit);
 
-  //   await expect(page).toHaveURL(taskData.url.list);
-  //   await expect(page.locator(`text=${updatedName}`)).toBeVisible();
-  // });
+    await expect(page).toHaveURL(taskData.url.list);
+    await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+  });
 
-  // test('Should delete created task', async ({ page }) => {
-  //   const updatedName = `${taskName} Updated`;
+  test('Should delete created task', async ({ page }) => {
+    const updatedName = `${taskName} Updated`;
 
-  //   await page.goto(taskData.url.list);
-  //   const row = page.locator('table tbody tr', { hasText: updatedName });
-  //   const deleteBtn = row.getByRole('button', { name: taskData.buttons.delete });
-  //   await deleteBtn.click();
+    await page.goto(taskData.url.list);
+    const row = page.locator('table tbody tr', { hasText: updatedName });
+    const deleteBtn = row.getByRole('button', { name: taskData.buttons.delete });
+    await deleteBtn.click();
 
-  //   await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
-  //   await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
-  // });
+    await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
+    await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
+  });
 });
