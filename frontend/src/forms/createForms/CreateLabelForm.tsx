@@ -3,52 +3,59 @@
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { statusesApi } from '../../api/statusesApi';
+import { labelsApi } from '../../api/labelsApi';
 import CreateFormMixin from './CreateFormMixin';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 
-const CreateStatusPage = () => {
+interface FormValues {
+  name: string;
+}
+
+const CreateLabelPage: React.FC = () => {
   const router = useRouter();
   const { showToast } = useEntityToast();
   const { t: tValidation } = useTranslation('validation');
 
-  const handleSubmit = async values => {
+  const handleSubmit = async (values: FormValues) => {
     try {
-      await statusesApi.create(values);
-      showToast({ type: 'status', action: 'created', titleKey: 'successTitle' });
-      router.push(routes.app.statuses.list());
-    } catch (e) {
+      await labelsApi.create(values);
+      showToast({ type: 'label', action: 'created', titleKey: 'successTitle' });
+      router.push(routes.app.labels.list());
+    } catch (e: any) {
       if (e.response?.status === 422) {
         showToast({
-          type: 'status',
+          type: 'label',
           action: 'alreadyExists',
           titleKey: 'errorTitle',
           toastType: 'error',
         });
-      } else
+      } else {
         showToast({
-          type: 'status',
-          action: 'failedDelete',
+          type: 'label',
+          action: 'failedCreate',
           titleKey: 'errorTitle',
-          type: 'error',
+          toastType: 'error',
         });
-      console.error(e);
+        console.error(e);
+      }
     }
   };
 
   return (
-    <CreateFormMixin
+    <CreateFormMixin<FormValues>
       initialValues={{ name: '' }}
       validationSchema={Yup.object({
-        name: Yup.string().required(tValidation('nameRequired')).min(1, tValidation('min1Symbol')),
+        name: Yup.string()
+          .required(tValidation('nameRequired'))
+          .min(1, tValidation('min1Symbol')),
       })}
       onSubmit={handleSubmit}
       fields={['name']}
-      tNamespace="statuses"
+      tNamespace="labels"
       submitText="create"
     />
   );
 };
 
-export default CreateStatusPage;
+export default CreateLabelPage;

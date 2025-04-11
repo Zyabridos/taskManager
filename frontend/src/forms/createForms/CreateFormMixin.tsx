@@ -1,22 +1,30 @@
 'use client';
 
 import React from 'react';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 
-const CreateFormMixin = ({
+interface CreateFormMixinProps<T> {
+  initialValues: T;
+  validationSchema: any; // можно уточнить, если хочешь: Yup.ObjectSchema<...>
+  onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void | Promise<void>;
+  fields: (keyof T)[];
+  tNamespace: string;
+  submitText: string;
+}
+
+const CreateFormMixin = <T extends Record<string, any>>({
   initialValues,
   validationSchema,
   onSubmit,
   fields,
   tNamespace,
   submitText,
-}) => {
+}: CreateFormMixinProps<T>) => {
   const { t: tNamespaceT } = useTranslation(tNamespace);
-  const { t: tValidation } = useTranslation('validation');
 
-  const formik = useFormik({
+  const formik = useFormik<T>({
     initialValues,
     validationSchema,
     onSubmit,
@@ -26,11 +34,11 @@ const CreateFormMixin = ({
     <div className="mx-auto mt-4 w-[100%]">
       <form className="flex rounded bg-white shadow-md" onSubmit={formik.handleSubmit}>
         <div className="flex flex-col gap-4 p-8 md:w-full">
-          {fields.map(field => (
-            <div className="relative mb-6" key={field}>
+          {fields.map((field) => (
+            <div className="relative mb-6" key={String(field)}>
               <input
                 {...formik.getFieldProps(field)}
-                id={field}
+                id={String(field)}
                 type="text"
                 placeholder=" "
                 className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
@@ -40,7 +48,7 @@ const CreateFormMixin = ({
                 }`}
               />
               <label
-                htmlFor={field}
+                htmlFor={String(field)}
                 className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
               >
                 {tNamespaceT(`form.${field}`)}
@@ -48,11 +56,14 @@ const CreateFormMixin = ({
 
               <div className="min-h-[20px] overflow-hidden">
                 {formik.touched[field] && formik.errors[field] && (
-                  <p className="text-xs italic text-red-500">{formik.errors[field]}</p>
+                  <p className="text-xs italic text-red-500">
+                    {formik.errors[field] as string}
+                  </p>
                 )}
               </div>
             </div>
           ))}
+
           <div className="mt-[-30px]">
             <TransparentGraySubmitBtn
               className="w-auto self-start"

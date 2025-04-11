@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
@@ -12,15 +12,35 @@ import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 import useEntityToast from '../../hooks/useEntityToast';
 
-const CreateTaskPage = () => {
+// Типы метаданных
+interface Option {
+  id: number;
+  name: string;
+}
+
+interface MetaData {
+  statuses: Option[];
+  executors: Option[];
+  labels: Option[];
+}
+
+// Типы формы
+interface FormValues {
+  name: string;
+  description: string;
+  statusId: string;
+  executorId: string;
+  labels: number[];
+}
+
+const CreateTaskPage: React.FC = () => {
   const router = useRouter();
   const { t: tTasks } = useTranslation('tasks');
   const { t: tValidation } = useTranslation('validation');
   const { t: tErrors } = useTranslation('errors');
-
   const { showToast } = useEntityToast();
 
-  const [meta, setMeta] = useState({
+  const [meta, setMeta] = useState<MetaData>({
     statuses: [],
     executors: [],
     labels: [],
@@ -39,22 +59,24 @@ const CreateTaskPage = () => {
     fetchMeta();
   }, [tErrors]);
 
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      description: '',
-      statusId: '',
-      executorId: '',
-      labels: [],
-    },
+  const initialValues: FormValues = {
+    name: '',
+    description: '',
+    statusId: '',
+    executorId: '',
+    labels: [],
+  };
+
+  const formik = useFormik<FormValues>({
+    initialValues,
     validationSchema: Yup.object({
       name: Yup.string().required(tValidation('nameRequired')),
       description: Yup.string(),
       statusId: Yup.number().required(tValidation('statusRequired')),
-      executorId: Yup.number(),
+      executorId: Yup.number().nullable(),
       labels: Yup.array().of(Yup.number()),
     }),
-    onSubmit: async values => {
+    onSubmit: async (values, _formikHelpers: FormikHelpers<FormValues>) => {
       try {
         const preparedValues = {
           ...values,
@@ -63,11 +85,10 @@ const CreateTaskPage = () => {
           labels: values.labels.map(Number),
         };
 
-        console.log('Submitting to API:', preparedValues);
         await tasksApi.create(preparedValues);
         showToast({ type: 'task', action: 'created', titleKey: 'successTitle' });
         router.push(routes.app.tasks.list());
-      } catch (e) {
+      } catch (e: any) {
         if (e.response?.status === 422) {
           showToast({
             type: 'label',
@@ -75,8 +96,15 @@ const CreateTaskPage = () => {
             titleKey: 'errorTitle',
             toastType: 'error',
           });
-        } else console.error('Submit error:', e);
-        showToast({ type: 'task', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
+        } else {
+          console.error('Submit error:', e);
+          showToast({
+            type: 'task',
+            action: 'failedDelete',
+            titleKey: 'errorTitle',
+            toastType: 'error',
+          });
+        }
       }
     },
   });
@@ -96,10 +124,7 @@ const CreateTaskPage = () => {
                 formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
               }`}
             />
-            <label
-              htmlFor="name"
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
+            <label htmlFor="name" className="floating-label">
               {tTasks('form.name')}
             </label>
             {formik.touched.name && formik.errors.name && (
@@ -116,10 +141,7 @@ const CreateTaskPage = () => {
               rows={4}
               className="peer h-32 w-full resize-y rounded border border-gray-300 px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2"
             />
-            <label
-              htmlFor="description"
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
-            >
+            <label htmlFor="description" className="floating-label">
               {tTasks('form.description')}
             </label>
           </div>
@@ -150,7 +172,7 @@ const CreateTaskPage = () => {
             label={tTasks('form.labels')}
             options={meta.labels}
             value={formik.values.labels}
-            onChange={selected => formik.setFieldValue('labels', selected)}
+            onChange={(selected: number[]) => formik.setFieldValue('labels', selected)}
             error={formik.errors.labels}
             touched={formik.touched.labels}
           />
