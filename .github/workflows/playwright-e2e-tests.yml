@@ -37,8 +37,8 @@ jobs:
       - name: Build frontend
         run: make build-frontend
 
-      - name: Start frontend
-        run: cd frontend && PORT=3000 npm run start &
+      - name: Start frontend in dev
+        run: cd frontend && PORT=3000 npm run dev &
         env:
           NODE_ENV: test
 

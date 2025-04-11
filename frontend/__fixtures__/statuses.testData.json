@@ -29,7 +29,7 @@
   },
   "url": {
     "list": "http://localhost:3000/statuses",
-    "new": "http://localhost:3000/statuses/new",
+    "create": "http://localhost:3000/statuses/new",
     "editPattern": "http://localhost:3000/statuses/:id/edit"
   }
 }

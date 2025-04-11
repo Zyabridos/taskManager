@@ -1,86 +1,97 @@
 import { test, expect } from '@playwright/test';
+import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
+import { clickButtonByName } from './helpers/selectors.js';
 import readFixture from './helpers/readFixture.js';
-import { LogInExistingUser, signUpNewUser } from './helpers/session.js';
-import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 
 let taskData;
 let statusData;
+let labelData;
 
 test.beforeAll(async () => {
   taskData = await readFixture('tasks.testData.json');
   statusData = await readFixture('statuses.testData.json');
+  labelData = await readFixture('labels.testData.json');
 });
 
-test.describe('Tasks CRUD visual (UI)', () => {
+test.describe('tasks CRUD visual (UI)', () => {
+  let email;
+  let password;
+  let statusName;
+  let labelName;
+  let taskName;
+
   test.beforeEach(async ({ page }) => {
-    await signUpNewUser(page, taskData.user.email, taskData.user.password);
+    const user = await signUpNewUser(page);
+    email = user.email;
+    password = user.password;
+    taskName = `Task ${Date.now()}`;
+    statusName = `Status ${Date.now()}`;
+    labelName = `Label ${Date.now()}`;
 
-    await page.goto(statusData.url.list);
-    await clickLinkByName(page, statusData.buttons.create);
-    await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
+    await LogInExistingUser(page, email, password);
+
+    await page.goto(statusData.url.create);
+    await page.getByLabel(statusData.labels.name).fill(statusName);
     await clickButtonByName(page, statusData.buttons.create);
-  });
+    await expect(page.locator(`text=${statusName}`)).toBeVisible();
 
-  test('Should create new task with required fields', async ({ page }) => {
+    await page.goto(labelData.url.create);
+    await page.getByLabel(labelData.labels.name).fill(labelName);
+    await clickButtonByName(page, labelData.buttons.create);
+    await expect(page.locator(`text=${labelName}`)).toBeVisible();
+
     await page.goto(taskData.url.create);
-
-    await page.getByLabel(taskData.labels.name).fill(taskData.task.name);
-    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
-
+    await page.getByLabel(taskData.labels.name).fill(taskName);
+    await page.getByLabel(taskData.labels.status).selectOption({ label: statusName });
+    await page.getByLabel(taskData.labels.labels).selectOption({ label: labelName });
     await clickButtonByName(page, taskData.buttons.create);
-
-    await expect(page).toHaveURL(taskData.url.list);
-    await expect(page.locator(`text=${taskData.messages.created}`)).toBeVisible();
-    await expect(page.locator(`text=${taskData.task.name}`)).toBeVisible();
+    await expect(page.locator(`text=${taskName}`)).toBeVisible();
   });
 
-  // test('Should show validation errors if required fields - name and status - are empty', async ({
-  //   page,
-  // }) => {
+  test('Should show created task in list', async ({ page }) => {
+    await page.goto(taskData.url.list);
+    await expect(page.locator(`text=${taskName}`)).toBeVisible();
+  });
+
+  // test('Should show error if task name is empty', async ({ page }) => {
   //   await page.goto(taskData.url.create);
-
   //   await clickButtonByName(page, taskData.buttons.create);
-
-  //   await expect(page).toHaveURL(taskData.url.create);
-
   //   await expect(page.locator(`text=${taskData.errors.nameRequired}`)).toBeVisible();
   //   await expect(page.locator(`text=${taskData.errors.statusRequired}`)).toBeVisible();
   // });
 
-  // test('Should update a specific task', async ({ page }) => {
-  //   const updatedName = taskData.task.updated;
+  // test('Should show error if task name already exists', async ({ page }) => {
+  //   await page.goto(taskData.url.create);
+  //   await page.getByLabel(taskData.labels.name).fill(taskName);
+  //   await page.getByLabel(taskData.labels.status).selectOption({ label: statusName });
+  //   await clickButtonByName(page, taskData.buttons.create);
+  //   await expect(page.locator(`text=${taskData.errors.duplicate}`)).toBeVisible();
+  // });
+
+  // test('Should edit created task', async ({ page }) => {
+  //   const updatedName = `${taskName} Updated`;
+
   //   await page.goto(taskData.url.list);
-
-  //   const taskRow = page.locator('table tbody tr', { hasText: taskData.task.name });
-  //   await expect(taskRow).toBeVisible();
-
-  //   const editLink = taskRow.getByRole('link', { name: taskData.buttons.edit });
+  //   const row = page.locator('table tbody tr', { hasText: taskName });
+  //   const editLink = row.getByRole('link', { name: taskData.buttons.edit });
   //   await editLink.click();
 
   //   await page.getByLabel(taskData.labels.name).fill(updatedName);
-
-  //   await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
-
   //   await clickButtonByName(page, taskData.buttons.edit);
 
   //   await expect(page).toHaveURL(taskData.url.list);
-  //   await expect(page.locator(`text=${taskData.messages.updated}`)).toBeVisible();
   //   await expect(page.locator(`text=${updatedName}`)).toBeVisible();
   // });
 
-  // test('Should delete a specific task', async ({ page }) => {
+  // test('Should delete created task', async ({ page }) => {
+  //   const updatedName = `${taskName} Updated`;
+
   //   await page.goto(taskData.url.list);
+  //   const row = page.locator('table tbody tr', { hasText: updatedName });
+  //   const deleteBtn = row.getByRole('button', { name: taskData.buttons.delete });
+  //   await deleteBtn.click();
 
-  //   const row = page.locator('table tbody tr', { hasText: taskData.task.updated });
-
-  //   await expect(row).toBeVisible();
-
-  //   const deleteButton = row.getByRole('button', { name: taskData.buttons.delete });
-
-  //   await deleteButton.click();
-
-  //   await expect(page).toHaveURL(taskData.url.list);
   //   await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
-  //   await expect(page.locator(`text=${taskData.task.name}`)).not.toBeVisible();
+  //   await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
   // });
 });

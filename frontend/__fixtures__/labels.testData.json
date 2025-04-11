@@ -28,7 +28,7 @@
   },
   "url": {
     "list": "http://localhost:3000/labels",
-    "new": "http://localhost:3000/labels/new",
+    "create": "http://localhost:3000/labels/new",
     "editPattern": "http://localhost:3000/labels/:id/edit"
   }
 }
