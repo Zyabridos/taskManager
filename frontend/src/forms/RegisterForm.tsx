@@ -23,6 +23,7 @@ const RegisterForm: React.FC = () => {
   const router = useRouter();
   const { t: tAuth } = useTranslation('auth');
   const { t: tValidation } = useTranslation('validation');
+  const { t: tErrors } = useTranslation('errors');
   const { login } = useAuth();
   const { showToast } = useEntityToast();
 

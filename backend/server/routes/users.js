@@ -8,6 +8,7 @@ export default async (app) => {
 
   app.get('/api/users/:id', async (req, reply) => {
     const user = await User.query().findById(req.params.id);
+    console.log('user', req.user)
     if (!user) return reply.status(404).send({ error: 'User not found' });
 
     if (req.user.id !== Number(req.params.id)) {

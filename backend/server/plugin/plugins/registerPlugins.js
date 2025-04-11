@@ -30,8 +30,10 @@ const registerPlugins = async (app) => {
     cookie: {
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
+      // secure: process.env.NODE_ENV === 'production',
+      secure: false,
+      // sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
+      sameSite: 'lax'
     },
   });
 

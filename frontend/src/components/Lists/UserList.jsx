@@ -15,6 +15,7 @@ import { useAuth } from '../../context/authContex';
 import useHandleToastError from '../../hooks/useHandleErrorToast';
 
 const UserList = () => {
+  console.log('Ur logged user id:', useSelector(state => state.users))
   const dispatch = useDispatch();
   const { list, status, error } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
