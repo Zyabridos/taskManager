@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: './tests',
@@ -6,6 +6,22 @@ export default defineConfig({
   expect: {
     timeout: 10000,
   },
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+    },
+
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+    },
+  ],
   use: {
     baseURL: 'http://localhost:3000',
     headless: true,
@@ -19,7 +35,7 @@ export default defineConfig({
     command: 'PORT=3000 npm run start',
     port: 3000,
     cwd: './frontend',
-    reuseExistingServer: false,
+    reuseExistingServer: true,
     timeout: 60 * 1000,
   },
 });
