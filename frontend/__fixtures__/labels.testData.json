@@ -30,5 +30,14 @@
     "list": "http://localhost:3000/labels",
     "create": "http://localhost:3000/labels/new",
     "editPattern": "http://localhost:3000/labels/:id/edit"
+  },
+  "table": {
+    "pageTitle": "Список меток",
+    "columns": {
+      "id": "ID",
+      "name": "Наименование",
+      "createdAt": "Дата создания",
+      "actions": "Действия"
+    }
   }
 }

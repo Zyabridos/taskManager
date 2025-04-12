@@ -19,14 +19,14 @@ test.describe('statuses layout and headers', () => {
 
     await page.goto(url.list);
 
-    const headers = await page.getByRole('columnheader').allTextContents();
-    console.log('Column headers:', headers);
-
+    const ths = page.locator('th');
     await expect(page.getByRole('heading', { name: table.pageTitle })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: /^ID/ })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: table.columns.name })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: table.columns.createdAt })).toBeVisible();
-    await expect(page.getByRole('columnheader', { name: table.columns.actions })).toBeVisible();
+    // default sorting by id, and therefore
+    // with first render showed ID ↑, not just ID
+    await expect(ths.nth(0)).toHaveText(new RegExp(table.columns.id));
+    await expect(ths.nth(1)).toHaveText(table.columns.name);
+    await expect(ths.nth(2)).toHaveText(table.columns.createdAt);
+    await expect(ths.nth(3)).toHaveText(table.columns.actions);
   });
 });
 

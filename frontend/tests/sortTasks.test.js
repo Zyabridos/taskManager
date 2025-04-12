@@ -4,35 +4,48 @@ import { LogInExistingUser, signUpNewUser } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 
 let taskData;
+let email;
+let password;
 
 test.beforeAll(async () => {
   taskData = await readFixture('tasks.testData.json');
 });
 
 test.describe('Tasks sorting', () => {
-  test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
     const user = await signUpNewUser(page);
     email = user.email;
     password = user.password;
-
     await LogInExistingUser(page, email, password);
 
-    await page.goto(taskData.url.statuses);
-    await clickLinkByName(page, taskData.buttons.createStatus);
-    await page.getByLabel(taskData.labels.name).fill('New');
-    await clickButtonByName(page, taskData.buttons.createStatus);
+    // executors
+    const executors = [];
+    for (let i = 1; i <= 5; i += 1) {
+      const newUser = await signUpNewUser(page, { firstName: `User${i}` });
+      executors.push(newUser);
+    }
 
+    // statuses
+    await page.goto(taskData.url.statuses);
+    for (let i = 1; i <= 5; i += 1) {
+      await clickLinkByName(page, taskData.buttons.createStatus);
+      await page.getByLabel(taskData.labels.name).fill(`Status ${i}`);
+      await clickButtonByName(page, taskData.buttons.createStatus);
+    }
+
+    // label
     await page.goto(taskData.url.labels);
     await clickLinkByName(page, taskData.buttons.createLabel);
     await page.getByLabel(taskData.labels.name).fill('Frontend');
     await clickButtonByName(page, taskData.buttons.createLabel);
 
+    // tasks
     for (let i = 1; i <= 5; i += 1) {
-      const taskName = `Task ${i}`;
       await page.goto(taskData.url.create);
-      await page.getByLabel(taskData.labels.name).fill(taskName);
-      await page.getByLabel(taskData.labels.status).selectOption({ label: 'New' });
+      await page.getByLabel(taskData.labels.name).fill(`Task ${i}`);
+      await page.getByLabel(taskData.labels.status).selectOption({ label: `Status ${i}` });
       await page.getByLabel(taskData.labels.label).selectOption({ label: 'Frontend' });
+      await page.getByLabel('Исполнитель').selectOption({ label: `User${i} User${i}` });
       await clickButtonByName(page, taskData.buttons.create);
       await expect(page).toHaveURL(taskData.url.list);
     }

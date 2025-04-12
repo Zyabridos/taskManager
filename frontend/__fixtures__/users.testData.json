@@ -34,7 +34,7 @@
     "signUp": "http://localhost:3000/users/new",
     "signIn": "http://localhost:3000/session/new",
     "usersList": "http://localhost:3000/users",
-    "afterSignUp": "http://localhost:3000/users"
+    "afterSignUp": "http://localhost:3000/"
   },
   "table": {
     "pageTitle": "Список пользователей",

@@ -78,7 +78,7 @@ start-frontend:
 dev-frontend:
 	cd frontend && npm run dev
 
-test-frontend-e2e:
+test-e2e:
 	cd frontend && npx playwright test
 
 lint-frontend:
@@ -86,6 +86,8 @@ lint-frontend:
 
 format-frontend:
 	cd frontend && npm run format
+
+# Local-comands - TEMP
 
 u:
 	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/users.test.js
@@ -97,4 +99,16 @@ se:
 	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/session.test.js
 
 so:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/session.test.js
+	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/sortTasks.test.js
+
+t:
+	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/tasks.test.js
+
+l:
+	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/labels.test.js
+
+f:
+	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/filter.test.js
+
+h:
+	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/helpers.test.js

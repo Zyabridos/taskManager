@@ -47,7 +47,8 @@
   },
   "errors": {
     "nameRequired": "Имя обязательно",
-    "statusRequired": "Статус обязателен"
+    "statusRequired": "Статус обязателен",
+    "duplicate": "Задача с таким названием уже существует"
   },
   "url": {
     "create": "http://localhost:3000/tasks/new",
@@ -56,10 +57,15 @@
     "statuses": "http://localhost:3000/statuses",
     "labels": "http://localhost:3000/labels"
   },
-  "columns": {
-    "id": "ID",
-    "executor": "Исполнитель",
-    "status": "Статус",
-    "createdAt": "Дата создания"
+  "table": {
+    "pageTitle": "Список задач",
+    "columns": {
+      "id": "ID",
+      "name": "Наименование",
+      "status": "Статус",
+      "executor": "Исполнитель",
+      "createdAt": "Дата создания",
+      "actions": "Действия"
+    }
   }
 }

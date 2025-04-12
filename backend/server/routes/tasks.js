@@ -69,6 +69,11 @@ export default (app) => {
 
         const { id: authorId } = req.user;
 
+        const existing = await app.objection.models.task.query().findOne({ name });
+        if (existing) {
+          return reply.code(422).send({ error: 'name already exists' });
+        }
+
         const labelIds = Array.isArray(labels)
           ? labels.map(Number)
           : [Number(labels)].filter((id) => !Number.isNaN(id));

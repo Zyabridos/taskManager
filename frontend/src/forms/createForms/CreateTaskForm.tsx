@@ -95,7 +95,7 @@ const CreateTaskPage: React.FC = () => {
 
   return (
     <div className="flex">
-      <form className="w-[90%] w-full rounded bg-white shadow-md" onSubmit={formik.handleSubmit}>
+      <form className="w-[90%] rounded bg-white shadow-md" onSubmit={formik.handleSubmit}>
         <div className="flex flex-col gap-4 p-6">
           {/* Name */}
           <div className="relative mb-2">

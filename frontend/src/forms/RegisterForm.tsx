@@ -52,7 +52,7 @@ const RegisterForm: React.FC = () => {
 
         showToast({
           type: 'user',
-          action: 'registered.success.user',
+          action: 'registered.success',
           titleKey: 'successTitle',
           toastType: 'success',
         });

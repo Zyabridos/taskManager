@@ -74,7 +74,7 @@ const TasksList = () => {
       }
     };
     loadMeta();
-  }, [showToast]);
+  }, []);
 
   const handleFilter = values => {
     const params = new URLSearchParams();
