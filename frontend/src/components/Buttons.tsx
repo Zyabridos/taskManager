@@ -44,7 +44,10 @@ interface TransparentGraySubmitBtnProps {
   className?: string;
 }
 
-export const TransparentGraySubmitBtn: React.FC<TransparentGraySubmitBtnProps> = ({ buttonText, className = '' }) => {
+export const TransparentGraySubmitBtn: React.FC<TransparentGraySubmitBtnProps> = ({
+  buttonText,
+  className = '',
+}) => {
   return (
     <button
       type="submit"

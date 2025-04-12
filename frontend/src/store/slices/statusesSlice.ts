@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { statusesApi } from '../../api/statusesApi';
+import { getErrorPayload } from '../../utils/errorsHandlers';
 
 export interface Status {
   id: number;
@@ -22,18 +23,18 @@ export const fetchStatuses = createAsyncThunk<Status[]>('statuses/fetchStatuses'
   return await statusesApi.getAll();
 });
 
-export const deleteStatusThunk = createAsyncThunk<number, number, { rejectValue: any }>(
-  'statuses/delete',
-  async (id, { rejectWithValue }) => {
-    try {
-      await statusesApi.remove(id);
-      return id;
-    } catch (err: any) {
-      const errorData = err?.response?.data;
-      return rejectWithValue(errorData ?? { error: 'Unknown error' });
-    }
-  },
-);
+export const deleteStatusThunk = createAsyncThunk<
+  number,
+  number,
+  { rejectValue: { error: string } }
+>('statuses/delete', async (id, { rejectWithValue }) => {
+  try {
+    await statusesApi.remove(id);
+    return id;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorPayload(err));
+  }
+});
 
 const statusesSlice = createSlice({
   name: 'statuses',

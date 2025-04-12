@@ -11,6 +11,7 @@ import SelectField from '../UI/SelectField';
 import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 import useEntityToast from '@/hooks/useEntityToast';
+import { handleFormError } from '../../utils/errorsHandlers';
 
 interface Option {
   id: number;
@@ -65,8 +66,7 @@ const EditTaskForm: React.FC = () => {
         setTask(taskData);
         setMeta(metaData);
       } catch (e) {
-        console.error(e);
-        showToast({ type: 'task', action: 'failedUpdate', titleKey: 'errorTitle', toastType: 'error' });
+        handleFormError(e, { type: 'task', toast: showToast, fallbackAction: 'failedUpdate' });
       }
     };
     fetchData();
@@ -80,7 +80,7 @@ const EditTaskForm: React.FC = () => {
           description: task.description || '',
           statusId: task.statusId,
           executorId: task.executorId ?? '',
-          labels: task.labels?.map((label) => label.id) || [],
+          labels: task.labels?.map(label => label.id) || [],
         }
       : {
           name: '',
@@ -108,23 +108,8 @@ const EditTaskForm: React.FC = () => {
         await tasksApi.update(taskId, preparedValues);
         showToast({ type: 'task', action: 'updated', titleKey: 'successTitle' });
         router.push(routes.app.tasks.list());
-      } catch (e: any) {
-        if (e.response?.status === 422) {
-          showToast({
-            type: 'task',
-            action: 'alreadyExists',
-            titleKey: 'errorTitle',
-            toastType: 'error',
-          });
-        } else {
-          console.error(e);
-          showToast({
-            type: 'task',
-            action: 'failedUpdate',
-            titleKey: 'errorTitle',
-            toastType: 'error',
-          });
-        }
+      } catch (e) {
+        handleFormError(e, { type: 'task', toast: showToast, fallbackAction: 'failedUpdate' });
       }
     },
   });
@@ -144,18 +129,18 @@ const EditTaskForm: React.FC = () => {
               id="name"
               type="text"
               placeholder=" "
-              className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
+              className={`peer h-14 w-full rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
                 formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
               }`}
             />
             <label
               htmlFor="name"
-              className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
+              className="absolute top-2 left-3 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
             >
               {tTasks('form.name')}
             </label>
             {formik.touched.name && formik.errors.name && (
-              <p className="text-xs italic text-red-500">{formik.errors.name}</p>
+              <p className="text-xs text-red-500 italic">{formik.errors.name}</p>
             )}
           </div>
 

@@ -24,7 +24,7 @@
   },
   "errors": {
     "emailExists": "Пользователь с таким email уже существует",
-    "notOwner": "Вы не можете удалять других пользователей"
+    "notOwner": "Вы не можете редактировать других пользователей"
   },
   "testUser": {
     "password": "qwerty"
@@ -34,6 +34,16 @@
     "signUp": "http://localhost:3000/users/new",
     "signIn": "http://localhost:3000/session/new",
     "usersList": "http://localhost:3000/users",
-    "afterSignUp": "http://localhost:3000"
+    "afterSignUp": "http://localhost:3000/users"
+  },
+  "table": {
+    "pageTitle": "Список пользователей",
+    "columns": {
+      "fullName": "Полное имя",
+      "email": "Email",
+      "id": "ID",
+      "createdAt": "Дата создания",
+      "actions": "Действия"
+    }
   }
 }

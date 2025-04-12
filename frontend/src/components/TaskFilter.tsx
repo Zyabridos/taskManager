@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useFormik, FormikHelpers } from 'formik';
+import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import SelectField from '../forms/UI/SelectField';
 import { TransparentGraySubmitBtn } from './Buttons';
@@ -26,7 +26,13 @@ interface TaskFilterValues {
   isCreatorUser: boolean;
 }
 
-const TaskFilter: React.FC<TaskFilterProps> = ({ statuses, executors, labels, onFilter, initialValues }) => {
+const TaskFilter: React.FC<TaskFilterProps> = ({
+  statuses,
+  executors,
+  labels,
+  onFilter,
+  initialValues,
+}) => {
   const { t: tTasks } = useTranslation('tasks');
 
   const formik = useFormik<TaskFilterValues>({

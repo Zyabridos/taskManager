@@ -63,12 +63,8 @@ describe('makeLogin function', () => {
     expect(setCookieHeader).toBeDefined();
 
     // another temp crutch
-    const cookieArray = Array.isArray(setCookieHeader)
-      ? setCookieHeader
-      : [setCookieHeader];
+    const cookieArray = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
 
-    expect(
-      cookieArray.some((cookie) => cookie.startsWith('session='))
-    ).toBe(true);
+    expect(cookieArray.some((cookie) => cookie.startsWith('session='))).toBe(true);
   });
 });

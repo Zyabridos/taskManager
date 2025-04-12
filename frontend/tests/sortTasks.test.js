@@ -59,8 +59,7 @@ test.describe('Tasks sorting', () => {
   });
 
   test('should sort by name asc and desc', async ({ page }) => {
-    const getFirstName = async () =>
-      await page.locator('tbody tr td').nth(1).textContent();
+    const getFirstName = async () => await page.locator('tbody tr td').nth(1).textContent();
 
     await page.locator('thead tr th', { hasText: 'Наименование' }).click();
     const asc = await getFirstName();
@@ -72,8 +71,7 @@ test.describe('Tasks sorting', () => {
   });
 
   test('should sort by status asc and desc', async ({ page }) => {
-    const getFirstStatus = async () =>
-      await page.locator('tbody tr td').nth(2).textContent();
+    const getFirstStatus = async () => await page.locator('tbody tr td').nth(2).textContent();
 
     await page.locator('thead tr th', { hasText: 'Статус' }).click();
     const asc = await getFirstStatus();

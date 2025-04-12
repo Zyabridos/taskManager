@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const resetAppState = async (page) => {
+export const resetAppState = async page => {
   const baseURL = process.env.BASE_URL || 'http://localhost:3000';
 
   const cookies = await page.context().cookies();
@@ -28,9 +28,7 @@ export const resetAppState = async (page) => {
     for (const status of statuses.data) {
       await api.delete(`/api/statuses/${status.id}`);
     }
-    
   } catch (error) {
     console.error('resetAppState error:', error.message);
   }
 };
-

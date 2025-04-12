@@ -3,21 +3,15 @@
 import React from 'react';
 import { FieldInputProps } from 'formik';
 
-interface FormInputProps {
+interface FormInputProps<T = string> {
   id: string;
   type?: string;
-  field: FieldInputProps<any>; // { name, value, onChange, onBlur }
+  field: FieldInputProps<T>; // { name, value, onChange, onBlur }
   touched?: boolean;
   error?: string;
 }
 
-const FormInput: React.FC<FormInputProps> = ({
-  id,
-  type = 'text',
-  field,
-  touched,
-  error,
-}) => {
+const FormInput: React.FC<FormInputProps> = ({ id, type = 'text', field, touched, error }) => {
   const hasError = touched && !!error;
 
   return (
@@ -26,7 +20,7 @@ const FormInput: React.FC<FormInputProps> = ({
       type={type}
       placeholder=" "
       {...field}
-      className={`peer h-14 w-full appearance-none rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
+      className={`peer h-14 w-full appearance-none rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
         hasError ? 'border-red-500' : 'border-gray-300'
       }`}
     />

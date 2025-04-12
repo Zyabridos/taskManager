@@ -7,6 +7,7 @@ import { TransparentGraySubmitBtn } from '../../components/Buttons';
 
 interface CreateFormMixinProps<T> {
   initialValues: T;
+  // eslint-disable-next-line
   validationSchema: any;
   onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void | Promise<void>;
   fields: (keyof T)[];
@@ -14,6 +15,7 @@ interface CreateFormMixinProps<T> {
   submitText: string;
 }
 
+// eslint-disable-next-line
 const CreateFormMixin = <T extends Record<string, any>>({
   initialValues,
   validationSchema,
@@ -34,14 +36,14 @@ const CreateFormMixin = <T extends Record<string, any>>({
     <div className="mx-auto mt-4 w-[100%]">
       <form className="flex rounded bg-white shadow-md" onSubmit={formik.handleSubmit}>
         <div className="flex flex-col gap-4 p-8 md:w-full">
-          {fields.map((field) => (
+          {fields.map(field => (
             <div className="relative mb-6" key={String(field)}>
               <input
                 {...formik.getFieldProps(field as string)}
                 id={String(field)}
                 type="text"
                 placeholder=" "
-                className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
+                className={`peer h-14 w-full rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
                   formik.touched[field] && formik.errors[field]
                     ? 'border-red-500'
                     : 'border-gray-300'
@@ -49,16 +51,14 @@ const CreateFormMixin = <T extends Record<string, any>>({
               />
               <label
                 htmlFor={String(field)}
-                className="absolute left-3 top-2 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
+                className="absolute top-2 left-3 text-sm text-gray-500 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-sm peer-focus:text-blue-500"
               >
                 {tNamespaceT(`form.${field as string}`)}
               </label>
 
               <div className="min-h-[20px] overflow-hidden">
                 {formik.touched[field] && formik.errors[field] && (
-                  <p className="text-xs italic text-red-500">
-                    {formik.errors[field] as string}
-                  </p>
+                  <p className="text-xs text-red-500 italic">{formik.errors[field] as string}</p>
                 )}
               </div>
             </div>

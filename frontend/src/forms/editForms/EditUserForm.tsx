@@ -11,6 +11,7 @@ import FormInput from '../UI/FormInput';
 import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
+import { handleFormError } from '../../utils/errorsHandlers';
 
 interface UserFormValues {
   firstName: string;
@@ -24,11 +25,6 @@ const EditUserForm: React.FC = () => {
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
   const { showToast } = useEntityToast();
-  const { t: tUsers } = useTranslation('users');
-  const { t: tValidation } = useTranslation('validation');
-
-  const [initialValues, setInitialValues] = useState<UserFormValues | null>(null);
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -39,33 +35,31 @@ const EditUserForm: React.FC = () => {
           email: user.email,
           password: '',
         });
-      } catch (e: any) {
-        if (e?.response?.status === 403) {
+      } catch (e) {
+        // eslint-disable-next-line
+        if ((e as any)?.response?.status === 403) {
           sessionStorage.setItem('toast_forbidden_edit', 'true');
         }
+        handleFormError(e, { type: 'user', toast: showToast, fallbackAction: 'failedUpdate' });
         router.push(routes.app.users.list());
       }
     };
 
     fetchUser();
-  }, [id, router]);
+  }, [id, router, showToast]);
 
-  const handleSubmit = async (
-    values: UserFormValues,
-    _helpers: FormikHelpers<UserFormValues>
-  ) => {
+  const { t: tUsers } = useTranslation('users');
+  const { t: tValidation } = useTranslation('validation');
+
+  const [initialValues, setInitialValues] = useState<UserFormValues | null>(null);
+
+  const handleSubmit = async (values: UserFormValues, _helpers: FormikHelpers<UserFormValues>) => {
     try {
       await usersApi.update(id, values);
       showToast({ type: 'user', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.users.list());
     } catch (e) {
-      console.error(e);
-      showToast({
-        type: 'user',
-        action: 'failedUpdate',
-        titleKey: 'errorTitle',
-        toastType: 'error',
-      });
+      handleFormError(e, { type: 'user', toast: showToast, fallbackAction: 'failedUpdate' });
     }
   };
 
@@ -96,7 +90,7 @@ const EditUserForm: React.FC = () => {
       onSubmit={formik.handleSubmit}
       buttonText={tUsers('form.update')}
     >
-      {(Object.keys(initialValues) as (keyof UserFormValues)[]).map((field) => (
+      {(Object.keys(initialValues) as (keyof UserFormValues)[]).map(field => (
         <div className="relative mb-6" key={field}>
           <FormInput
             id={field}
@@ -108,7 +102,7 @@ const EditUserForm: React.FC = () => {
           />
           <FloatingLabel htmlFor={field} text={tUsers(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field] as string}</p>
+            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field] as string}</p>
           )}
         </div>
       ))}

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { tasksApi } from '../../api/tasksApi';
+import { getErrorMessage } from '../../utils/errorsHandlers';
 
 export interface Task {
   id: number;
@@ -11,12 +12,14 @@ export interface Task {
   updatedAt?: string;
 }
 
+type QueryValue = string | number | boolean | undefined;
+
 // for example: ?status=1&executor=1&label=1
 export type TaskQueryParams = {
   status?: number;
   executor?: number;
   label?: number;
-  [key: string]: any;
+  [key: string]: QueryValue;
 };
 
 interface TasksState {
@@ -38,8 +41,8 @@ export const fetchTasks = createAsyncThunk<
 >('tasks/fetchTasks', async (params = {}, thunkAPI) => {
   try {
     return await tasksApi.getAll(params);
-  } catch (e: any) {
-    return thunkAPI.rejectWithValue(e.response?.data?.error || 'Unknown error');
+  } catch (err: unknown) {
+    return thunkAPI.rejectWithValue(getErrorMessage(err));
   }
 });
 

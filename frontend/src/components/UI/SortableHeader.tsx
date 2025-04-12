@@ -19,16 +19,23 @@ interface SortableHeaderProps {
   onSort: (field: string) => void;
 }
 
-const SortableHeader: React.FC<SortableHeaderProps> = ({ label, field, currentSortField, sortOrder, onSort }) => {
+const SortableHeader: React.FC<SortableHeaderProps> = ({
+  label,
+  field,
+  currentSortField,
+  sortOrder,
+  onSort,
+}) => {
   const isActive = currentSortField === field;
   const arrow = isActive ? (sortOrder === 'asc' ? '↑' : '↓') : '';
 
   return (
     <th
       onClick={() => onSort(field)}
-      className="cursor-pointer select-none px-6 py-3 text-left text-xs font-medium uppercase text-gray-700"
+      className="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase select-none"
     >
-      {label} {arrow}
+      {label}
+      {arrow && ` ${arrow}`}
     </th>
   );
 };

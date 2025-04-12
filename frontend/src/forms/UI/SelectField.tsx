@@ -12,19 +12,13 @@ interface SelectFieldProps {
   id: string;
   label: string;
   options: Option[];
-  field: FieldInputProps<any>; // можно уточнить тип, если ты знаешь, что это string или number
+  // eslint-disable-next-line
+  field: FieldInputProps<any>;
   error?: string;
   touched?: boolean;
 }
 
-const SelectField: React.FC<SelectFieldProps> = ({
-  id,
-  label,
-  options,
-  field,
-  error,
-  touched,
-}) => {
+const SelectField: React.FC<SelectFieldProps> = ({ id, label, options, field, error, touched }) => {
   const hasError = touched && !!error;
 
   return (
@@ -35,7 +29,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       <select
         id={id}
         {...field}
-        className={`w-full rounded border p-2 shadow-sm focus:outline-none focus:ring ${
+        className={`w-full rounded border p-2 shadow-sm focus:ring focus:outline-none ${
           hasError ? 'border-red-500' : 'border-gray-300'
         }`}
       >
@@ -46,7 +40,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
           </option>
         ))}
       </select>
-      {hasError && <p className="mt-1 text-xs italic text-red-500">{error}</p>}
+      {hasError && <p className="mt-1 text-xs text-red-500 italic">{error}</p>}
     </div>
   );
 };

@@ -11,6 +11,7 @@ import SelectField from '../UI/SelectField';
 import MultiSelectField from '../UI/MultiSelectField';
 import { TransparentGraySubmitBtn } from '../../components/Buttons';
 import useEntityToast from '../../hooks/useEntityToast';
+import { handleFormError } from '../../utils/errorsHandlers';
 
 interface Option {
   id: number;
@@ -86,23 +87,8 @@ const CreateTaskPage: React.FC = () => {
         await tasksApi.create(preparedValues);
         showToast({ type: 'task', action: 'created', titleKey: 'successTitle' });
         router.push(routes.app.tasks.list());
-      } catch (e: any) {
-        if (e.response?.status === 422) {
-          showToast({
-            type: 'label',
-            action: 'alreadyExists',
-            titleKey: 'errorTitle',
-            toastType: 'error',
-          });
-        } else {
-          console.error('Submit error:', e);
-          showToast({
-            type: 'task',
-            action: 'failedDelete',
-            titleKey: 'errorTitle',
-            toastType: 'error',
-          });
-        }
+      } catch (e) {
+        handleFormError(e, { type: 'task', toast: showToast, fallbackAction: 'failedDelete' });
       }
     },
   });
@@ -118,7 +104,7 @@ const CreateTaskPage: React.FC = () => {
               id="name"
               type="text"
               placeholder=" "
-              className={`peer h-14 w-full rounded border px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2 ${
+              className={`peer h-14 w-full rounded border px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none ${
                 formik.touched.name && formik.errors.name ? 'border-red-500' : 'border-gray-300'
               }`}
             />
@@ -126,7 +112,7 @@ const CreateTaskPage: React.FC = () => {
               {tTasks('form.name')}
             </label>
             {formik.touched.name && formik.errors.name && (
-              <p className="text-xs italic text-red-500">{formik.errors.name}</p>
+              <p className="text-xs text-red-500 italic">{formik.errors.name}</p>
             )}
           </div>
 
@@ -137,7 +123,7 @@ const CreateTaskPage: React.FC = () => {
               id="description"
               placeholder=" "
               rows={4}
-              className="peer h-32 w-full resize-y rounded border border-gray-300 px-3 pb-2 pt-5 text-sm text-gray-700 shadow focus:outline-none focus:ring-2"
+              className="peer h-32 w-full resize-y rounded border border-gray-300 px-3 pt-5 pb-2 text-sm text-gray-700 shadow focus:ring-2 focus:outline-none"
             />
             <label htmlFor="description" className="floating-label">
               {tTasks('form.description')}

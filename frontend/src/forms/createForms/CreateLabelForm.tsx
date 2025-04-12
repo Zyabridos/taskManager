@@ -7,6 +7,7 @@ import { labelsApi } from '../../api/labelsApi';
 import CreateFormMixin from './CreateFormMixin';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
+import { handleFormError } from '../../utils/errorsHandlers';
 
 interface FormValues {
   name: string;
@@ -22,23 +23,8 @@ const CreateLabelPage: React.FC = () => {
       await labelsApi.create(values);
       showToast({ type: 'label', action: 'created', titleKey: 'successTitle' });
       router.push(routes.app.labels.list());
-    } catch (e: any) {
-      if (e.response?.status === 422) {
-        showToast({
-          type: 'label',
-          action: 'alreadyExists',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      } else {
-        showToast({
-          type: 'label',
-          action: 'failedCreate',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-        console.error(e);
-      }
+    } catch (e) {
+      handleFormError(e, { type: 'label', toast: showToast });
     }
   };
 
@@ -46,9 +32,7 @@ const CreateLabelPage: React.FC = () => {
     <CreateFormMixin<FormValues>
       initialValues={{ name: '' }}
       validationSchema={Yup.object({
-        name: Yup.string()
-          .required(tValidation('nameRequired'))
-          .min(1, tValidation('min1Symbol')),
+        name: Yup.string().required(tValidation('nameRequired')).min(1, tValidation('min1Symbol')),
       })}
       onSubmit={handleSubmit}
       fields={['name']}

@@ -29,9 +29,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
   const hasError = touched && !!error;
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValues = Array.from(e.target.selectedOptions).map((opt) =>
-      Number(opt.value)
-    );
+    const selectedValues = Array.from(e.target.selectedOptions).map(opt => Number(opt.value));
     onChange(selectedValues);
   };
 
@@ -45,7 +43,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
         multiple
         value={value.map(String)}
         onChange={handleChange}
-        className={`w-full rounded border p-2 shadow-sm focus:outline-none focus:ring ${
+        className={`w-full rounded border p-2 shadow-sm focus:ring focus:outline-none ${
           hasError ? 'border-red-500' : 'border-gray-300'
         }`}
       >
@@ -55,7 +53,7 @@ const MultiSelectField: React.FC<MultiSelectFieldProps> = ({
           </option>
         ))}
       </select>
-      {hasError && <p className="mt-1 text-xs italic text-red-500">{error}</p>}
+      {hasError && <p className="mt-1 text-xs text-red-500 italic">{error}</p>}
     </div>
   );
 };

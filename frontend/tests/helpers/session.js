@@ -4,8 +4,11 @@ import { faker } from '@faker-js/faker';
 
 const sessionData = await readFixture('session.testData.json');
 
-export const LogInExistingUser = async (page, email = sessionData.user.email, password = sessionData.user.password) => {
-
+export const LogInExistingUser = async (
+  page,
+  email = sessionData.user.email,
+  password = sessionData.user.password,
+) => {
   await page.goto(sessionData.url.signIn);
 
   await page.getByLabel(sessionData.labels.email).fill(email);
@@ -21,7 +24,6 @@ export const signUpNewUser = async (
   firstName = 'Name',
   lastName = 'Surname',
 ) => {
-
   const userData = await readFixture('users.testData.json');
 
   await page.goto(userData.url.signUp);

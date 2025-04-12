@@ -11,6 +11,7 @@ import FormInput from '../UI/FormInput';
 import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
+import { handleFormError } from '../../utils/errorsHandlers';
 
 interface LabelFormValues {
   name: string;
@@ -49,29 +50,14 @@ const EditLabelForm: React.FC = () => {
 
   const handleSubmit = async (
     values: LabelFormValues,
-    _helpers: FormikHelpers<LabelFormValues>
+    _helpers: FormikHelpers<LabelFormValues>,
   ) => {
     try {
       await labelsApi.update(id, values);
       showToast({ type: 'label', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.labels.list());
-    } catch (e: any) {
-      if (e.response?.status === 422) {
-        showToast({
-          type: 'label',
-          action: 'alreadyExists',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      } else {
-        console.error(e);
-        showToast({
-          type: 'label',
-          action: 'failedUpdate',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      }
+    } catch (e) {
+      handleFormError(e, { type: 'label', toast: showToast, fallbackAction: 'failedUpdate' });
     }
   };
 
@@ -104,7 +90,7 @@ const EditLabelForm: React.FC = () => {
         />
         <FloatingLabel htmlFor="name" text={tLabels('form.name')} />
         {formik.touched.name && formik.errors.name && (
-          <p className="mt-1 text-xs italic text-red-500">{formik.errors.name}</p>
+          <p className="mt-1 text-xs text-red-500 italic">{formik.errors.name}</p>
         )}
       </div>
     </EditFormWrapper>

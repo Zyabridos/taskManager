@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { labelsApi } from '../../api/labelsApi';
+import { getErrorPayload } from '@/utils/errorsHandlers';
 
 export interface Label {
   id: number;
@@ -22,19 +23,18 @@ export const fetchLabel = createAsyncThunk<Label[]>('labels/fetchLabels', async 
   return await labelsApi.getAll();
 });
 
-export const deleteLabelThunk = createAsyncThunk<number, number, { rejectValue: any }>(
-  'statuses/delete',
-  async (id, { rejectWithValue }) => {
-    try {
-      await labelsApi.remove(id);
-      return id;
-    } catch (err: any) {
-      const errorData = err?.response?.data;
-      return rejectWithValue(errorData ?? { error: 'Unknown error' });
-    }
-  },
-);
-
+export const deleteLabelThunk = createAsyncThunk<
+  number,
+  number,
+  { rejectValue: { error: string } }
+>('labels/delete', async (id, { rejectWithValue }) => {
+  try {
+    await labelsApi.remove(id);
+    return id;
+  } catch (err: unknown) {
+    return rejectWithValue(getErrorPayload(err));
+  }
+});
 
 const labelsSlice = createSlice({
   name: 'labels',

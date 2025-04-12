@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { usersApi } from '../../api/usersApi';
+import { getErrorMessage } from '../../utils/errorsHandlers';
 
 export interface User {
   id: number;
@@ -28,8 +29,8 @@ export const deleteUserThunk = createAsyncThunk<number, number, { rejectValue: s
     try {
       await usersApi.remove(id);
       return id;
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to delete user');
+    } catch (err: unknown) {
+      return rejectWithValue(getErrorMessage(err));
     }
   },
 );

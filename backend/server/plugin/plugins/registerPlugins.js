@@ -33,7 +33,7 @@ const registerPlugins = async (app) => {
       // secure: process.env.NODE_ENV === 'production',
       secure: false,
       // sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
-      sameSite: 'lax'
+      sameSite: 'lax',
     },
   });
 

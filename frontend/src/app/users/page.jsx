@@ -10,7 +10,7 @@ const UserListPage = () => {
 
   return (
     <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
-      <PageSection title={t('user.pageTitle')}>
+      <PageSection title={t('users.pageTitle')}>
         <UserList />
       </PageSection>
     </ProtectedPage>

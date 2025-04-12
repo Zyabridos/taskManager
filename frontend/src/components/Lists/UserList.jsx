@@ -15,7 +15,10 @@ import { useAuth } from '../../context/authContex';
 import useHandleToastError from '../../hooks/useHandleErrorToast';
 
 const UserList = () => {
-  console.log('Ur logged user id:', useSelector(state => state.users))
+  console.log(
+    'Ur logged user id:',
+    useSelector(state => state.users),
+  );
   const dispatch = useDispatch();
   const { list, status, error } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
@@ -27,6 +30,19 @@ const UserList = () => {
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    const shouldShowToast = sessionStorage.getItem('toast_forbidden_edit');
+    if (shouldShowToast) {
+      showToast({
+        type: 'user',
+        action: 'notOwnerEdit',
+        titleKey: 'errorTitle',
+        toastType: 'error',
+      });
+      sessionStorage.removeItem('toast_forbidden_edit');
+    }
+  }, [showToast]);
 
   const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
 
@@ -90,7 +106,7 @@ const UserList = () => {
               sortOrder={sortOrder}
               onSort={handleSort}
             />
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-700">
+            <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-700 uppercase">
               {t('common.columns.actions')}
             </th>
           </tr>

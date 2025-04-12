@@ -11,6 +11,7 @@ import FormInput from '../UI/FormInput';
 import FloatingLabel from '../UI/FloatingLabel';
 import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
+import { handleFormError } from '../../utils/errorsHandlers';
 
 interface StatusFormValues {
   name: string;
@@ -32,7 +33,7 @@ const EditStatusForm: React.FC = () => {
       try {
         const status = await statusesApi.getById(id);
         setInitialValues({ name: status.name });
-      } catch (e) {
+      } catch {
         showToast({
           type: 'status',
           action: 'failedUpdate',
@@ -47,29 +48,14 @@ const EditStatusForm: React.FC = () => {
 
   const handleSubmit = async (
     values: StatusFormValues,
-    _helpers: FormikHelpers<StatusFormValues>
+    _helpers: FormikHelpers<StatusFormValues>,
   ) => {
     try {
       await statusesApi.update(id, values);
       showToast({ type: 'status', action: 'updated', titleKey: 'successTitle' });
       router.push(routes.app.statuses.list());
-    } catch (e: any) {
-      if (e.response?.status === 422) {
-        showToast({
-          type: 'status',
-          action: 'alreadyExists',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      } else {
-        console.error(e);
-        showToast({
-          type: 'status',
-          action: 'failedUpdate',
-          titleKey: 'errorTitle',
-          toastType: 'error',
-        });
-      }
+    } catch (e) {
+      handleFormError(e, { type: 'status', toast: showToast, fallbackAction: 'failedUpdate' });
     }
   };
 
@@ -90,7 +76,7 @@ const EditStatusForm: React.FC = () => {
       onSubmit={formik.handleSubmit}
       buttonText={tStatuses('form.update')}
     >
-      {(Object.keys(initialValues) as (keyof StatusFormValues)[]).map((field) => (
+      {(Object.keys(initialValues) as (keyof StatusFormValues)[]).map(field => (
         <div className="relative mb-6" key={field}>
           <FormInput
             id={field}
@@ -101,7 +87,7 @@ const EditStatusForm: React.FC = () => {
           />
           <FloatingLabel htmlFor={field} text={tStatuses(`form.${field}`)} />
           {formik.touched[field] && formik.errors[field] && (
-            <p className="mt-1 text-xs italic text-red-500">{formik.errors[field] as string}</p>
+            <p className="mt-1 text-xs text-red-500 italic">{formik.errors[field] as string}</p>
           )}
         </div>
       ))}

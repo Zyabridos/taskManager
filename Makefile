@@ -20,7 +20,7 @@ docker-restart:
 
 # Local-comands - common
 install:
-	npm ci
+	npm install
 
 build:
 	make build-frontend
@@ -86,3 +86,6 @@ lint-frontend:
 
 format-frontend:
 	cd frontend && npm run format
+
+u:
+	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/users.test.js

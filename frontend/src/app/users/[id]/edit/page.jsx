@@ -10,7 +10,7 @@ const EditUserPage = () => {
 
   return (
     <ProtectedPage fallback={<p>{t('common.loading')}</p>}>
-      <PageSection title={t('Users.pageTitle')}>
+      <PageSection title={t('users.pageTitle')}>
         <EditUserForm />
       </PageSection>
     </ProtectedPage>
