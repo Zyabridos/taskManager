@@ -31,5 +31,14 @@
     "list": "http://localhost:3000/statuses",
     "create": "http://localhost:3000/statuses/new",
     "editPattern": "http://localhost:3000/statuses/:id/edit"
+  },
+  "table": {
+    "pageTitle": "Список статусов",
+    "columns": {
+      "id": "ID",
+      "name": "Наименование",
+      "createdAt": "Дата создания",
+      "actions": "Действия"
+    }
   }
 }
