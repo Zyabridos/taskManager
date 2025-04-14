@@ -17,17 +17,19 @@ export const LogInExistingUser = async (
   await clickButtonByName(page, sessionData.buttons.signIn);
 };
 
-export const signUpNewUser = async (
-  page,
-  email = faker.internet.email(),
-  password = faker.internet.password(8),
-  firstName = 'Name',
-  lastName = 'Surname',
-) => {
+export const signUpNewUser = async (page, lng = 'en') => {
   const userData = await readFixture('users.testData.json');
+  const email = `${Date.now()}@test.com`;
+  const password = 'qwerty';
+  const firstName = 'Name';
+  const lastName = 'Surname';
 
   await page.goto(userData.url.signUp);
+  await page.evaluate(lng => {
+    localStorage.setItem('i18nextLng', lng);
+  }, lng);
 
+  await page.goto(userData.url.signUp);
   await page.getByLabel(userData.labels.firstName).fill(firstName);
   await page.getByLabel(userData.labels.lastName).fill(lastName);
   await page.getByLabel(userData.labels.email).fill(email);
@@ -35,7 +37,7 @@ export const signUpNewUser = async (
 
   await clickButtonByName(page, userData.buttons.signUp);
 
-  return { email, password, firstName, lastName };
+  return { email, password };
 };
 
 export const logOutUser = async page => {

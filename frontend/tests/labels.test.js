@@ -9,111 +9,120 @@ test.beforeAll(async () => {
   labelData = await readFixture('labels.testData.json');
 });
 
-test.describe('labels layout and headers', () => {
-  test('Should display correct page title and table headers', async ({ page }) => {
-    const { email, password } = await signUpNewUser(page);
-    const { url, table } = labelData;
+const languages = ['ru', 'en', 'no'];
 
-    await LogInExistingUser(page, email, password);
-    await page.goto(url.list);
+languages.forEach(lng => {
+  test.describe(`${lng.toUpperCase()}`, () => {
+    let data;
 
-    const ths = page.locator('th');
-    await expect(page.getByRole('heading', { name: table.pageTitle })).toBeVisible();
-    // default sorting by id, and therefore
-    // with first render showed ID ↑, not just ID
-    await expect(ths.nth(0)).toHaveText(new RegExp(table.columns.id));
-    await expect(ths.nth(1)).toHaveText(table.columns.name);
-    await expect(ths.nth(2)).toHaveText(table.columns.createdAt);
-    await expect(ths.nth(3)).toHaveText(table.columns.actions);
+    test.beforeAll(async () => {
+      const raw = await readFixture('labels.testData.json');
+      data = raw.languages[lng];
+    });
 
-    await expect(page.getByRole('heading', { name: table.pageTitle })).toBeVisible();
-  });
-});
+    test.describe('Layout and headers', () => {
+      test('should display correct page title and table headers', async ({ page }) => {
+        const { email, password } = await signUpNewUser(page, lng);
+        await LogInExistingUser(page, email, password);
+        await page.evaluate(lng => {
+          localStorage.setItem('i18nextLng', lng);
+        }, lng);
+        await page.goto(data.url.list);
 
-test.describe('labels validation', () => {
-  let email;
-  let password;
+        const ths = page.locator('th');
+        await expect(page.getByRole('heading', { name: data.table.pageTitle })).toBeVisible();
+        await expect(ths.nth(0)).toHaveText(new RegExp(data.table.columns.id));
+        await expect(ths.nth(1)).toHaveText(data.table.columns.name);
+        await expect(ths.nth(2)).toHaveText(data.table.columns.createdAt);
+        await expect(ths.nth(3)).toHaveText(data.table.columns.actions);
+      });
+    });
 
-  test.beforeEach(async ({ page }) => {
-    const newUser = await signUpNewUser(page);
-    email = newUser.email;
-    password = newUser.password;
-    await LogInExistingUser(page, email, password);
-  });
+    test.describe('Validation', () => {
+      test.beforeEach(async ({ page }) => {
+        const { email, password } = await signUpNewUser(page, lng);
 
-  test('Should show error if label name is empty', async ({ page }) => {
-    await page.goto(labelData.url.create);
-    await clickButtonByName(page, labelData.buttons.create);
-    await expect(page.locator(`text=${labelData.errors.validation.required}`)).toBeVisible();
-  });
+        await page.goto(data.url.list);
 
-  test('Should show error if label name already exists', async ({ page }) => {
-    const labelName = `Label ${Date.now()}`;
-    await page.goto(labelData.url.create);
-    await page.getByLabel(labelData.labels.name).fill(labelName);
-    await clickButtonByName(page, labelData.buttons.create);
-    await expect(page.locator(`text=${labelName}`)).toBeVisible();
+        await page.evaluate(lng => {
+          localStorage.setItem('i18nextLng', lng);
+        }, lng);
 
-    await page.goto(labelData.url.create);
-    await page.getByLabel(labelData.labels.name).fill(labelName);
-    await clickButtonByName(page, labelData.buttons.create);
-    await expect(page.locator(`text=${labelData.errors.validation.duplicate}`)).toBeVisible();
-  });
-});
+        await LogInExistingUser(page, email, password);
+      });
 
-test.describe('labels CRUD', () => {
-  let email;
-  let password;
-  let labelName;
+      test('should show error if label name is empty', async ({ page }) => {
+        await page.goto(data.url.create);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${data.errors.validation.required}`)).toBeVisible();
+      });
 
-  test.beforeEach(async ({ page }) => {
-    const newUser = await signUpNewUser(page);
-    email = newUser.email;
-    password = newUser.password;
-    labelName = `Label ${Date.now()}`;
+      test('should show error if label name already exists', async ({ page }) => {
+        const labelName = `Label ${Date.now()}`;
+        await page.goto(data.url.create);
+        await page.getByLabel(data.labels.name).fill(labelName);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${labelName}`)).toBeVisible();
 
-    await LogInExistingUser(page, email, password);
+        await page.goto(data.url.create);
+        await page.getByLabel(data.labels.name).fill(labelName);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${data.errors.validation.duplicate}`)).toBeVisible();
+      });
+    });
 
-    await page.goto(labelData.url.create);
-    await page.getByLabel(labelData.labels.name).fill(labelName);
-    await clickButtonByName(page, labelData.buttons.create);
-    await expect(page.locator(`text=${labelName}`)).toBeVisible();
-  });
+    test.describe('CRUD', () => {
+      let labelName;
 
-  test('Should show created label in list', async ({ page }) => {
-    await page.goto(labelData.url.list);
-    await expect(page.locator(`text=${labelName}`)).toBeVisible();
-  });
+      test.beforeEach(async ({ page }) => {
+        const { email, password } = await signUpNewUser(page, lng);
+        labelName = `Label ${Date.now()}`;
+        await LogInExistingUser(page, email, password);
+        await page.evaluate(lng => {
+          localStorage.setItem('i18nextLng', lng);
+        }, lng);
+        await page.goto(data.url.create);
+        await page.getByLabel(data.labels.name).fill(labelName);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${labelName}`)).toBeVisible();
+      });
 
-  test('Should edit a specific label', async ({ page }) => {
-    await page.goto(labelData.url.list);
-    const row = page.locator('table tbody tr', { hasText: labelName });
-    const editLink = row.getByRole('link', { name: labelData.buttons.edit });
-    await editLink.click();
+      test('should show created label in list', async ({ page }) => {
+        await page.goto(data.url.list);
+        await expect(page.locator(`text=${labelName}`)).toBeVisible();
+      });
 
-    await page.getByLabel(labelData.labels.name).fill(labelData.labelsData.updated);
-    await clickButtonByName(page, labelData.buttons.edit);
+      test('should edit a specific label', async ({ page }) => {
+        await page.goto(data.url.list);
+        const row = page.locator('table tbody tr', { hasText: labelName });
+        const editLink = row.getByRole('link', { name: data.buttons.edit });
+        await editLink.click();
 
-    await expect(page).toHaveURL(labelData.url.list);
-    await expect(page.locator(`text=${labelData.messages.updated}`)).toBeVisible();
-    await expect(page.locator(`text=${labelData.labelsData.updated}`)).toBeVisible();
-  });
+        await page.getByLabel(data.labels.name).fill(data.labelsData.updated);
+        await clickButtonByName(page, data.buttons.edit);
 
-  test('Should delete created label', async ({ page }) => {
-    await page.goto(labelData.url.list);
-    const row = page.locator('table tbody tr', { hasText: labelName });
-    const editLink = row.getByRole('link', { name: labelData.buttons.edit });
-    await editLink.click();
+        await expect(page).toHaveURL(data.url.list);
+        await expect(page.locator(`text=${data.messages.updated}`)).toBeVisible();
+        await expect(page.locator(`text=${data.labelsData.updated}`)).toBeVisible();
+      });
 
-    await page.getByLabel(labelData.labels.name).fill(labelData.labelsData.updated);
-    await clickButtonByName(page, labelData.buttons.edit);
+      test('should delete created label', async ({ page }) => {
+        await page.goto(data.url.list);
+        const row = page.locator('table tbody tr', { hasText: labelName });
+        const editLink = row.getByRole('link', { name: data.buttons.edit });
+        await editLink.click();
 
-    await page.goto(labelData.url.list);
-    const updatedRow = page.locator('table tbody tr', { hasText: labelData.labelsData.updated });
-    const deleteButton = updatedRow.getByRole('button', { name: labelData.buttons.delete });
-    await deleteButton.click();
+        await page.getByLabel(data.labels.name).fill(data.labelsData.updated);
+        await clickButtonByName(page, data.buttons.edit);
 
-    await expect(page.locator(`text=${labelData.messages.deleted}`)).toBeVisible();
-    await expect(page.locator(`text=${labelData.labelsData.updated}`)).not.toBeVisible();
+        await page.goto(data.url.list);
+        const updatedRow = page.locator('table tbody tr', { hasText: data.labelsData.updated });
+        const deleteButton = updatedRow.getByRole('button', { name: data.buttons.delete });
+        await deleteButton.click();
+
+        await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
+        await expect(page.locator(`text=${data.labelsData.updated}`)).not.toBeVisible();
+      });
+    });
   });
 });

@@ -1,16 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import arrowDown from '../../public/arrow_down.svg';
 
-interface Language {
-  code: string;
-  label: string;
-}
-
-const languages: Language[] = [
+const languages = [
   { code: 'en', label: 'EN' },
   { code: 'ru', label: 'RU' },
   { code: 'no', label: 'NO' },
@@ -18,20 +13,14 @@ const languages: Language[] = [
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const currentLang = i18n.language.slice(0, 2).toUpperCase();
 
-  const changeLanguage = (lng: string): void => {
+  const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    localStorage.setItem('i18nextLng', lng);
     setIsOpen(false);
   };
-
-  if (!mounted) return null;
 
   return (
     <div className="relative inline-block text-left">
@@ -39,7 +28,7 @@ const LanguageSwitcher: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-xl font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
       >
-        {i18n.language.slice(0, 2).toUpperCase()}
+        {currentLang}
         <Image src={arrowDown} alt="Toggle language dropdown" width={16} height={16} />
       </button>
 

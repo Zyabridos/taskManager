@@ -12,7 +12,7 @@ test.beforeAll(async () => {
 });
 
 test.describe('Tasks sorting', () => {
-    test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     const user = await signUpNewUser(page);
     email = user.email;
     password = user.password;
