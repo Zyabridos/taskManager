@@ -6,15 +6,22 @@
     "statuses": "http://localhost:3000/statuses",
     "labels": "http://localhost:3000/labels"
   },
+  "user": {
+    "email": "testuser@example.com",
+    "password": "password"
+  },
   "languages": {
     "ru": {
       "task": {
         "name": "Новая задача",
-        "updated": "Обновлённая задача"
+        "updated": "Обновлённая задача",
+        "status": "Тестовый статус",
+        "label": "Тестовая метка"
       },
       "labels": {
         "name": "Наименование",
         "status": "Статус",
+        "executor": "Исполнитель",
         "label": "Метка",
         "onlyMyTasks": "Только мои задачи"
       },
@@ -52,11 +59,14 @@
     "en": {
       "task": {
         "name": "New task",
-        "updated": "Updated task"
+        "updated": "Updated task",
+        "status": "Test status",
+        "label": "Test label"
       },
       "labels": {
         "name": "Name",
         "status": "Status",
+        "executor": "Executor",
         "label": "Label",
         "onlyMyTasks": "Only my tasks"
       },
@@ -94,11 +104,14 @@
     "no": {
       "task": {
         "name": "Ny oppgave",
-        "updated": "Oppdatert oppgave"
+        "updated": "Oppdatert oppgave",
+        "status": "Teststatus",
+        "label": "Testetikett"
       },
       "labels": {
         "name": "Navn",
         "status": "Status",
+        "executor": "Utfører",
         "label": "Etikett",
         "onlyMyTasks": "Kun mine oppgaver"
       },
@@ -114,12 +127,12 @@
       "messages": {
         "created": "Oppgaven ble opprettet",
         "updated": "Oppgaven ble oppdatert",
-        "deleted": "Oppgaven ble slettet"
+        "deleted": "Oppgaven slettet"
       },
       "errors": {
         "nameRequired": "Navn er påkrevd",
         "statusRequired": "Status er påkrevd",
-        "duplicate": "Oppgave med dette navnet finnes allerede"
+        "duplicate": "En oppgave med dette navnet eksisterer allerede"
       },
       "table": {
         "pageTitle": "Oppgaveliste",
@@ -128,7 +141,7 @@
           "name": "Navn",
           "status": "Status",
           "executor": "Utfører",
-          "createdAt": "Opprettet",
+          "createdAt": "Opprettelsesdato",
           "actions": "Handlinger"
         }
       }

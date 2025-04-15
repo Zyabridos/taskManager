@@ -12,27 +12,27 @@ test.beforeAll(async () => {
   labelsFixture = await readFixture('labels.testData.json');
 });
 
-languages.forEach((lng) => {
+languages.forEach(lng => {
   test.describe(`${lng.toUpperCase()} | Tasks`, () => {
     let taskData, statusData, labelData;
     let taskName, statusName, labelName;
 
     test.beforeAll(() => {
-  statusData = {
-    ...statusesFixture.languages[lng],
-    url: statusesFixture.url,
-  };
-  labelData = {
-    ...labelsFixture.languages[lng],
-    url: labelsFixture.url,
-  };
-  taskData = {
-    ...tasksFixture.languages[lng],
-    url: tasksFixture.url,
-  };
-});
+      statusData = {
+        ...statusesFixture.languages[lng],
+        url: statusesFixture.url,
+      };
+      labelData = {
+        ...labelsFixture.languages[lng],
+        url: labelsFixture.url,
+      };
+      taskData = {
+        ...tasksFixture.languages[lng],
+        url: tasksFixture.url,
+      };
+    });
 
-    const authAndPrepareEntities = async (page) => {
+    const authAndPrepareEntities = async page => {
       const { email, password } = await signUpNewUser(page, lng);
       await LogInExistingUser(page, email, password, lng);
 
@@ -96,7 +96,7 @@ languages.forEach((lng) => {
       });
     });
 
-    test.describe('Edit and delete', () => {
+    test.describe('Edit/delete functionality', () => {
       test.beforeEach(async ({ page }) => {
         await authAndPrepareEntities(page);
       });

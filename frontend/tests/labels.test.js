@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
+import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 
 let labelsFixture;
@@ -10,7 +10,7 @@ test.beforeAll(async () => {
   labelsFixture = await readFixture('labels.testData.json');
 });
 
-languages.forEach((lng) => {
+languages.forEach(lng => {
   test.describe(`${lng.toUpperCase()} | Labels tests`, () => {
     let data;
     let url;
@@ -22,15 +22,9 @@ languages.forEach((lng) => {
       labelsData = labelsFixture.labelsData;
     });
 
-    const authAndGoToList = async (page) => {
-      const { email, password } = await signUpNewUser(page, lng);
-      await LogInExistingUser(page, email, password, lng);
-      await page.goto(url.list);
-    };
-
     test.describe('Layout and headers', () => {
       test('should display correct page title and table headers', async ({ page }) => {
-        await authAndGoToList(page);
+        await authAndGoToList(page, url, lng);
         const ths = page.locator('th');
 
         await expect(page.getByRole('heading', { name: data.table.pageTitle })).toBeVisible();
@@ -45,7 +39,7 @@ languages.forEach((lng) => {
 
     test.describe('Validation', () => {
       test.beforeEach(async ({ page }) => {
-        await authAndGoToList(page);
+        await authAndGoToList(page, url, lng);
       });
 
       test('should show error if label name is empty', async ({ page }) => {
@@ -96,7 +90,7 @@ languages.forEach((lng) => {
         await editLink.click();
 
         await page.getByLabel(data.labels.name).fill(updatedName);
-        await clickButtonByName(page, data.buttons.edit);
+        await clickButtonByName(page, data.buttons.confirmEdit);
 
         await expect(page).toHaveURL(url.list);
         await expect(page.locator(`text=${data.messages.updated}`)).toBeVisible();

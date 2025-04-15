@@ -16,7 +16,7 @@
       "user": "You have signed in"
     },
     "error": {
-      "user": "Incorrect Email or Password"
+      "user": "Invalid email or password"
     }
   },
   "loggedOut": {

@@ -61,3 +61,9 @@ export const logOutUser = async (page, lng = 'en') => {
   const sessionData = sessionFixture[lng];
   await clickButtonByName(page, sessionData.buttons.signOut);
 };
+
+export const authAndGoToList = async (page, url, lng) => {
+  const { email, password } = await signUpNewUser(page, lng);
+  await LogInExistingUser(page, email, password, lng);
+  await page.goto(url.list);
+};

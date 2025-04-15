@@ -8,6 +8,10 @@
     "new": "Test label",
     "updated": "Updated Test label"
   },
+  "user": {
+    "email": "testuser@example.com",
+    "password": "password"
+  },
   "languages": {
     "ru": {
       "labels": {
@@ -78,10 +82,10 @@
         "name": "Navn"
       },
       "buttons": {
-        "create": "Opprett etikett",
+        "create": "Opprett merkelapp",
         "edit": "Rediger",
         "delete": "Slett",
-        "confirmEdit": "Oppdatere"
+        "confirmEdit": "Opprett merkelapp"
       },
       "messages": {
         "created": "Etikett opprettet",
@@ -91,11 +95,11 @@
       "errors": {
         "validation": {
           "required": "Navn er påkrevd",
-          "duplicate": "Etikett med dette navnet finnes allerede"
+          "duplicate": "En merkelapp med dette navnet eksisterer allerede"
         }
       },
       "table": {
-        "pageTitle": "Etikettliste",
+        "pageTitle": "Merkelist",
         "columns": {
           "id": "ID",
           "name": "Navn",

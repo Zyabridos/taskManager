@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
+import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 
 let statusesFixture;
@@ -22,15 +22,9 @@ languages.forEach(lng => {
       statusesData = statusesFixture.statusesData;
     });
 
-    const authAndGoToList = async page => {
-      const { email, password } = await signUpNewUser(page, lng);
-      await LogInExistingUser(page, email, password, lng);
-      await page.goto(url.list);
-    };
-
     test.describe('Layout and headers', () => {
       test('should display correct page title and table headers', async ({ page }) => {
-        await authAndGoToList(page);
+        await authAndGoToList(page, url, lng);
 
         const ths = page.locator('th');
         await expect(page.getByRole('heading', { name: data.table.pageTitle })).toBeVisible();
@@ -45,7 +39,7 @@ languages.forEach(lng => {
 
     test.describe('Validation', () => {
       test.beforeEach(async ({ page }) => {
-        await authAndGoToList(page);
+        await authAndGoToList(page, url, lng);
       });
 
       test('should show error if status name is empty', async ({ page }) => {
@@ -95,7 +89,7 @@ languages.forEach(lng => {
         await row.getByRole('link', { name: data.buttons.edit }).click();
 
         await page.getByLabel(data.labels.name).fill(updatedName);
-        await clickButtonByName(page, data.buttons.edit);
+        await clickButtonByName(page, data.buttons.confirmEdit);
 
         await expect(page).toHaveURL(url.list);
         await expect(page.locator(`text=${data.messages.updated}`)).toBeVisible();
@@ -107,13 +101,16 @@ languages.forEach(lng => {
         await page.goto(url.list);
 
         const row = page.locator('table tbody tr', { hasText: statusName });
-        await row.getByRole('link', { name: data.buttons.edit }).click();
-        await page.getByLabel(data.labels.name).fill(updatedName);
+        const editLink = row.getByRole('link', { name: data.buttons.edit });
+        await editLink.click();
+
+        await page.getByLabel(data.statuses.name).fill(updatedName);
         await clickButtonByName(page, data.buttons.edit);
 
         await page.goto(url.list);
         const updatedRow = page.locator('table tbody tr', { hasText: updatedName });
-        await updatedRow.getByRole('button', { name: data.buttons.delete }).click();
+        const deleteButton = updatedRow.getByRole('button', { name: data.buttons.delete });
+        await deleteButton.click();
 
         await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
         await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();

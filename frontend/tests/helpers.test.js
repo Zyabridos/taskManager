@@ -23,14 +23,18 @@ languages.forEach(lng => {
       password = result.password;
     });
 
-    test('signUpNewUser creates a new user, redirects to homepage and show a toast', async ({ page }) => {
+    test('signUpNewUser creates a new user, redirects to homepage and show a toast', async ({
+      page,
+    }) => {
       const userLng = userData.languages[lng];
       const { url } = sessionData;
       await expect(page).toHaveURL(url.afterSignUp);
       await expect(page.locator(`text=${userLng.messages.signedUp}`)).toBeVisible();
     });
 
-    test('LogInExistingUser logs in the user, redirects to homepage and show a toast', async ({ page }) => {
+    test('LogInExistingUser logs in the user, redirects to homepage and show a toast', async ({
+      page,
+    }) => {
       const sessionLng = sessionData.languages[lng];
       const { url } = sessionData;
       await LogInExistingUser(page, email, password, lng);
@@ -40,7 +44,9 @@ languages.forEach(lng => {
       });
     });
 
-    test('logOutUser logs out the user, redirects to homepage and show a toast', async ({ page }) => {
+    test('logOutUser logs out the user, redirects to homepage and show a toast', async ({
+      page,
+    }) => {
       const sessionLng = sessionData.languages[lng];
       const { url } = sessionData;
       await LogInExistingUser(page, email, password, lng);

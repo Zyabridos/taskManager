@@ -3,6 +3,10 @@
     "email": "example@example.com",
     "password": "qwerty"
   },
+  "user": {
+    "email": "testuser@example.com",
+    "password": "password"
+  },
   "url": {
     "root": "http://localhost:3000",
     "signUp": "http://localhost:3000/users/new",
@@ -39,7 +43,7 @@
         "pageTitle": "Список пользователей",
         "columns": {
           "id": "ID",
-          "email": "email",
+          "email": "Email",
           "fullName": "Полное имя",
           "createdAt": "Дата создания",
           "actions": "Действия"
@@ -62,7 +66,7 @@
         "signUp": "Sign up"
       },
       "messages": {
-        "signedUp": "You have signed up",
+        "signedUp": "You are registered",
         "updated": "User updated",
         "deleted": "User deleted"
       },

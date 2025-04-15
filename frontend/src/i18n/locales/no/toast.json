@@ -40,7 +40,7 @@
     "status": "Status slettet",
     "user": "Bruker slettet",
     "label": "Merkelapp slettet",
-    "task": "Oppgave slettet"
+    "task": "Oppgaven slettet"
   },
   "failedCreate": {
     "status": "Feil ved oppretting av status",

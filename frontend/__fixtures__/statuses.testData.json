@@ -4,6 +4,10 @@
     "create": "http://localhost:3000/statuses/new",
     "editPattern": "http://localhost:3000/statuses/:id/edit"
   },
+  "user": {
+    "email": "testuser@example.com",
+    "password": "password"
+  },
   "statusesData": {
     "new": "New status",
     "updated": "Updated status"
@@ -16,7 +20,8 @@
       "buttons": {
         "create": "Создать статус",
         "edit": "Изменить",
-        "delete": "Удалить"
+        "delete": "Удалить",
+        "confirmEdit": "Изменить"
       },
       "messages": {
         "created": "Статус создан",
@@ -47,7 +52,8 @@
       "buttons": {
         "create": "Create status",
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "confirmEdit": "Update"
       },
       "messages": {
         "created": "Status created",
@@ -78,7 +84,8 @@
       "buttons": {
         "create": "Opprett status",
         "edit": "Rediger",
-        "delete": "Slett"
+        "delete": "Slett",
+        "confirmEdit": "Oppdatere"
       },
       "messages": {
         "created": "Status opprettet",

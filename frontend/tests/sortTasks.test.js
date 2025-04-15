@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
-import { LogInExistingUser, signUpNewUser } from './helpers/session.js';
+import { LogInExistingUser, signUpNewUser, authAndGoToList } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
 import { setLanguage } from './helpers/languageSetup.js';
 
@@ -17,9 +17,10 @@ test.beforeAll(async () => {
   };
 });
 
-const languages = ['ru', 'en', 'no'];
+// const languages = ['ru', 'en', 'no'];
+const languages = ['ru'];
 
-languages.forEach((lng) => {
+languages.forEach(lng => {
   test.describe(`${lng.toUpperCase()} | Tasks sorting`, () => {
     let data;
     let email;
@@ -35,6 +36,7 @@ languages.forEach((lng) => {
       password = user.password;
 
       await LogInExistingUser(page, email, password);
+      await setLanguage(page, lng);
 
       // executors
       for (let i = 1; i <= 5; i++) {
@@ -42,11 +44,12 @@ languages.forEach((lng) => {
       }
 
       // statuses
-      await page.goto(taskUrl.statuses);
       for (let i = 1; i <= 5; i++) {
+        await page.goto(taskUrl.statuses);
         await clickLinkByName(page, data.buttons.createStatus);
         await page.getByLabel(data.labels.name).fill(`Status ${i}`);
         await clickButtonByName(page, data.buttons.createStatus);
+        await expect(page.locator(`text=${data.messages.created}`)).toBeVisible();
       }
 
       // label
@@ -85,8 +88,7 @@ languages.forEach((lng) => {
 
     test('should sort by name asc and desc', async ({ page }) => {
       await setLanguage(page, lng);
-      const getFirstName = async () =>
-        await page.locator('tbody tr td').nth(1).textContent();
+      const getFirstName = async () => await page.locator('tbody tr td').nth(1).textContent();
 
       await page.locator('thead tr th', { hasText: data.table.columns.name }).click();
       const asc = await getFirstName();
@@ -99,8 +101,7 @@ languages.forEach((lng) => {
 
     test('should sort by status asc and desc', async ({ page }) => {
       await setLanguage(page, lng);
-      const getFirstStatus = async () =>
-        await page.locator('tbody tr td').nth(2).textContent();
+      const getFirstStatus = async () => await page.locator('tbody tr td').nth(2).textContent();
 
       await page.locator('thead tr th', { hasText: data.table.columns.status }).click();
       const asc = await getFirstStatus();

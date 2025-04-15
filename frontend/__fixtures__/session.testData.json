@@ -45,8 +45,8 @@
         "signOut": "Sign Out"
       },
       "messages": {
-        "signedIn": "Signed in successfully",
-        "signedOut": "Signed out successfully"
+        "signedIn": "You have signed in",
+        "signedOut": "You have signed out"
       },
       "errors": {
         "requieredPassword": "Password is required",
@@ -73,8 +73,8 @@
         "requieredPassword": "Passord er påkrevd",
         "requieredEmail": "E-post er påkrevd",
         "wrongEmailFormat": "Ugyldig e-post",
-        "min3symbols": "Minst 3 tegn",
-        "invalidCredentials": "Ugyldig e-post eller passord"
+        "min3symbols": "Minimum 3 tegn",
+        "invalidCredentials": "Feil e-post eller passord"
       }
     }
   }

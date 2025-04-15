@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
+import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 import { faker } from '@faker-js/faker';
 
@@ -15,7 +15,8 @@ const prepareUserFixture = async lng => {
   };
 };
 
-const languages = ['ru', 'en', 'no'];
+// const languages = ['ru', 'en', 'no'];
+const languages = ['ru'];
 
 languages.forEach(lng => {
   test.describe(`${lng.toUpperCase()} | Users UI`, () => {

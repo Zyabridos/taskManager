@@ -67,7 +67,11 @@ export default (app) => {
       try {
         const { name, description, statusId, executorId, labels = [] } = req.body;
 
-        const { id: authorId } = req.user;
+        if (!req.user || !req.user.id) {
+          return reply.code(401).send({ error: 'Unauthorized' });
+        }
+
+        const authorId = req.user.id;
 
         const existing = await app.objection.models.task.query().findOne({ name });
         if (existing) {
