@@ -10,33 +10,45 @@ test.beforeAll(async () => {
   sessionData = await readFixture('session.testData.json');
 });
 
-test.describe('helpers functions test', () => {
-  let email;
-  let password;
+const languages = ['ru', 'en', 'no'];
 
-  test.beforeEach(async ({ page }) => {
-    const result = await signUpNewUser(page);
-    email = result.email;
-    password = result.password;
-  });
+languages.forEach(lng => {
+  test.describe(`${lng.toUpperCase()} | Auth helper functions`, () => {
+    let email;
+    let password;
 
-  test('signUpNewUser creates a new user and redirects to users list page', async ({ page }) => {
-    await expect(page).toHaveURL(userData.url.afterSignUp);
-    await expect(page.locator(`text=${userData.messages.signedUp}`)).toBeVisible();
-  });
+    test.beforeEach(async ({ page }) => {
+      const result = await signUpNewUser(page, lng);
+      email = result.email;
+      password = result.password;
+    });
 
-  test('LogInExistingUser logs in the user and redirects to homepage', async ({ page }) => {
-    await LogInExistingUser(page, email, password);
+    test('signUpNewUser creates a new user, redirects to homepage and show a toast', async ({ page }) => {
+      const userLng = userData.languages[lng];
+      const { url } = sessionData;
+      await expect(page).toHaveURL(url.afterSignUp);
+      await expect(page.locator(`text=${userLng.messages.signedUp}`)).toBeVisible();
+    });
 
-    await expect(page).toHaveURL(sessionData.url.afterLogin);
-    await expect(page.locator(`text=${sessionData.messages.signedIn}`)).toBeVisible();
-  });
+    test('LogInExistingUser logs in the user, redirects to homepage and show a toast', async ({ page }) => {
+      const sessionLng = sessionData.languages[lng];
+      const { url } = sessionData;
+      await LogInExistingUser(page, email, password, lng);
+      await expect(page).toHaveURL(url.afterLogin);
+      await expect(page.locator(`text=${sessionLng.messages.signedIn}`)).toBeVisible({
+        timeout: 10000,
+      });
+    });
 
-  test('logOutUser logs out the user and redirects to login page', async ({ page }) => {
-    await LogInExistingUser(page, email, password);
-    await logOutUser(page);
-
-    await expect(page).toHaveURL(sessionData.url.afterLogout);
-    await expect(page.locator(`text=${sessionData.messages.signedOut}`)).toBeVisible();
+    test('logOutUser logs out the user, redirects to homepage and show a toast', async ({ page }) => {
+      const sessionLng = sessionData.languages[lng];
+      const { url } = sessionData;
+      await LogInExistingUser(page, email, password, lng);
+      await logOutUser(page, lng);
+      await expect(page).toHaveURL(url.afterLogout);
+      await expect(page.locator(`text=${sessionLng.messages.signedOut}`)).toBeVisible({
+        timeout: 10000,
+      });
+    });
   });
 });

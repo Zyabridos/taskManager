@@ -48,7 +48,7 @@ const RegisterForm: React.FC = () => {
     onSubmit: async (values: RegisterFormValues, _helpers) => {
       try {
         await usersApi.create(values);
-        await login(values.email, values.password, true);
+        await login(values.email, values.password, false);
 
         showToast({
           type: 'user',
@@ -117,7 +117,7 @@ const RegisterForm: React.FC = () => {
           ))}
 
           <div className="mt-6">
-            <TransparentGraySubmitBtn buttonText={tAuth('form.loginButton')} />
+            <TransparentGraySubmitBtn buttonText={tAuth('form.signUpButton')} />
           </div>
         </div>
       </form>

@@ -1,4 +1,13 @@
 {
+  "url": {
+    "list": "http://localhost:3000/labels",
+    "create": "http://localhost:3000/labels/new",
+    "editPattern": "http://localhost:3000/labels/:id/edit"
+  },
+  "labelsData": {
+    "new": "Test label",
+    "updated": "Updated Test label"
+  },
   "languages": {
     "ru": {
       "labels": {
@@ -7,7 +16,8 @@
       "buttons": {
         "create": "Создать метку",
         "edit": "Изменить",
-        "delete": "Удалить"
+        "delete": "Удалить",
+        "confirmEdit": "Изменить"
       },
       "messages": {
         "created": "Метка создана",
@@ -19,15 +29,6 @@
           "required": "Имя обязательно",
           "duplicate": "Метка с таким названием уже существует"
         }
-      },
-      "labelsData": {
-        "new": "Test label",
-        "updated": "Updated Test label"
-      },
-      "url": {
-        "list": "http://localhost:3000/labels",
-        "create": "http://localhost:3000/labels/new",
-        "editPattern": "http://localhost:3000/labels/:id/edit"
       },
       "table": {
         "pageTitle": "Список меток",
@@ -47,7 +48,8 @@
       "buttons": {
         "create": "Create label",
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "confirmEdit": "Update"
       },
       "messages": {
         "created": "Label created",
@@ -59,15 +61,6 @@
           "required": "Name is required",
           "duplicate": "Label with this name already exists"
         }
-      },
-      "labelsData": {
-        "new": "Test label",
-        "updated": "Updated Test label"
-      },
-      "url": {
-        "list": "http://localhost:3000/labels",
-        "create": "http://localhost:3000/labels/new",
-        "editPattern": "http://localhost:3000/labels/:id/edit"
       },
       "table": {
         "pageTitle": "Labels list",
@@ -87,7 +80,8 @@
       "buttons": {
         "create": "Opprett etikett",
         "edit": "Rediger",
-        "delete": "Slett"
+        "delete": "Slett",
+        "confirmEdit": "Oppdatere"
       },
       "messages": {
         "created": "Etikett opprettet",
@@ -99,15 +93,6 @@
           "required": "Navn er påkrevd",
           "duplicate": "Etikett med dette navnet finnes allerede"
         }
-      },
-      "labelsData": {
-        "new": "Test etikett",
-        "updated": "Oppdatert etikett"
-      },
-      "url": {
-        "list": "http://localhost:3000/labels",
-        "create": "http://localhost:3000/labels/new",
-        "editPattern": "http://localhost:3000/labels/:id/edit"
       },
       "table": {
         "pageTitle": "Etikettliste",

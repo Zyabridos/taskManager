@@ -2,117 +2,141 @@ import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
 import { LogInExistingUser, signUpNewUser } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import { setLanguage } from './helpers/languageSetup.js';
 
-let taskData;
-let email;
-let password;
+let taskUrl;
+let tasksLanguages;
 
 test.beforeAll(async () => {
-  taskData = await readFixture('tasks.testData.json');
+  const raw = await readFixture('tasks.testData.json');
+  taskUrl = raw.url;
+  tasksLanguages = {
+    ru: raw.languages.ru,
+    en: raw.languages.en,
+    no: raw.languages.no,
+  };
 });
 
-test.describe('Tasks sorting', () => {
-  test.beforeEach(async ({ page }) => {
-    const user = await signUpNewUser(page);
-    email = user.email;
-    password = user.password;
-    await LogInExistingUser(page, email, password);
+const languages = ['ru', 'en', 'no'];
 
-    // executors
-    const executors = [];
-    for (let i = 1; i <= 5; i += 1) {
-      const newUser = await signUpNewUser(page, { firstName: `User${i}` });
-      executors.push(newUser);
-    }
+languages.forEach((lng) => {
+  test.describe(`${lng.toUpperCase()} | Tasks sorting`, () => {
+    let data;
+    let email;
+    let password;
 
-    // statuses
-    await page.goto(taskData.url.statuses);
-    for (let i = 1; i <= 5; i += 1) {
-      await clickLinkByName(page, taskData.buttons.createStatus);
-      await page.getByLabel(taskData.labels.name).fill(`Status ${i}`);
-      await clickButtonByName(page, taskData.buttons.createStatus);
-    }
+    test.beforeAll(() => {
+      data = tasksLanguages[lng];
+    });
 
-    // label
-    await page.goto(taskData.url.labels);
-    await clickLinkByName(page, taskData.buttons.createLabel);
-    await page.getByLabel(taskData.labels.name).fill('Frontend');
-    await clickButtonByName(page, taskData.buttons.createLabel);
+    test.beforeEach(async ({ page }) => {
+      const user = await signUpNewUser(page, lng);
+      email = user.email;
+      password = user.password;
 
-    // tasks
-    for (let i = 1; i <= 5; i += 1) {
-      await page.goto(taskData.url.create);
-      await page.getByLabel(taskData.labels.name).fill(`Task ${i}`);
-      await page.getByLabel(taskData.labels.status).selectOption({ label: `Status ${i}` });
-      await page.getByLabel(taskData.labels.label).selectOption({ label: 'Frontend' });
-      await page.getByLabel('Исполнитель').selectOption({ label: `User${i} User${i}` });
-      await clickButtonByName(page, taskData.buttons.create);
-      await expect(page).toHaveURL(taskData.url.list);
-    }
+      await LogInExistingUser(page, email, password);
 
-    await page.goto(taskData.url.list);
-  });
+      // executors
+      for (let i = 1; i <= 5; i++) {
+        await signUpNewUser(page, lng, { firstName: `User${i}` });
+      }
 
-  test('should sort by ID asc and desc', async ({ page }) => {
-    const getFirstId = async () =>
-      Number(await page.locator('tbody tr').first().getAttribute('data-id'));
+      // statuses
+      await page.goto(taskUrl.statuses);
+      for (let i = 1; i <= 5; i++) {
+        await clickLinkByName(page, data.buttons.createStatus);
+        await page.getByLabel(data.labels.name).fill(`Status ${i}`);
+        await clickButtonByName(page, data.buttons.createStatus);
+      }
 
-    await page.locator('thead tr th', { hasText: 'ID' }).click();
-    const idDesc = await getFirstId();
+      // label
+      await page.goto(taskUrl.labels);
+      await clickLinkByName(page, data.buttons.createLabel);
+      await page.getByLabel(data.labels.name).fill('Frontend');
+      await clickButtonByName(page, data.buttons.createLabel);
 
-    await page.locator('thead tr th', { hasText: 'ID' }).click();
-    const idAsc = await getFirstId();
+      // tasks
+      for (let i = 1; i <= 5; i++) {
+        await page.goto(taskUrl.create);
+        await page.getByLabel(data.labels.name).fill(`Task ${i}`);
+        await page.getByLabel(data.labels.status).selectOption({ label: `Status ${i}` });
+        await page.getByLabel(data.labels.label).selectOption({ label: 'Frontend' });
+        await page.getByLabel(data.labels.executor).selectOption({ label: `User${i} User${i}` });
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page).toHaveURL(taskUrl.list);
+      }
 
-    expect(idDesc).toBeGreaterThan(idAsc);
-  });
+      await page.goto(taskUrl.list);
+    });
 
-  test('should sort by name asc and desc', async ({ page }) => {
-    const getFirstName = async () => await page.locator('tbody tr td').nth(1).textContent();
+    test('should sort by ID asc and desc', async ({ page }) => {
+      await setLanguage(page, lng);
+      const getFirstId = async () =>
+        Number(await page.locator('tbody tr').first().getAttribute('data-id'));
 
-    await page.locator('thead tr th', { hasText: 'Наименование' }).click();
-    const asc = await getFirstName();
+      await page.locator('thead tr th', { hasText: data.table.columns.id }).click();
+      const idDesc = await getFirstId();
 
-    await page.locator('thead tr th', { hasText: 'Наименование' }).click();
-    const desc = await getFirstName();
+      await page.locator('thead tr th', { hasText: data.table.columns.id }).click();
+      const idAsc = await getFirstId();
 
-    expect(asc).not.toEqual(desc);
-  });
+      expect(idDesc).toBeGreaterThan(idAsc);
+    });
 
-  test('should sort by status asc and desc', async ({ page }) => {
-    const getFirstStatus = async () => await page.locator('tbody tr td').nth(2).textContent();
+    test('should sort by name asc and desc', async ({ page }) => {
+      await setLanguage(page, lng);
+      const getFirstName = async () =>
+        await page.locator('tbody tr td').nth(1).textContent();
 
-    await page.locator('thead tr th', { hasText: 'Статус' }).click();
-    const asc = await getFirstStatus();
+      await page.locator('thead tr th', { hasText: data.table.columns.name }).click();
+      const asc = await getFirstName();
 
-    await page.locator('thead tr th', { hasText: 'Статус' }).click();
-    const desc = await getFirstStatus();
+      await page.locator('thead tr th', { hasText: data.table.columns.name }).click();
+      const desc = await getFirstName();
 
-    expect(asc).not.toEqual(desc);
-  });
+      expect(asc).not.toEqual(desc);
+    });
 
-  test('should sort by executor first name asc and desc', async ({ page }) => {
-    const getFirstExecutor = async () =>
-      await page.locator('tbody tr').first().getAttribute('data-executor');
+    test('should sort by status asc and desc', async ({ page }) => {
+      await setLanguage(page, lng);
+      const getFirstStatus = async () =>
+        await page.locator('tbody tr td').nth(2).textContent();
 
-    await page.locator('thead tr th', { hasText: 'Исполнитель' }).click();
-    const asc = await getFirstExecutor();
+      await page.locator('thead tr th', { hasText: data.table.columns.status }).click();
+      const asc = await getFirstStatus();
 
-    await page.locator('thead tr th', { hasText: 'Исполнитель' }).click();
-    const desc = await getFirstExecutor();
+      await page.locator('thead tr th', { hasText: data.table.columns.status }).click();
+      const desc = await getFirstStatus();
 
-    expect(asc).not.toEqual(desc);
-  });
+      expect(asc).not.toEqual(desc);
+    });
 
-  test('should sort by createdAt asc and desc', async ({ page }) => {
-    const getFirstDate = async () =>
-      await page.locator('tbody tr').first().getAttribute('data-created-at');
+    test('should sort by executor first name asc and desc', async ({ page }) => {
+      await setLanguage(page, lng);
+      const getFirstExecutor = async () =>
+        await page.locator('tbody tr').first().getAttribute('data-executor');
 
-    await page.locator('thead tr th', { hasText: 'Дата создания' }).click();
-    const asc = await getFirstDate();
+      await page.locator('thead tr th', { hasText: data.table.columns.executor }).click();
+      const asc = await getFirstExecutor();
 
-    await page.locator('thead tr th', { hasText: 'Дата создания' }).click();
-    const desc = await getFirstDate();
+      await page.locator('thead tr th', { hasText: data.table.columns.executor }).click();
+      const desc = await getFirstExecutor();
 
-    expect(asc).not.toEqual(desc);
+      expect(asc).not.toEqual(desc);
+    });
+
+    test('should sort by createdAt asc and desc', async ({ page }) => {
+      await setLanguage(page, lng);
+      const getFirstDate = async () =>
+        await page.locator('tbody tr').first().getAttribute('data-created-at');
+
+      await page.locator('thead tr th', { hasText: data.table.columns.createdAt }).click();
+      const asc = await getFirstDate();
+
+      await page.locator('thead tr th', { hasText: data.table.columns.createdAt }).click();
+      const desc = await getFirstDate();
+
+      expect(asc).not.toEqual(desc);
+    });
   });
 });

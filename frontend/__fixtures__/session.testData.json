@@ -1,33 +1,81 @@
 {
-  "labels": {
-    "email": "Email",
-    "password": "Пароль"
+  "url": {
+    "root": "http://localhost:3000",
+    "signIn": "http://localhost:3000/session/new",
+    "usersList": "http://localhost:3000/users",
+    "afterSignUp": "http://localhost:3000",
+    "afterLogin": "http://localhost:3000/users",
+    "afterLogout": "http://localhost:3000/session/new"
   },
-  "buttons": {
-    "signIn": "Войти",
-    "signOut": "Выход"
-  },
-  "messages": {
-    "signedIn": "Вы вошли в систему",
-    "signedOut": "Вы вышли из системы"
-  },
-  "user": {
+  "commonUser": {
     "email": "example@example.com",
     "password": "qwerty",
     "wrongEmailFormat": "a",
     "shortPassword": "1"
   },
-  "errors": {
-    "requieredPassword": "Пароль обязателен",
-    "requieredEmail": "Email обязателен",
-    "wrongEmailFormat": "Неверный Email",
-    "min3symbols": "Минимум 3 символа"
-  },
-  "url": {
-    "root": "http://localhost:3000",
-    "signIn": "http://localhost:3000/session/new",
-    "usersList": "http://localhost:3000/users",
-    "afterLogin": "http://localhost:3000/users",
-    "afterLogout": "http://localhost:3000/session/new"
+  "languages": {
+    "ru": {
+      "labels": {
+        "email": "Email",
+        "password": "Пароль"
+      },
+      "buttons": {
+        "signIn": "Войти",
+        "signOut": "Выход"
+      },
+      "messages": {
+        "signedIn": "Вы вошли в систему",
+        "signedOut": "Вы вышли из системы"
+      },
+      "errors": {
+        "requieredPassword": "Пароль обязателен",
+        "requieredEmail": "Email обязателен",
+        "wrongEmailFormat": "Неверный Email",
+        "min3symbols": "Минимум 3 символа",
+        "invalidCredentials": "Неверный email или пароль"
+      }
+    },
+    "en": {
+      "labels": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "buttons": {
+        "signIn": "Sign In",
+        "signOut": "Sign Out"
+      },
+      "messages": {
+        "signedIn": "Signed in successfully",
+        "signedOut": "Signed out successfully"
+      },
+      "errors": {
+        "requieredPassword": "Password is required",
+        "requieredEmail": "Email is required",
+        "wrongEmailFormat": "Invalid email",
+        "min3symbols": "Minimum 3 characters",
+        "invalidCredentials": "Invalid email or password"
+      }
+    },
+    "no": {
+      "labels": {
+        "email": "E-post",
+        "password": "Passord"
+      },
+      "buttons": {
+        "signIn": "Logg inn",
+        "signOut": "Logg ut"
+      },
+      "messages": {
+        "signedIn": "Du er logget inn",
+        "signedOut": "Du er logget ut"
+      },
+      "errors": {
+        "requieredPassword": "Passord er påkrevd",
+        "requieredEmail": "E-post er påkrevd",
+        "wrongEmailFormat": "Ugyldig e-post",
+        "min3symbols": "Minst 3 tegn",
+        "invalidCredentials": "Ugyldig e-post eller passord"
+      }
+    }
   }
 }

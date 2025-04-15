@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser } from './helpers/session.js';
+import { setLanguage } from './helpers/languageSetup.js';
 
 let sessionData;
 
@@ -9,61 +9,49 @@ test.beforeAll(async () => {
   sessionData = await readFixture('session.testData.json');
 });
 
-test.describe('Auth tests (UI)', () => {
-  test('Should show errors when labels are filled wrong', async ({ page }) => {
-    await page.goto(sessionData.url.signIn);
+const languages = ['ru', 'en', 'no'];
 
-    await clickButtonByName(page, sessionData.buttons.signIn);
+languages.forEach(lng => {
+  test.describe(`${lng.toUpperCase()} | Auth tests (UI)`, () => {
+    let data;
+    let url;
+    let commonUser;
 
-    await expect(page.locator(`text=${sessionData.errors.requieredEmail}`)).toBeVisible();
-    await expect(page.locator(`text=${sessionData.errors.requieredPassword}`)).toBeVisible();
+    test.beforeAll(() => {
+      data = sessionData.languages[lng];
+      url = sessionData.url;
+      commonUser = sessionData.commonUser;
+    });
 
-    await page.getByLabel(sessionData.labels.email).fill(sessionData.user.wrongEmailFormat);
-    await page.getByLabel(sessionData.labels.password).fill(sessionData.user.shortPassword);
+    test('Should show errors when labels are filled wrong', async ({ page }) => {
+      await page.goto(url.usersList);
+      await setLanguage(page, lng);
+      await page.goto(url.signIn);
 
-    await expect(page.locator(`text=${sessionData.errors.wrongEmailFormat}`)).toBeVisible();
-    await expect(page.locator(`text=${sessionData.errors.min3symbols}`)).toBeVisible();
-  });
+      await clickButtonByName(page, data.buttons.signIn);
 
-  test('Sign in existing user', async ({ page }) => {
-    const user = await signUpNewUser(page);
+      await expect(page.locator(`text=${data.errors.requieredEmail}`)).toBeVisible();
+      await expect(page.locator(`text=${data.errors.requieredPassword}`)).toBeVisible();
 
-    await page.goto(sessionData.url.signIn);
+      await page.getByLabel(data.labels.email).fill(commonUser.wrongEmailFormat);
+      await page.getByLabel(data.labels.password).fill(commonUser.shortPassword);
 
-    await page.getByLabel(sessionData.labels.email).fill(user.email);
-    await page.getByLabel(sessionData.labels.password).fill(user.password);
+      await clickButtonByName(page, data.buttons.signIn);
 
-    await clickButtonByName(page, sessionData.buttons.signIn);
+      await expect(page.locator(`text=${data.errors.wrongEmailFormat}`)).toBeVisible();
+      await expect(page.locator(`text=${data.errors.min3symbols}`)).toBeVisible();
+    });
 
-    await expect(page).toHaveURL(sessionData.url.usersList);
-    await expect(page.locator(`text=${sessionData.messages.signedIn}`)).toBeVisible();
-  });
+    test('Should show toast with wrong email/password', async ({ page }) => {
+      await page.goto(url.usersList);
+      await setLanguage(page, lng);
+      await page.goto(url.signIn);
 
-  test('Sign out after login', async ({ page }) => {
-    const user = await signUpNewUser(page);
+      await page.getByLabel(data.labels.email).fill('wrong@example.com');
+      await page.getByLabel(data.labels.password).fill('invalid');
+      await clickButtonByName(page, data.buttons.signIn);
 
-    await page.goto(sessionData.url.signIn);
-    await page.getByLabel(sessionData.labels.email).fill(user.email);
-    await page.getByLabel(sessionData.labels.password).fill(user.password);
-    await clickButtonByName(page, sessionData.buttons.signIn);
-
-    await expect(page).toHaveURL(sessionData.url.usersList);
-
-    await page.goto(sessionData.url.root);
-    await clickButtonByName(page, sessionData.buttons.signOut);
-
-    await expect(page).toHaveURL(sessionData.url.root);
-    await expect(page.locator(`text=${sessionData.messages.signedOut}`)).toBeVisible();
-  });
-
-  test('Should show toast with wrong email/password', async ({ page }) => {
-    await page.goto(sessionData.url.signIn);
-
-    await page.getByLabel(sessionData.labels.email).fill('wrong@example.com');
-    await page.getByLabel(sessionData.labels.password).fill('invalid');
-
-    await clickButtonByName(page, sessionData.buttons.signIn);
-
-    await expect(page.locator(`text=${sessionData.errors.invalidCredentials}`)).toBeVisible();
+      await expect(page.locator(`text=${data.errors.invalidCredentials}`)).toBeVisible();
+    });
   });
 });

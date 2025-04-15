@@ -1,55 +1,4 @@
 {
-  "user": {
-    "email": "example@example.com",
-    "password": "qwerty"
-  },
-  "users": [
-    {
-      "firstName": "Anna",
-      "lastName": "Ivanova",
-      "email": "anna@example.com",
-      "password": "qwerty"
-    },
-    {
-      "firstName": "Boris",
-      "lastName": "Johnson",
-      "email": "boris@example.com",
-      "password": "qwerty"
-    }
-  ],
-  "statuses": [{ "name": "New" }, { "name": "Completed" }],
-  "labelsList": [{ "name": "Frontend" }, { "name": "Backend" }],
-  "task": {
-    "name": "New test task",
-    "updated": "Updated test Task",
-    "status": "New status",
-    "label": "Test label"
-  },
-  "labels": {
-    "name": "Наименование",
-    "status": "Статус",
-    "label": "Метка",
-    "onlyMyTasks": "Только мои задачи"
-  },
-  "buttons": {
-    "create": "Создать задачу",
-    "edit": "Изменить",
-    "delete": "Удалить",
-    "applyFilter": "Показать",
-    "createUser": "Войти",
-    "createStatus": "Создать статус",
-    "createLabel": "Создать метку"
-  },
-  "messages": {
-    "created": "Задача создана",
-    "updated": "Задача обновлена",
-    "deleted": "Задача удалена"
-  },
-  "errors": {
-    "nameRequired": "Имя обязательно",
-    "statusRequired": "Статус обязателен",
-    "duplicate": "Задача с таким названием уже существует"
-  },
   "url": {
     "create": "http://localhost:3000/tasks/new",
     "list": "http://localhost:3000/tasks",
@@ -57,15 +6,132 @@
     "statuses": "http://localhost:3000/statuses",
     "labels": "http://localhost:3000/labels"
   },
-  "table": {
-    "pageTitle": "Список задач",
-    "columns": {
-      "id": "ID",
-      "name": "Наименование",
-      "status": "Статус",
-      "executor": "Исполнитель",
-      "createdAt": "Дата создания",
-      "actions": "Действия"
+  "languages": {
+    "ru": {
+      "task": {
+        "name": "Новая задача",
+        "updated": "Обновлённая задача"
+      },
+      "labels": {
+        "name": "Наименование",
+        "status": "Статус",
+        "label": "Метка",
+        "onlyMyTasks": "Только мои задачи"
+      },
+      "buttons": {
+        "create": "Создать задачу",
+        "edit": "Изменить",
+        "delete": "Удалить",
+        "applyFilter": "Показать",
+        "createUser": "Войти",
+        "createStatus": "Создать статус",
+        "createLabel": "Создать метку"
+      },
+      "messages": {
+        "created": "Задача создана",
+        "updated": "Задача обновлена",
+        "deleted": "Задача удалена"
+      },
+      "errors": {
+        "nameRequired": "Имя обязательно",
+        "statusRequired": "Статус обязателен",
+        "duplicate": "Задача с таким названием уже существует"
+      },
+      "table": {
+        "pageTitle": "Список задач",
+        "columns": {
+          "id": "ID",
+          "name": "Наименование",
+          "status": "Статус",
+          "executor": "Исполнитель",
+          "createdAt": "Дата создания",
+          "actions": "Действия"
+        }
+      }
+    },
+    "en": {
+      "task": {
+        "name": "New task",
+        "updated": "Updated task"
+      },
+      "labels": {
+        "name": "Name",
+        "status": "Status",
+        "label": "Label",
+        "onlyMyTasks": "Only my tasks"
+      },
+      "buttons": {
+        "create": "Create task",
+        "edit": "Edit",
+        "delete": "Delete",
+        "applyFilter": "Show",
+        "createUser": "Sign in",
+        "createStatus": "Create status",
+        "createLabel": "Create label"
+      },
+      "messages": {
+        "created": "Task created",
+        "updated": "Task updated",
+        "deleted": "Task deleted"
+      },
+      "errors": {
+        "nameRequired": "Name is required",
+        "statusRequired": "Status is required",
+        "duplicate": "Task with this name already exists"
+      },
+      "table": {
+        "pageTitle": "Tasks list",
+        "columns": {
+          "id": "ID",
+          "name": "Name",
+          "status": "Status",
+          "executor": "Executor",
+          "createdAt": "Created at",
+          "actions": "Actions"
+        }
+      }
+    },
+    "no": {
+      "task": {
+        "name": "Ny oppgave",
+        "updated": "Oppdatert oppgave"
+      },
+      "labels": {
+        "name": "Navn",
+        "status": "Status",
+        "label": "Etikett",
+        "onlyMyTasks": "Kun mine oppgaver"
+      },
+      "buttons": {
+        "create": "Opprett oppgave",
+        "edit": "Rediger",
+        "delete": "Slett",
+        "applyFilter": "Vis",
+        "createUser": "Logg inn",
+        "createStatus": "Opprett status",
+        "createLabel": "Opprett etikett"
+      },
+      "messages": {
+        "created": "Oppgaven ble opprettet",
+        "updated": "Oppgaven ble oppdatert",
+        "deleted": "Oppgaven ble slettet"
+      },
+      "errors": {
+        "nameRequired": "Navn er påkrevd",
+        "statusRequired": "Status er påkrevd",
+        "duplicate": "Oppgave med dette navnet finnes allerede"
+      },
+      "table": {
+        "pageTitle": "Oppgaveliste",
+        "columns": {
+          "id": "ID",
+          "name": "Navn",
+          "status": "Status",
+          "executor": "Utfører",
+          "createdAt": "Opprettet",
+          "actions": "Handlinger"
+        }
+      }
     }
   }
 }

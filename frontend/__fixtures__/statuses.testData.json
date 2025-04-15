@@ -1,44 +1,105 @@
 {
-  "user": {
-    "email": "example@example.com",
-    "password": "qwerty"
-  },
-  "labels": {
-    "name": "Наименование"
-  },
-  "buttons": {
-    "create": "Создать статус",
-    "edit": "Изменить",
-    "delete": "Удалить"
-  },
-  "messages": {
-    "created": "Статус создан",
-    "updated": "Статус обновлён",
-    "deleted": "Статус удалён"
-  },
-  "errors": {
-    "validation": {
-      "required": "Имя обязательно",
-      "duplicate": "Статус с таким названием уже существует"
-    },
-    "hasTasks": "Нельзя удалить статус, так как он используется в одной или нескольких задачах"
-  },
-  "statuses": {
-    "new": "Test Status",
-    "updated": "Updated Test Status"
-  },
   "url": {
     "list": "http://localhost:3000/statuses",
     "create": "http://localhost:3000/statuses/new",
     "editPattern": "http://localhost:3000/statuses/:id/edit"
   },
-  "table": {
-    "pageTitle": "Список статусов",
-    "columns": {
-      "id": "ID",
-      "name": "Наименование",
-      "createdAt": "Дата создания",
-      "actions": "Действия"
+  "statusesData": {
+    "new": "New status",
+    "updated": "Updated status"
+  },
+  "languages": {
+    "ru": {
+      "labels": {
+        "name": "Наименование"
+      },
+      "buttons": {
+        "create": "Создать статус",
+        "edit": "Изменить",
+        "delete": "Удалить"
+      },
+      "messages": {
+        "created": "Статус создан",
+        "updated": "Статус обновлён",
+        "deleted": "Статус удалён"
+      },
+      "errors": {
+        "validation": {
+          "required": "Имя обязательно",
+          "duplicate": "Статус с таким названием уже существует"
+        }
+      },
+      "table": {
+        "pageTitle": "Список статусов",
+        "columns": {
+          "id": "ID",
+          "name": "Наименование",
+          "createdAt": "Дата создания",
+          "actions": "Действия"
+        }
+      }
+    },
+
+    "en": {
+      "labels": {
+        "name": "Name"
+      },
+      "buttons": {
+        "create": "Create status",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "messages": {
+        "created": "Status created",
+        "updated": "Status updated",
+        "deleted": "Status deleted"
+      },
+      "errors": {
+        "validation": {
+          "required": "Name is required",
+          "duplicate": "Status with this name already exists"
+        }
+      },
+      "table": {
+        "pageTitle": "Statuses list",
+        "columns": {
+          "id": "ID",
+          "name": "Name",
+          "createdAt": "Created at",
+          "actions": "Actions"
+        }
+      }
+    },
+
+    "no": {
+      "labels": {
+        "name": "Navn"
+      },
+      "buttons": {
+        "create": "Opprett status",
+        "edit": "Rediger",
+        "delete": "Slett"
+      },
+      "messages": {
+        "created": "Status opprettet",
+        "updated": "Status oppdatert",
+        "deleted": "Status slettet"
+      },
+      "errors": {
+        "validation": {
+          "required": "Navn er påkrevd",
+          "duplicate": "Status med dette navnet finnes allerede"
+        }
+      },
+      "table": {
+        "pageTitle": "Statusliste",
+        "columns": {
+          "id": "ID",
+          "name": "Navn",
+          "createdAt": "Opprettet",
+          "actions": "Handlinger"
+        }
+      }
     }
   }
 }

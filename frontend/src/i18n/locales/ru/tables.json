@@ -9,7 +9,7 @@
   "users": {
     "pageTitle": "Список пользователей",
     "columns": {
-      "fullName": "ФИО",
+      "fullName": "Полное имя",
       "email": "Email"
     }
   },

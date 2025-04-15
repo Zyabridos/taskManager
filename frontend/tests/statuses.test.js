@@ -1,108 +1,123 @@
 import { test, expect } from '@playwright/test';
-import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import { clickButtonByName } from './helpers/selectors.js';
 import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 
-let statusData;
-let statusName;
+let statusesFixture;
+const languages = ['ru', 'en', 'no'];
 
 test.beforeAll(async () => {
-  statusData = await readFixture('statuses.testData.json');
+  statusesFixture = await readFixture('statuses.testData.json');
 });
 
-test.describe('statuses layout and headers', () => {
-  test('Should display correct page title and table headers', async ({ page }) => {
-    const { email, password } = await signUpNewUser(page);
-    const { url, table } = statusData;
+languages.forEach(lng => {
+  test.describe(`${lng.toUpperCase()} | Statuses tests`, () => {
+    let data;
+    let url;
+    let statusesData;
 
-    await LogInExistingUser(page, email, password);
+    test.beforeAll(() => {
+      data = statusesFixture.languages[lng];
+      url = statusesFixture.url;
+      statusesData = statusesFixture.statusesData;
+    });
 
-    await page.goto(url.list);
+    const authAndGoToList = async page => {
+      const { email, password } = await signUpNewUser(page, lng);
+      await LogInExistingUser(page, email, password, lng);
+      await page.goto(url.list);
+    };
 
-    const ths = page.locator('th');
-    await expect(page.getByRole('heading', { name: table.pageTitle })).toBeVisible();
-    // default sorting by id, and therefore
-    // with first render showed ID ↑, not just ID
-    await expect(ths.nth(0)).toHaveText(new RegExp(table.columns.id));
-    await expect(ths.nth(1)).toHaveText(table.columns.name);
-    await expect(ths.nth(2)).toHaveText(table.columns.createdAt);
-    await expect(ths.nth(3)).toHaveText(table.columns.actions);
-  });
-});
+    test.describe('Layout and headers', () => {
+      test('should display correct page title and table headers', async ({ page }) => {
+        await authAndGoToList(page);
 
-test.describe('statuses layout and headers', () => {
-  test.beforeEach(async ({ page }) => {
-    const { email, password } = await signUpNewUser(page);
-    await LogInExistingUser(page, email, password);
-  });
+        const ths = page.locator('th');
+        await expect(page.getByRole('heading', { name: data.table.pageTitle })).toBeVisible();
+        // default sorting by id, and therefore
+        // with first render showed ID ↑, not just ID
+        await expect(ths.nth(0)).toHaveText(new RegExp(data.table.columns.id));
+        await expect(ths.nth(1)).toHaveText(data.table.columns.name);
+        await expect(ths.nth(2)).toHaveText(data.table.columns.createdAt);
+        await expect(ths.nth(3)).toHaveText(data.table.columns.actions);
+      });
+    });
 
-  test('Should show error if status name is empty', async ({ page }) => {
-    await page.goto(statusData.url.create);
-    await clickButtonByName(page, statusData.buttons.create);
-    await expect(page.locator(`text=${statusData.errors.validation.required}`)).toBeVisible();
-  });
+    test.describe('Validation', () => {
+      test.beforeEach(async ({ page }) => {
+        await authAndGoToList(page);
+      });
 
-  test('Should show error if status name already exists', async ({ page }) => {
-    const uniqueStatus = `Status ${Date.now()}`;
-    await page.goto(statusData.url.create);
-    await page.getByLabel(statusData.labels.name).fill(uniqueStatus);
-    await clickButtonByName(page, statusData.buttons.create);
-    await expect(page.locator(`text=${statusData.messages.created}`)).toBeVisible();
+      test('should show error if status name is empty', async ({ page }) => {
+        await page.goto(url.create);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${data.errors.validation.required}`)).toBeVisible();
+      });
 
-    await page.goto(statusData.url.create);
-    await page.getByLabel(statusData.labels.name).fill(uniqueStatus);
-    await clickButtonByName(page, statusData.buttons.create);
-    await expect(page.locator(`text=${statusData.errors.validation.duplicate}`)).toBeVisible();
-  });
-});
+      test('should show error if status name already exists', async ({ page }) => {
+        const name = `Status ${Date.now()}`;
+        await page.goto(url.create);
+        await page.getByLabel(data.labels.name).fill(name);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${data.messages.created}`)).toBeVisible();
 
-test.describe('statuses edit/delete functionality', () => {
-  let email, password;
+        await page.goto(url.create);
+        await page.getByLabel(data.labels.name).fill(name);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${data.errors.validation.duplicate}`)).toBeVisible();
+      });
+    });
 
-  test.beforeEach(async ({ page }) => {
-    const user = await signUpNewUser(page);
-    email = user.email;
-    password = user.password;
-    statusName = `Status ${Date.now()}`;
+    test.describe('CRUD', () => {
+      let statusName;
 
-    await LogInExistingUser(page, email, password);
+      test.beforeEach(async ({ page }) => {
+        const { email, password } = await signUpNewUser(page, lng);
+        await LogInExistingUser(page, email, password, lng);
 
-    await page.goto(statusData.url.create);
-    await page.getByLabel(statusData.labels.name).fill(statusName);
-    await clickButtonByName(page, statusData.buttons.create);
+        statusName = `Status ${Date.now()}`;
+        await page.goto(url.create);
+        await page.getByLabel(data.labels.name).fill(statusName);
+        await clickButtonByName(page, data.buttons.create);
+        await expect(page.locator(`text=${data.messages.created}`)).toBeVisible();
+      });
 
-    await expect(page.locator(`text=${statusData.messages.created}`)).toBeVisible();
-  });
+      test('should show created status in list', async ({ page }) => {
+        await page.goto(url.list);
+        await expect(page.locator(`text=${statusName}`)).toBeVisible();
+      });
 
-  test('Should show created status in list', async ({ page }) => {
-    await page.goto(statusData.url.list);
-    await expect(page.locator(`text=${statusName}`)).toBeVisible();
-  });
+      test('should edit the status', async ({ page }) => {
+        const updatedName = statusesData.updated;
+        await page.goto(url.list);
 
-  test('Should edit a specific status', async ({ page }) => {
-    const updatedName = `${statusName} Updated`;
+        const row = page.locator('table tbody tr', { hasText: statusName });
+        await row.getByRole('link', { name: data.buttons.edit }).click();
 
-    await page.goto(statusData.url.list);
-    const row = page.locator('table tbody tr', { hasText: statusName });
-    const editLink = row.getByRole('link', { name: statusData.buttons.edit });
-    await editLink.click();
+        await page.getByLabel(data.labels.name).fill(updatedName);
+        await clickButtonByName(page, data.buttons.edit);
 
-    await page.getByLabel(statusData.labels.name).fill(updatedName);
-    await clickButtonByName(page, statusData.buttons.edit);
+        await expect(page).toHaveURL(url.list);
+        await expect(page.locator(`text=${data.messages.updated}`)).toBeVisible();
+        await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+      });
 
-    await expect(page).toHaveURL(statusData.url.list);
-    await expect(page.locator(`text=${statusData.messages.updated}`)).toBeVisible();
-    await expect(page.locator(`text=${updatedName}`)).toBeVisible();
-  });
+      test('should delete the status', async ({ page }) => {
+        const updatedName = statusesData.updated;
+        await page.goto(url.list);
 
-  test('Should delete the created status', async ({ page }) => {
-    await page.goto(statusData.url.list);
+        const row = page.locator('table tbody tr', { hasText: statusName });
+        await row.getByRole('link', { name: data.buttons.edit }).click();
+        await page.getByLabel(data.labels.name).fill(updatedName);
+        await clickButtonByName(page, data.buttons.edit);
 
-    const row = page.locator('table tbody tr', { hasText: statusName });
-    const deleteButton = row.getByRole('button', { name: statusData.buttons.delete });
-    await deleteButton.click();
+        await page.goto(url.list);
+        const updatedRow = page.locator('table tbody tr', { hasText: updatedName });
+        await updatedRow.getByRole('button', { name: data.buttons.delete }).click();
 
-    await expect(page.locator(`text=${statusData.messages.deleted}`)).toBeVisible();
-    await expect(page.locator(`text=${statusName}`)).not.toBeVisible();
+        await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
+        await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
+      });
+    });
   });
 });

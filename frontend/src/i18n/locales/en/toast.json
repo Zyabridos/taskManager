@@ -13,7 +13,7 @@
   },
   "loggedIn": {
     "success": {
-      "user": "You are logged in"
+      "user": "You have signed in"
     },
     "error": {
       "user": "Incorrect Email or Password"
@@ -21,7 +21,7 @@
   },
   "loggedOut": {
     "success": {
-      "user": "You are logged out"
+      "user": "You have signed out"
     }
   },
   "created": {

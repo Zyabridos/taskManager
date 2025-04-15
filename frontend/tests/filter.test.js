@@ -2,89 +2,96 @@ import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
 import { LogInExistingUser } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import { setLanguage } from './helpers/languageSetup.js';
 
-let taskData;
-let statusData;
-let labelsData;
+let tasksFixture;
+let statusesFixture;
+let labelsFixture;
+let tasksUrl;
 
 test.beforeAll(async () => {
-  taskData = await readFixture('tasks.testData.json');
-  statusData = await readFixture('statuses.testData.json');
-  labelsData = await readFixture('labels.testData.json');
+  tasksFixture = await readFixture('tasks.testData.json');
+  statusesFixture = await readFixture('statuses.testData.json');
+  labelsFixture = await readFixture('labels.testData.json');
+  tasksUrl = tasksFixture.url;
 });
 
-test.describe('Tasks List Filter UI', () => {
-  test.beforeEach(async ({ page }) => {
-    await LogInExistingUser(page, labelsData.user.email);
+const languages = ['ru', 'en', 'no'];
 
-    await page.goto(taskData.url.list);
+languages.forEach((lng) => {
+  test.describe(`${lng.toUpperCase()} | Tasks List Filter`, () => {
+    let taskData, statusData, labelData, taskName;
 
-    await page.goto(statusData.url.list);
-    await clickLinkByName(page, statusData.buttons.create);
-    await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
-    await clickButtonByName(page, statusData.buttons.create);
+    test.beforeAll(() => {
+      taskData = tasksFixture.languages[lng];
+      statusData = statusesFixture.languages[lng];
+      labelData = labelsFixture.languages[lng];
+    });
 
-    await page.goto(labelsData.url.list);
-    await clickLinkByName(page, labelsData.buttons.create);
-    await page.getByLabel(labelsData.labels.name).fill(taskData.task.label);
-    await clickButtonByName(page, labelsData.buttons.create);
+    test.beforeEach(async ({ page }) => {
+      const { email, password } = labelData.user;
 
-    await page.goto(taskData.url.create);
-    taskData.task.name = `Task ${Date.now()}`;
-    await page.getByLabel(taskData.labels.name).fill(taskData.task.name);
-    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
-    await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
-    await clickButtonByName(page, taskData.buttons.create);
-    await expect(page.locator(`text=${taskData.messages.created}`)).toBeVisible();
-  });
+      await page.goto('about:blank');
+      setLanguage(page,lng)
+      await LogInExistingUser(page, email, password);
 
-  test('Should filter tasks by status', async ({ page }) => {
-    await page.goto(taskData.url.list);
+      // Create status
+      await page.goto(statusData.url.list);
+      await clickLinkByName(page, statusData.buttons.create);
+      await page.getByLabel(statusData.labels.name).fill(taskData.task.status);
+      await clickButtonByName(page, statusData.buttons.create);
 
-    await page.getByLabel('Статус').selectOption({ label: taskData.task.status });
+      // Create label
+      await page.goto(labelData.url.list);
+      await clickLinkByName(page, labelData.buttons.create);
+      await page.getByLabel(labelData.labels.name).fill(taskData.task.label);
+      await clickButtonByName(page, labelData.buttons.create);
 
-    await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
+      // Create task
+      await page.goto(tasksUrl.create);
+      taskName = `Task ${Date.now()}`;
+      await page.getByLabel(taskData.labels.name).fill(taskName);
+      await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
+      await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
+      await clickButtonByName(page, taskData.buttons.create);
+      await expect(page.locator(`text=${taskData.messages.created}`)).toBeVisible();
+    });
 
-    const filteredRow = page.locator('table tbody tr', { hasText: taskData.task.name });
-    await expect(filteredRow).toBeVisible();
-  });
+    test('Should filter tasks by status', async ({ page }) => {
+      await page.goto(tasksUrl.list);
+      await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
+      await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
+      const row = page.locator('table tbody tr', { hasText: taskName });
+      await expect(row).toBeVisible();
+    });
 
-  test('Should filter tasks by label', async ({ page }) => {
-    await page.goto(taskData.url.list);
+    test('Should filter tasks by label', async ({ page }) => {
+      await page.goto(tasksUrl.list);
+      await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
+      await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
+      const row = page.locator('table tbody tr', { hasText: taskName });
+      await expect(row).toBeVisible();
+    });
 
-    await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
+    test('Should filter tasks by creator (only my tasks)', async ({ page }) => {
+      await page.goto(tasksUrl.list);
+      const checkbox = page.getByLabel(taskData.labels.onlyMyTasks);
+      await checkbox.check();
+      await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
+      const row = page.locator('table tbody tr', { hasText: taskName });
+      await expect(row).toBeVisible();
+    });
 
-    await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
+    test('Should filter tasks by status, label and author', async ({ page }) => {
+      await page.goto(tasksUrl.list);
+      await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
+      await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
+      await page.getByLabel(taskData.labels.onlyMyTasks).check();
+      await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
 
-    const filteredRow = page.locator('table tbody tr', { hasText: taskData.task.name });
-    await expect(filteredRow).toBeVisible();
-  });
-
-  test('Should filter tasks by creator (checkbox only my tasks)', async ({ page }) => {
-    await page.goto(taskData.url.list);
-
-    const checkbox = page.getByLabel(taskData.labels.onlyMyTasks);
-    await checkbox.check();
-
-    await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
-
-    const filteredRow = page.locator('table tbody tr', { hasText: taskData.task.name });
-    await expect(filteredRow).toBeVisible();
-  });
-
-  test('Should filter tasks by status, label and author', async ({ page }) => {
-    await page.goto(taskData.url.list);
-
-    await page.getByLabel(taskData.labels.status).selectOption({ label: taskData.task.status });
-    await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
-
-    const checkbox = page.getByLabel(taskData.labels.onlyMyTasks);
-    await checkbox.check();
-
-    await page.locator('form').getByRole('button', { name: taskData.buttons.applyFilter }).click();
-
-    const filteredRow = page.locator('table tbody tr', { hasText: taskData.task.name });
-    await expect(filteredRow).toHaveCount(1);
-    await expect(filteredRow).toBeVisible();
+      const row = page.locator('table tbody tr', { hasText: taskName });
+      await expect(row).toHaveCount(1);
+      await expect(row).toBeVisible();
+    });
   });
 });
