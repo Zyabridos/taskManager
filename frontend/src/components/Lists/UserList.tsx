@@ -1,26 +1,25 @@
 'use client';
 
 import React, { useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
+
 import { fetchUsers, deleteUserThunk } from '../../store/slices/usersSlice';
 import { DeleteButton, HrefButton } from '../Buttons';
-import { format } from 'date-fns';
-import ruLocale from 'date-fns/locale/ru';
-import { useTranslation } from 'react-i18next';
+import SortableHeader from '../UI/SortableHeader';
 import routes from '../../routes';
+import store from '../../store';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedList from '../../hooks/useSortableList';
-import SortableHeader from '../UI/SortableHeader';
 import { useAuth } from '../../context/authContex';
 import useHandleToastError from '../../hooks/useHandleErrorToast';
+import { User } from '../../types/entities';
 
-const UserList = () => {
-  console.log(
-    'Ur logged user id:',
-    useSelector(state => state.users),
-  );
-  const dispatch = useDispatch();
-  const { list } = useSelector(state => state.users);
+const UserList: React.FC = () => {
+  const dispatch = store.dispatch;
+  const { list } = useSelector(() => store.getState().users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { showToast } = useEntityToast();
@@ -44,14 +43,14 @@ const UserList = () => {
     }
   }, [showToast]);
 
-  const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
+  const { sortedList, sortField, sortOrder, handleSort } = useSortedList<User>(list, 'id', 'asc');
 
   const handleDelete = useCallback(
-    async id => {
+    async (id: number) => {
       try {
         await dispatch(deleteUserThunk(id)).unwrap();
         showToast({ type: 'user', action: 'deleted', titleKey: 'successTitle' });
-      } catch (e) {
+      } catch (e: any) {
         const message = e?.response?.data?.message;
 
         if (message?.includes?.('edit other users')) {
@@ -81,28 +80,28 @@ const UserList = () => {
             <SortableHeader
               label={t('common.columns.id')}
               field="id"
-              sortField={sortField}
+              currentSortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
             />
             <SortableHeader
               label={t('users.columns.fullName')}
               field="firstName"
-              sortField={sortField}
+              currentSortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
             />
             <SortableHeader
               label={t('users.columns.email')}
               field="email"
-              sortField={sortField}
+              currentSortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
             />
             <SortableHeader
               label={t('common.columns.createdAt')}
               field="createdAt"
-              sortField={sortField}
+              currentSortField={sortField}
               sortOrder={sortOrder}
               onSort={handleSort}
             />
@@ -117,16 +116,16 @@ const UserList = () => {
               key={user.id}
               data-id={user.id}
               data-email={user.email}
-              data-name={`${user.firstName} ${user.lastName}`}
+              data-name={`${user.firstName} ${user.lastName ?? ''}`}
               data-created-at={user.createdAt}
             >
               <td className="px-6 py-4 text-sm text-gray-900">{user.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">
-                {user.firstName} {user.lastName}
+                {user.firstName} {user.lastName ?? ''}
               </td>
               <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {format(new Date(user.createdAt), 'dd.MM.yyyy HH:mm', { locale: ruLocale })}
+                {format(new Date(user.createdAt), 'dd.MM.yyyy HH:mm', { locale: ru })}
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">

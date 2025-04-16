@@ -1,12 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { statusesApi } from '../../api/statusesApi';
 import { getErrorPayload } from '../../utils/errorsHandlers';
-
-export interface Status {
-  id: number;
-  name: string;
-}
-
+import { Status } from '../../types/entities'
 interface StatusesState {
   list: Status[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';

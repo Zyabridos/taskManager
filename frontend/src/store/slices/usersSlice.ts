@@ -1,12 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { usersApi } from '../../api/usersApi';
 import { getErrorMessage } from '../../utils/errorsHandlers';
-
-export interface User {
-  id: number;
-  name: string;
-}
-
+import { User } from '../../types/entities'
 interface UsersState {
   list: User[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';

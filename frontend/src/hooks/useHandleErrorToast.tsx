@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 
 /**
  * `useHandleToastError` - custom hook returns func that proceed error and shows correspondend toast
-*/
+ */
 
 type ToastParams = {
   type: string;
@@ -26,7 +26,7 @@ const useHandleToastError =
   (showToast: ShowToast) =>
   (
     error: AxiosError<{ message?: string }>,
-    { type, action, titleKey }: HandleToastParams
+    { type, action, titleKey }: HandleToastParams,
   ): void => {
     const response = error?.response;
     const message = response?.data?.message;

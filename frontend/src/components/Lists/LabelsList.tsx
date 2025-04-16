@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
-import ruLocale from 'date-fns/locale/ru';
+import { ru } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 
 import { DeleteButton, HrefButton } from '../Buttons';
@@ -14,12 +14,8 @@ import store from '../../store';
 import { deleteLabelThunk, fetchLabel } from '../../store/slices/labelsSlice';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedList from '../../hooks/useSortableList';
-
-type Label = {
-  id: number;
-  name: string;
-  createdAt: string;
-};
+import useHandleToastError from '../../hooks/useHandleErrorToast';
+import { Label } from '../../types/entities';
 
 const LabelsList = () => {
   const dispatch = store.dispatch;
@@ -28,6 +24,7 @@ const LabelsList = () => {
   const { t: tButtons } = useTranslation('buttons');
   const { t: tLabels } = useTranslation('labels');
   const { showToast } = useEntityToast();
+  const handleToastError = useHandleToastError(showToast);
 
   useEffect(() => {
     dispatch(fetchLabel());
@@ -39,9 +36,12 @@ const LabelsList = () => {
     try {
       await dispatch(deleteLabelThunk(id)).unwrap();
       showToast({ type: 'label', action: 'deleted', titleKey: 'successTitle' });
-    } catch (e) {
-      console.warn('error during label deleting', e);
-      showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', toastType: 'error' });
+    } catch (e: any) {
+      handleToastError(e, {
+        type: 'label',
+        action: 'failedDelete',
+        titleKey: 'errorTitle',
+      });
     }
   };
 
@@ -89,12 +89,12 @@ const LabelsList = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {sortedList.map((label) => (
+          {sortedList.map(label => (
             <tr key={label.id}>
               <td className="px-6 py-4 text-sm text-gray-900">{label.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">{label.name}</td>
               <td className="px-6 py-4 text-sm text-gray-500">
-                {format(new Date(label.createdAt), 'dd.MM.yyyy HH:mm', { locale: ruLocale })}
+                {format(new Date(label.createdAt), 'dd.MM.yyyy HH:mm', { locale: ru })}
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap justify-end gap-2">

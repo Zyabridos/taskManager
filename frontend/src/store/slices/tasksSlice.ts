@@ -1,26 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { tasksApi } from '../../api/tasksApi';
 import { getErrorMessage } from '../../utils/errorsHandlers';
-
-export interface Task {
-  id: number;
-  name: string;
-  description?: string;
-  statusId: number;
-  executorId?: number;
-  createdAt: string;
-  updatedAt?: string;
-}
-
-type QueryValue = string | number | boolean | undefined;
-
-// for example: ?status=1&executor=1&label=1
-export type TaskQueryParams = {
-  status?: number;
-  executor?: number;
-  label?: number;
-  [key: string]: QueryValue;
-};
+import { Task, TaskQueryParams } from '../../types/task'
 
 interface TasksState {
   list: Task[];

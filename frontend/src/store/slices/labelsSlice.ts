@@ -1,12 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { labelsApi } from '../../api/labelsApi';
 import { getErrorPayload } from '@/utils/errorsHandlers';
-
-export interface Label {
-  id: number;
-  name: string;
-}
-
+import { Label } from '../../types/entities'
 interface LabelsState {
   list: Label[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';

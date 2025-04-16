@@ -19,14 +19,14 @@ type UseSortableListResult<T> = {
 function useSortableList<T>(
   list: T[],
   defaultField: string = 'id',
-  defaultOrder: SortOrder = 'asc'
+  defaultOrder: SortOrder = 'asc',
 ): UseSortableListResult<T> {
   const [sortOrder, setSortOrder] = useState<SortOrder>(defaultOrder);
   const [sortField, setSortField] = useState<string>(defaultField);
 
   const handleSort = (field: string) => {
     if (sortField === field) {
-      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+      setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortField(field);
       setSortOrder('asc');

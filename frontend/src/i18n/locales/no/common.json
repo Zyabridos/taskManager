@@ -14,5 +14,6 @@
     "github": "GitHub",
     "telegram": "Telegram",
     "email": "Email"
-  }
+  },
+  "error": "Det opstått en feil"
 }
