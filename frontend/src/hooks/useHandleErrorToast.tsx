@@ -1,8 +1,33 @@
 'use client';
 
+import { AxiosError } from 'axios';
+
+/**
+ * `useHandleToastError` - custom hook returns func that proceed error and shows correspondend toast
+*/
+
+type ToastParams = {
+  type: string;
+  action: string;
+  titleKey?: string;
+  toastType: 'error' | 'success';
+  message?: string;
+};
+
+type ShowToast = (params: ToastParams) => void;
+
+type HandleToastParams = {
+  type: string;
+  action?: string;
+  titleKey?: string;
+};
+
 const useHandleToastError =
-  showToast =>
-  (error, { type, action, titleKey }) => {
+  (showToast: ShowToast) =>
+  (
+    error: AxiosError<{ message?: string }>,
+    { type, action, titleKey }: HandleToastParams
+  ): void => {
     const response = error?.response;
     const message = response?.data?.message;
 

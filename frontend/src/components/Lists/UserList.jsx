@@ -20,7 +20,7 @@ const UserList = () => {
     useSelector(state => state.users),
   );
   const dispatch = useDispatch();
-  const { list, status, error } = useSelector(state => state.users);
+  const { list } = useSelector(state => state.users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { showToast } = useEntityToast();

@@ -28,7 +28,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/store/slices/statusesSlice.js",
-    "src/hooks/useSortableList.jsx"
-  ],
+    "src/hooks/useSortableList.tsx"
+, "src/store/index.js"  ],
   "exclude": ["node_modules"]
 }

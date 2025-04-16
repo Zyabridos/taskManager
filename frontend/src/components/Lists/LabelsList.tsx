@@ -1,20 +1,29 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { DeleteButton, HrefButton } from '../Buttons';
+import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 import ruLocale from 'date-fns/locale/ru';
 import { useTranslation } from 'react-i18next';
+
+import { DeleteButton, HrefButton } from '../Buttons';
+import SortableHeader from '../UI/SortableHeader';
+
 import routes from '../../routes';
+import store from '../../store';
 import { deleteLabelThunk, fetchLabel } from '../../store/slices/labelsSlice';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedList from '../../hooks/useSortableList';
-import SortableHeader from '../UI/SortableHeader';
+
+type Label = {
+  id: number;
+  name: string;
+  createdAt: string;
+};
 
 const LabelsList = () => {
-  const dispatch = useDispatch();
-  const { list, label, error } = useSelector(state => state.labels);
+  const dispatch = store.dispatch;
+  const { list, status, error } = useSelector(() => store.getState().labels);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { t: tLabels } = useTranslation('labels');
@@ -24,20 +33,20 @@ const LabelsList = () => {
     dispatch(fetchLabel());
   }, [dispatch]);
 
-  const { sortedList, sortField, sortOrder, handleSort } = useSortedList(list, 'id', 'asc');
+  const { sortedList, sortField, sortOrder, handleSort } = useSortedList<Label>(list, 'id', 'asc');
 
-  const handleDelete = async id => {
+  const handleDelete = async (id: number) => {
     try {
       await dispatch(deleteLabelThunk(id)).unwrap();
       showToast({ type: 'label', action: 'deleted', titleKey: 'successTitle' });
     } catch (e) {
-      console.log('error during label deleting', e);
-      showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', type: 'error' });
+      console.warn('error during label deleting', e);
+      showToast({ type: 'label', action: 'failedDelete', titleKey: 'errorTitle', toastType: 'error' });
     }
   };
 
-  if (label === 'loading') return <p>{t('common.loading')}</p>;
-  if (label === 'failed') {
+  if (status === 'loading') return <p>{t('common.loading')}</p>;
+  if (status === 'failed') {
     return (
       <p>
         {t('common.error')}: {error}
@@ -80,7 +89,7 @@ const LabelsList = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {sortedList.map(label => (
+          {sortedList.map((label) => (
             <tr key={label.id}>
               <td className="px-6 py-4 text-sm text-gray-900">{label.id}</td>
               <td className="px-6 py-4 text-sm text-gray-900">{label.name}</td>
