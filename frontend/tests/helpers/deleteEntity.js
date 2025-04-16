@@ -13,15 +13,20 @@ export async function deleteTaskByName(page, taskName, taskData) {
   await expect(page.locator(`text=${taskName}`)).not.toBeVisible();
 }
 
-export async function deleteStatusByName(page, statusName, statusData) {
-  await page.goto(statusData.url.list);
-  const statusRow = page.locator('table tbody tr', { hasText: statusName });
+export async function cleanUpEntity(request, entity, name) {
+  const response = await request.get(`/api/${entity}`);
+  if (!response.ok()) {
+    console.warn(`could not get list of ${entity}`);
+    return;
+  }
 
-  const deleteButton = statusRow.getByRole('button', {
-    name: statusData.buttons.delete,
-  });
+  const items = await response.json();
+  const toDelete = items.filter(item => item.name === name);
 
-  await deleteButton.click();
-
-  await expect(page.locator(`text=${statusName}`)).not.toBeVisible();
+  for (const item of toDelete) {
+    const delRes = await request.delete(`/api/${entity}/${item.id}`);
+    if (!delRes.ok()) {
+      console.warn(`Could not delete ${entity}/${item.id}`);
+    }
+  }
 }

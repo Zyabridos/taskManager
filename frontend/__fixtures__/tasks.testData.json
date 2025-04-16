@@ -37,7 +37,9 @@
       "messages": {
         "created": "Задача создана",
         "updated": "Задача обновлена",
-        "deleted": "Задача удалена"
+        "deleted": "Задача удалена",
+        "createdStatus": "Статус создан",
+        "createdLabel": "Метка создана"
       },
       "errors": {
         "nameRequired": "Имя обязательно",
@@ -112,7 +114,7 @@
         "name": "Navn",
         "status": "Status",
         "executor": "Utfører",
-        "label": "Etikett",
+        "label": "Merkelapp",
         "onlyMyTasks": "Kun mine oppgaver"
       },
       "buttons": {

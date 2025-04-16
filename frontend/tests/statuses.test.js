@@ -45,16 +45,13 @@ languages.forEach(lng => {
       });
 
       test('should show error if status name already exists', async ({ page }) => {
-        // создаём уникальное имя на основе локализованного "Новый статус"
-        const baseName = data.statusesData.new;
-        const uniqueName = `${baseName} ${uuidv4().slice(0, 8)}`;
+        const uniqueName = `${data.statusesData.new} ${uuidv4().slice(0, 8)}`;
 
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(uniqueName);
         await clickButtonByName(page, data.buttons.create);
         await expect(page.locator(`text=${data.messages.created}`)).toBeVisible();
 
-        // пытаемся создать тот же самый статус снова
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(uniqueName);
         await clickButtonByName(page, data.buttons.create);
@@ -65,6 +62,8 @@ languages.forEach(lng => {
     test.describe('CRUD', () => {
       let statusName;
 
+      // not nececcary to create 3 statuses - move to bedore All
+      // or use await cleanUpEntity(request, 'statuses', statusName);
       test.beforeEach(async ({ page }) => {
         const { email, password } = await signUpNewUser(page, lng);
         await LogInExistingUser(page, email, password, lng);
@@ -94,6 +93,8 @@ languages.forEach(lng => {
         await expect(page).toHaveURL(url.list);
         await expect(page.locator(`text=${data.messages.updated}`)).toBeVisible();
         await expect(page.locator(`text=${updatedName}`)).toBeVisible();
+
+        statusName = updatedName;
       });
 
       test('should delete the status', async ({ page }) => {

@@ -29,7 +29,7 @@ const SelectField: React.FC<SelectFieldProps> = ({ id, label, options, field, er
       <select
         id={id}
         {...field}
-        className={`w-full rounded border p-2 shadow-sm focus:ring focus:outline-none ${
+        className={`w-300px rounded border p-2 shadow-sm focus:ring focus:outline-none ${
           hasError ? 'border-red-500' : 'border-gray-300'
         }`}
       >

@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
 import { clickButtonByName } from './helpers/selectors.js';
 import readFixture from './helpers/readFixture.js';
+import { v4 as uuidv4 } from 'uuid';
 
 let tasksFixture, statusesFixture, labelsFixture;
 const languages = ['ru', 'en', 'no'];
@@ -36,9 +37,9 @@ languages.forEach(lng => {
       const { email, password } = await signUpNewUser(page, lng);
       await LogInExistingUser(page, email, password, lng);
 
-      taskName = `Task ${Date.now()}`;
-      statusName = `Status ${Date.now()}`;
-      labelName = `Label ${Date.now()}`;
+      taskName = `Task ${uuidv4().slice(0, 8)}`;
+      statusName = `Status ${uuidv4().slice(0, 8)}`;
+      labelName = `Label ${uuidv4().slice(0, 8)}`;
 
       await page.goto(statusData.url.create);
       await page.getByLabel(statusData.labels.name).fill(statusName);
@@ -64,9 +65,9 @@ languages.forEach(lng => {
         const ths = page.locator('th');
 
         await expect(page.getByRole('heading', { name: taskData.table.pageTitle })).toBeVisible();
-        await expect(ths.nth(0)).toHaveText(new RegExp(taskData.table.columns.id));
         // default sorting by id, and therefore
         // with first render showed ID ↑, not just ID
+        await expect(ths.nth(0)).toHaveText(new RegExp(taskData.table.columns.id));
         await expect(ths.nth(1)).toHaveText(taskData.table.columns.name);
         await expect(ths.nth(2)).toHaveText(taskData.table.columns.status);
         await expect(ths.nth(3)).toHaveText(taskData.table.columns.executor);
@@ -124,6 +125,61 @@ languages.forEach(lng => {
 
         await expect(page.locator(`text=${taskData.messages.deleted}`)).toBeVisible();
         await expect(page.locator(`text=${taskName}`)).not.toBeVisible();
+      });
+    });
+
+    test.describe('Sorting', () => {
+      let secondStatusName;
+
+      test.beforeEach(async ({ page }) => {
+        await authAndPrepareEntities(page);
+
+        // second status
+        secondStatusName = `Z-Status ${uuidv4().slice(0, 8)}`;
+        await page.goto(statusData.url.create);
+        await page.getByLabel(statusData.labels.name).fill(secondStatusName);
+        await clickButtonByName(page, statusData.buttons.create);
+
+        // Second task with dif status
+        const secondTaskName = `B-${taskName}`;
+        await page.goto(taskData.url.create);
+        await page.getByLabel(taskData.labels.name).fill(secondTaskName);
+        await page.getByLabel(taskData.labels.status).selectOption({ label: secondStatusName });
+        await clickButtonByName(page, taskData.buttons.create);
+
+        await page.goto(taskData.url.list);
+        await expect(page.locator('body')).toContainText(taskName);
+        await expect(page.locator('body')).toContainText(secondTaskName);
+      });
+
+      test('should sort by task name', async ({ page }) => {
+        await page.goto(taskData.url.list);
+
+        const header = page.locator('thead tr th', { hasText: taskData.table.columns.name });
+        await header.click(); // asc
+        const firstNameAsc = await page.locator('tbody tr td').nth(1).textContent();
+
+        await header.click(); // desc
+        const firstNameDesc = await page.locator('tbody tr td').nth(1).textContent();
+
+        expect(firstNameAsc).not.toEqual(firstNameDesc);
+      });
+
+      test('should sort by status', async ({ page }) => {
+        await page.goto(taskData.url.list);
+
+        const header = page.locator('thead tr th', { hasText: taskData.table.columns.status });
+        await header.click(); // asc
+
+        const firstStatusAsc = await page.locator('tbody tr td').nth(2).textContent();
+
+        await header.click(); // desc
+
+        const firstStatusDesc = await page.locator('tbody tr td').nth(2).textContent();
+
+        expect(firstStatusAsc).not.toEqual(firstStatusDesc);
+        expect([statusName, secondStatusName]).toContain(firstStatusAsc?.trim());
+        expect([statusName, secondStatusName]).toContain(firstStatusDesc?.trim());
       });
     });
   });
