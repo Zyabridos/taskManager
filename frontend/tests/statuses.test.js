@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
 import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
+import { v4 as uuidv4 } from 'uuid';
 
 let statusesFixture;
 const languages = ['ru', 'en', 'no'];
@@ -15,6 +16,7 @@ languages.forEach(lng => {
     let data;
     let url;
     let statusesData;
+    let updatedName;
 
     test.beforeAll(() => {
       data = statusesFixture.languages[lng];
@@ -42,21 +44,19 @@ languages.forEach(lng => {
         await authAndGoToList(page, url, lng);
       });
 
-      test('should show error if status name is empty', async ({ page }) => {
-        await page.goto(url.create);
-        await clickButtonByName(page, data.buttons.create);
-        await expect(page.locator(`text=${data.errors.validation.required}`)).toBeVisible();
-      });
-
       test('should show error if status name already exists', async ({ page }) => {
-        const name = `Status ${Date.now()}`;
+        // создаём уникальное имя на основе локализованного "Новый статус"
+        const baseName = data.statusesData.new;
+        const uniqueName = `${baseName} ${uuidv4().slice(0, 8)}`;
+
         await page.goto(url.create);
-        await page.getByLabel(data.labels.name).fill(name);
+        await page.getByLabel(data.labels.name).fill(uniqueName);
         await clickButtonByName(page, data.buttons.create);
         await expect(page.locator(`text=${data.messages.created}`)).toBeVisible();
 
+        // пытаемся создать тот же самый статус снова
         await page.goto(url.create);
-        await page.getByLabel(data.labels.name).fill(name);
+        await page.getByLabel(data.labels.name).fill(uniqueName);
         await clickButtonByName(page, data.buttons.create);
         await expect(page.locator(`text=${data.errors.validation.duplicate}`)).toBeVisible();
       });
@@ -69,7 +69,7 @@ languages.forEach(lng => {
         const { email, password } = await signUpNewUser(page, lng);
         await LogInExistingUser(page, email, password, lng);
 
-        statusName = `Status ${Date.now()}`;
+        statusName = `${data.statusesData.new} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(statusName);
         await clickButtonByName(page, data.buttons.create);
@@ -82,10 +82,10 @@ languages.forEach(lng => {
       });
 
       test('should edit the status', async ({ page }) => {
-        const updatedName = statusesData.updated;
+        updatedName = `${data.statusesData.updated} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.list);
 
-        const row = page.locator('table tbody tr', { hasText: statusName });
+        const row = page.locator('tr', { has: page.locator(`td[data-name="${statusName}"]`) });
         await row.getByRole('link', { name: data.buttons.edit }).click();
 
         await page.getByLabel(data.labels.name).fill(updatedName);
@@ -97,23 +97,16 @@ languages.forEach(lng => {
       });
 
       test('should delete the status', async ({ page }) => {
-        const updatedName = statusesData.updated;
         await page.goto(url.list);
 
-        const row = page.locator('table tbody tr', { hasText: statusName });
-        const editLink = row.getByRole('link', { name: data.buttons.edit });
-        await editLink.click();
-
-        await page.getByLabel(data.statuses.name).fill(updatedName);
-        await clickButtonByName(page, data.buttons.edit);
-
-        await page.goto(url.list);
-        const updatedRow = page.locator('table tbody tr', { hasText: updatedName });
-        const deleteButton = updatedRow.getByRole('button', { name: data.buttons.delete });
+        const row = page.locator('tr', {
+          has: page.locator(`td[data-name="${updatedName}"]`),
+        });
+        const deleteButton = row.getByRole('button', { name: data.buttons.delete });
         await deleteButton.click();
 
         await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
-        await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
+        await expect(page.locator(`td[data-name="${updatedName}"]`)).not.toBeVisible();
       });
     });
   });

@@ -11,10 +11,11 @@ import { deleteTaskThunk, fetchTasks } from '../../store/slices/tasksSlice';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedTasks from '../../hooks/useSortableList';
 import TaskFilter from '../TaskFilter';
-import { tasksApi } from '@/api/tasksApi';
+import { tasksApi } from '../../api/tasksApi';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SortableHeader from '../UI/SortableHeader';
+import LoadingBar from '../UI/LoadingBar';
 
 const TasksList = () => {
   const dispatch = useDispatch();
@@ -104,7 +105,7 @@ const TasksList = () => {
     }
   };
 
-  if (status === 'loading') return <p>{t('common.loading')}</p>;
+  if (status === 'loading') return <LoadingBar />;
   if (status === 'failed')
     return (
       <p>

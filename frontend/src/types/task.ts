@@ -8,7 +8,7 @@ export type Task = {
   executorId?: number;
   createdAt: string;
   updatedAt?: string;
-}
+};
 
 export type TaskQueryParams = {
   status?: number;

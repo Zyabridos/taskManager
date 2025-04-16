@@ -5,10 +5,9 @@ import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
-
 import { DeleteButton, HrefButton } from '../Buttons';
 import SortableHeader from '../UI/SortableHeader';
-
+import LoadingBar from '../UI/LoadingBar';
 import routes from '../../routes';
 import store from '../../store';
 import { deleteLabelThunk, fetchLabel } from '../../store/slices/labelsSlice';
@@ -45,7 +44,7 @@ const LabelsList = () => {
     }
   };
 
-  if (status === 'loading') return <p>{t('common.loading')}</p>;
+  if (status === 'loading') return <LoadingBar />;
   if (status === 'failed') {
     return (
       <p>
@@ -91,9 +90,13 @@ const LabelsList = () => {
         <tbody className="divide-y divide-gray-200 bg-white">
           {sortedList.map(label => (
             <tr key={label.id}>
-              <td className="px-6 py-4 text-sm text-gray-900">{label.id}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">{label.name}</td>
-              <td className="px-6 py-4 text-sm text-gray-500">
+              <td data-id={label.id} className="px-6 py-4 text-sm text-gray-900">
+                {label.id}
+              </td>
+              <td data-name={label.name} className="px-6 py-4 text-sm text-gray-900">
+                {label.name}
+              </td>
+              <td data-createdAt={label.createdAt} className="px-6 py-4 text-sm text-gray-500">
                 {format(new Date(label.createdAt), 'dd.MM.yyyy HH:mm', { locale: ru })}
               </td>
               <td className="px-6 py-4">

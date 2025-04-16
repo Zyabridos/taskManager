@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
 import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
+import { v4 as uuidv4 } from 'uuid';
 
 let labelsFixture;
 const languages = ['ru', 'en', 'no'];
@@ -15,6 +16,7 @@ languages.forEach(lng => {
     let data;
     let url;
     let labelsData;
+    let updatedName;
 
     test.beforeAll(() => {
       data = labelsFixture.languages[lng];
@@ -68,7 +70,7 @@ languages.forEach(lng => {
       test.beforeEach(async ({ page }) => {
         const { email, password } = await signUpNewUser(page, lng);
         await LogInExistingUser(page, email, password, lng);
-        labelName = `Label ${Date.now()}`;
+        labelName = `${data.labelsData.new} ${uuidv4().slice(0, 8)}`;
 
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(labelName);
@@ -77,12 +79,12 @@ languages.forEach(lng => {
       });
 
       test('should show created label in list', async ({ page }) => {
+        updatedName = `${data.labelsData.updated} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.list);
         await expect(page.locator(`text=${labelName}`)).toBeVisible();
       });
 
       test('should edit the label', async ({ page }) => {
-        const updatedName = labelsData.updated;
         await page.goto(url.list);
 
         const row = page.locator('table tbody tr', { hasText: labelName });
@@ -98,23 +100,14 @@ languages.forEach(lng => {
       });
 
       test('should delete the label', async ({ page }) => {
-        const updatedName = labelsData.updated;
         await page.goto(url.list);
 
         const row = page.locator('table tbody tr', { hasText: labelName });
-        const editLink = row.getByRole('link', { name: data.buttons.edit });
-        await editLink.click();
-
-        await page.getByLabel(data.labels.name).fill(updatedName);
-        await clickButtonByName(page, data.buttons.edit);
-
-        await page.goto(url.list);
-        const updatedRow = page.locator('table tbody tr', { hasText: updatedName });
-        const deleteButton = updatedRow.getByRole('button', { name: data.buttons.delete });
+        const deleteButton = row.getByRole('button', { name: data.buttons.delete });
         await deleteButton.click();
 
         await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
-        await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
+        await expect(page.locator(`text=${labelName}`)).not.toBeVisible();
       });
     });
   });

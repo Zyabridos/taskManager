@@ -12,6 +12,7 @@ import routes from '../../routes';
 import useEntityToast from '../../hooks/useEntityToast';
 import useSortedList from '../../hooks/useSortableList';
 import SortableHeader from '../UI/SortableHeader';
+import LoadingBar from '../UI/LoadingBar';
 import useHandleToastError from '../../hooks/useHandleErrorToast';
 import { Status } from '../../types/entities';
 
@@ -49,7 +50,7 @@ const StatusesList: React.FC = () => {
     }
   };
 
-  if (status === 'loading') return <p>{t('common.loading')}</p>;
+  if (status === 'loading') return <LoadingBar />;
   if (status === 'failed') {
     return (
       <p>
@@ -98,9 +99,13 @@ const StatusesList: React.FC = () => {
         <tbody className="divide-y divide-gray-200 bg-white">
           {sortedList.map(status => (
             <tr key={status.id}>
-              <td className="px-6 py-4 text-sm text-gray-900">{status.id}</td>
-              <td className="px-6 py-4 text-sm text-gray-900">{status.name}</td>
-              <td className="px-6 py-4 text-sm text-gray-500">
+              <td data-id={status.id} className="px-6 py-4 text-sm text-gray-900">
+                {status.id}
+              </td>
+              <td data-name={status.name} className="px-6 py-4 text-sm text-gray-900">
+                {status.name}
+              </td>
+              <td data-createdAt={status.createdAt} className="px-6 py-4 text-sm text-gray-500">
                 {format(new Date(status.createdAt), 'dd.MM.yyyy HH:mm', { locale: ru })}
               </td>
               <td className="px-6 py-4">

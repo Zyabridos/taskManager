@@ -4,10 +4,6 @@
     "create": "http://localhost:3000/labels/new",
     "editPattern": "http://localhost:3000/labels/:id/edit"
   },
-  "labelsData": {
-    "new": "Test label",
-    "updated": "Updated Test label"
-  },
   "user": {
     "email": "testuser@example.com",
     "password": "password"
@@ -33,6 +29,10 @@
           "required": "Имя обязательно",
           "duplicate": "Метка с таким названием уже существует"
         }
+      },
+      "labelsData": {
+        "new": "Новая метка",
+        "updated": "Обновлённая метка"
       },
       "table": {
         "pageTitle": "Список меток",
@@ -66,6 +66,10 @@
           "duplicate": "Label with this name already exists"
         }
       },
+      "labelsData": {
+        "new": "Test label",
+        "updated": "Updated Test label"
+      },
       "table": {
         "pageTitle": "Labels list",
         "columns": {
@@ -85,12 +89,12 @@
         "create": "Opprett merkelapp",
         "edit": "Rediger",
         "delete": "Slett",
-        "confirmEdit": "Opprett merkelapp"
+        "confirmEdit": "Oppdater"
       },
       "messages": {
-        "created": "Etikett opprettet",
-        "updated": "Etikett oppdatert",
-        "deleted": "Etikett slettet"
+        "created": "Merkelapp opprettet",
+        "updated": "Merkelapp oppdatert",
+        "deleted": "Merkelapp slettet"
       },
       "errors": {
         "validation": {
@@ -98,12 +102,16 @@
           "duplicate": "En merkelapp med dette navnet eksisterer allerede"
         }
       },
+      "labelsData": {
+        "new": "Test merkelapp",
+        "updated": "Oppdatert merkelapp"
+      },
       "table": {
-        "pageTitle": "Merkelist",
+        "pageTitle": "Merkelappliste",
         "columns": {
           "id": "ID",
           "name": "Navn",
-          "createdAt": "Opprettet",
+          "createdAt": "Opprettelsesdato",
           "actions": "Handlinger"
         }
       }

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { fetchUsers, deleteUserThunk } from '../../store/slices/usersSlice';
 import { DeleteButton, HrefButton } from '../Buttons';
 import SortableHeader from '../UI/SortableHeader';
+import LoadingBar from '../UI/LoadingBar';
 import routes from '../../routes';
 import store from '../../store';
 import useEntityToast from '../../hooks/useEntityToast';
@@ -19,7 +20,7 @@ import { User } from '../../types/entities';
 
 const UserList: React.FC = () => {
   const dispatch = store.dispatch;
-  const { list } = useSelector(() => store.getState().users);
+  const { list, status, error } = useSelector(() => store.getState().users);
   const { t } = useTranslation('tables');
   const { t: tButtons } = useTranslation('buttons');
   const { showToast } = useEntityToast();
@@ -71,6 +72,14 @@ const UserList: React.FC = () => {
     },
     [dispatch, showToast, handleToastError],
   );
+
+  if (status === 'loading') return <LoadingBar />;
+  if (status === 'failed')
+    return (
+      <p>
+        {t('common.error')}: {error}
+      </p>
+    );
 
   return (
     <div className="mt-6 overflow-x-auto">

@@ -8,10 +8,6 @@
     "email": "testuser@example.com",
     "password": "password"
   },
-  "statusesData": {
-    "new": "New status",
-    "updated": "Updated status"
-  },
   "languages": {
     "ru": {
       "labels": {
@@ -33,6 +29,10 @@
           "required": "Имя обязательно",
           "duplicate": "Статус с таким названием уже существует"
         }
+      },
+      "statusesData": {
+        "new": "Новый статус",
+        "updated": "Обновлённый status"
       },
       "table": {
         "pageTitle": "Список статусов",
@@ -66,6 +66,10 @@
           "duplicate": "Status with this name already exists"
         }
       },
+      "statusesData": {
+        "new": "New status",
+        "updated": "Updated status"
+      },
       "table": {
         "pageTitle": "Statuses list",
         "columns": {
@@ -85,7 +89,7 @@
         "create": "Opprett status",
         "edit": "Rediger",
         "delete": "Slett",
-        "confirmEdit": "Oppdatere"
+        "confirmEdit": "Oppdater"
       },
       "messages": {
         "created": "Status opprettet",
@@ -95,15 +99,19 @@
       "errors": {
         "validation": {
           "required": "Navn er påkrevd",
-          "duplicate": "Status med dette navnet finnes allerede"
+          "duplicate": "En status med dette navnet eksisterer allerede"
         }
+      },
+      "statusesData": {
+        "new": "Ny status",
+        "updated": "Oppdatert status"
       },
       "table": {
         "pageTitle": "Statusliste",
         "columns": {
           "id": "ID",
           "name": "Navn",
-          "createdAt": "Opprettet",
+          "createdAt": "Opprettelsesdato",
           "actions": "Handlinger"
         }
       }
