@@ -42,19 +42,14 @@ jobs:
       - name: Install Playwright Browsers
         run: cd frontend && npx playwright install --with-deps
 
-      - name: Prepare backend environment
+      - name: Prepare backend database and env
         run: make prepare
+        
+      - name: Build the app (front & back)
+        run: make build
 
-      - name: Start backend
-        run: make start-backend &
-        env:
-          NODE_ENV: test
-
-      - name: Build frontend
-        run: make build-frontend
-
-      - name: Start frontend in prod
-        run: cd frontend && PORT=3000 npm run start &
+      - name: Start the app (front & back)
+        run: make start &
         env:
           NODE_ENV: test
 
