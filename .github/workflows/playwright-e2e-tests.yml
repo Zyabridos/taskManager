@@ -45,9 +45,23 @@ jobs:
       - name: Prepare backend database and env
         run: make prepare
 
+      - name: Set environment variables for DB connection
+        run: echo "DB_HOST=localhost" >> $GITHUB_ENV
+        run: echo "DB_PORT=5432" >> $GITHUB_ENV
+        run: echo "DB_NAME=taskmanager_test" >> $GITHUB_ENV
+        run: echo "DB_USER=postgres" >> $GITHUB_ENV
+        run: echo "DB_PASSWORD=postgres" >> $GITHUB_ENV
+
       - name: Run DB migrations
-        run: NODE_ENV=testCI npx knex migrate:latest
-        
+        run: |
+          NODE_ENV=testCI npx knex migrate:latest
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: taskmanager_test
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+
       - name: Build the app (front & back)
         run: make build
 
