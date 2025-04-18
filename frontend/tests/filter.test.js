@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
-import { authAndGoToList } from './helpers/session.js';
 import { clickButtonByName, clickLinkByName } from './helpers/selectors.js';
+import createTestUser from './helpers/createTestUser.js';
+import { LogInExistingUser } from './helpers/session.js';
 
 let tasksFixture;
 let statusesFixture;
@@ -13,6 +14,9 @@ test.beforeAll(async () => {
   statusesFixture = await readFixture('statuses.testData.json');
   labelsFixture = await readFixture('labels.testData.json');
   tasksUrl = tasksFixture.url;
+
+  // Create the test user before running the tests
+  await createTestUser();
 });
 
 const languages = ['ru', 'en', 'no'];
@@ -28,7 +32,8 @@ languages.forEach(lng => {
     });
 
     test.beforeEach(async ({ page }) => {
-      await authAndGoToList(page, statusesFixture.url, lng);
+      // Use LogInExistingUser to log in with the test user's credentials
+      await LogInExistingUser(page, 'testuser@example.com', 'qwerty', lng);
 
       // Create status
       await page.goto(statusesFixture.url.list);

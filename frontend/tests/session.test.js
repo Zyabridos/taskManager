@@ -33,7 +33,6 @@ languages.forEach(lng => {
     test('Should show required errors on empty registration form', async ({ page }) => {
       await page.goto(url.signUp);
       await setLanguage(page, lng);
-      console.log('data.buttons.signUp', data.buttons.signUp)
       await clickButtonByName(page, data.buttons.signUp);
 
       await expect(page.locator(`text=${data.errors.requieredEmail}`)).toBeVisible();
