@@ -30,6 +30,6 @@
     "src/store/slices/statusesSlice.js",
     "src/hooks/useSortableList.tsx",
     "src/store/index.js"
-  ],
+, "src/components/Lists/TasksList.jsx", "src/components/Lists/TasksList.jsx", "src/components/Lists/TasksList.jsx"  ],
   "exclude": ["node_modules"]
 }

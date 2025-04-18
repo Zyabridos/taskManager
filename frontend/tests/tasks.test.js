@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { signUpNewUser, LogInExistingUser } from './helpers/session.js';
+import { LogInExistingUser } from './helpers/session.js';
 import { clickButtonByName } from './helpers/selectors.js';
 import readFixture from './helpers/readFixture.js';
 import { v4 as uuidv4 } from 'uuid';
+import createTestUser from './helpers/createTestUser.js';
 
 let tasksFixture, statusesFixture, labelsFixture;
 const languages = ['ru', 'en', 'no'];
@@ -11,6 +12,7 @@ test.beforeAll(async () => {
   tasksFixture = await readFixture('tasks.testData.json');
   statusesFixture = await readFixture('statuses.testData.json');
   labelsFixture = await readFixture('labels.testData.json');
+  await createTestUser();
 });
 
 languages.forEach(lng => {
@@ -34,8 +36,12 @@ languages.forEach(lng => {
     });
 
     const authAndPrepareEntities = async page => {
-      const { email, password } = await signUpNewUser(page, lng);
-      await LogInExistingUser(page, email, password, lng);
+      await LogInExistingUser(
+        page,
+        tasksFixture.existing.email,
+        tasksFixture.existing.password,
+        lng
+      );
 
       taskName = `Task ${uuidv4().slice(0, 8)}`;
       statusName = `Status ${uuidv4().slice(0, 8)}`;
@@ -53,8 +59,6 @@ languages.forEach(lng => {
       await page.getByLabel(taskData.labels.name).fill(taskName);
       await page.getByLabel(taskData.labels.status).selectOption({ label: statusName });
       await clickButtonByName(page, taskData.buttons.create);
-
-      return { email, password };
     };
 
     test.describe('Layout and headers', () => {
@@ -65,8 +69,6 @@ languages.forEach(lng => {
         const ths = page.locator('th');
 
         await expect(page.getByRole('heading', { name: taskData.table.pageTitle })).toBeVisible();
-        // default sorting by id, and therefore
-        // with first render showed ID ↑, not just ID
         await expect(ths.nth(0)).toHaveText(new RegExp(taskData.table.columns.id));
         await expect(ths.nth(1)).toHaveText(taskData.table.columns.name);
         await expect(ths.nth(2)).toHaveText(taskData.table.columns.status);
@@ -134,13 +136,11 @@ languages.forEach(lng => {
       test.beforeEach(async ({ page }) => {
         await authAndPrepareEntities(page);
 
-        // second status
         secondStatusName = `Z-Status ${uuidv4().slice(0, 8)}`;
         await page.goto(statusData.url.create);
         await page.getByLabel(statusData.labels.name).fill(secondStatusName);
         await clickButtonByName(page, statusData.buttons.create);
 
-        // Second task with dif status
         const secondTaskName = `B-${taskName}`;
         await page.goto(taskData.url.create);
         await page.getByLabel(taskData.labels.name).fill(secondTaskName);
@@ -156,10 +156,10 @@ languages.forEach(lng => {
         await page.goto(taskData.url.list);
 
         const header = page.locator('thead tr th', { hasText: taskData.table.columns.name });
-        await header.click(); // asc
+        await header.click();
         const firstNameAsc = await page.locator('tbody tr td').nth(1).textContent();
 
-        await header.click(); // desc
+        await header.click();
         const firstNameDesc = await page.locator('tbody tr td').nth(1).textContent();
 
         expect(firstNameAsc).not.toEqual(firstNameDesc);
@@ -169,12 +169,10 @@ languages.forEach(lng => {
         await page.goto(taskData.url.list);
 
         const header = page.locator('thead tr th', { hasText: taskData.table.columns.status });
-        await header.click(); // asc
-
+        await header.click();
         const firstStatusAsc = await page.locator('tbody tr td').nth(2).textContent();
 
-        await header.click(); // desc
-
+        await header.click();
         const firstStatusDesc = await page.locator('tbody tr td').nth(2).textContent();
 
         expect(firstStatusAsc).not.toEqual(firstStatusDesc);

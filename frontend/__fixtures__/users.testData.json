@@ -1,11 +1,7 @@
 {
   "existing": {
-    "email": "example@example.com",
-    "password": "qwerty"
-  },
-  "user": {
     "email": "testuser@example.com",
-    "password": "password"
+    "password": "qwerty"
   },
   "url": {
     "root": "http://localhost:3000",

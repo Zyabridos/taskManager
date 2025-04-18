@@ -44,6 +44,9 @@ jobs:
 
       - name: Prepare backend database and env
         run: make prepare
+
+      - name: Run DB migrations
+        run: make db-migrate
         
       - name: Build the app (front & back)
         run: make build

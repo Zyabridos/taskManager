@@ -1,17 +1,20 @@
 import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
+import { LogInExistingUser } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 import { v4 as uuidv4 } from 'uuid';
+import createTestUser from './helpers/createTestUser.js';
 
 let statusesFixture;
-const languages = ['ru', 'en', 'no'];
+const languages = ['ru', 'no', 'en'];
+const testUser = { email: 'testuser@example.com', password: 'qwerty' };
 
 test.beforeAll(async () => {
   statusesFixture = await readFixture('statuses.testData.json');
+  await createTestUser();
 });
 
-languages.forEach(lng => {
+languages.forEach((lng) => {
   test.describe(`${lng.toUpperCase()} | Statuses tests`, () => {
     let data;
     let url;
@@ -21,14 +24,18 @@ languages.forEach(lng => {
     test.beforeAll(() => {
       data = statusesFixture.languages[lng];
       url = statusesFixture.url;
-      statusesData = statusesFixture.statusesData;
+      statusesData = data.statusesData;
     });
 
     test.describe('Layout and headers', () => {
-      test('should display correct page title and table headers', async ({ page }) => {
-        await authAndGoToList(page, url, lng);
+      test.beforeEach(async ({ page }) => {
+        await LogInExistingUser(page, testUser.email, testUser.password, lng);
+      });
 
+      test('should display correct page title and table headers', async ({ page }) => {
+        await page.goto(url.list);
         const ths = page.locator('th');
+
         await expect(page.getByRole('heading', { name: data.table.pageTitle })).toBeVisible();
         // default sorting by id, and therefore
         // with first render showed ID ↑, not just ID
@@ -41,11 +48,11 @@ languages.forEach(lng => {
 
     test.describe('Validation', () => {
       test.beforeEach(async ({ page }) => {
-        await authAndGoToList(page, url, lng);
+        await LogInExistingUser(page, testUser.email, testUser.password, lng);
       });
 
       test('should show error if status name already exists', async ({ page }) => {
-        const uniqueName = `${data.statusesData.new} ${uuidv4().slice(0, 8)}`;
+        const uniqueName = `${statusesData.new} ${uuidv4().slice(0, 8)}`;
 
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(uniqueName);
@@ -62,13 +69,10 @@ languages.forEach(lng => {
     test.describe('CRUD', () => {
       let statusName;
 
-      // not nececcary to create 3 statuses - move to bedore All
-      // or use await cleanUpEntity(request, 'statuses', statusName);
       test.beforeEach(async ({ page }) => {
-        const { email, password } = await signUpNewUser(page, lng);
-        await LogInExistingUser(page, email, password, lng);
+        await LogInExistingUser(page, testUser.email, testUser.password, lng);
 
-        statusName = `${data.statusesData.new} ${uuidv4().slice(0, 8)}`;
+        statusName = `${statusesData.new} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(statusName);
         await clickButtonByName(page, data.buttons.create);
@@ -81,7 +85,7 @@ languages.forEach(lng => {
       });
 
       test('should edit the status', async ({ page }) => {
-        updatedName = `${data.statusesData.updated} ${uuidv4().slice(0, 8)}`;
+        updatedName = `${statusesData.updated} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.list);
 
         const row = page.locator('tr', { has: page.locator(`td[data-name="${statusName}"]`) });

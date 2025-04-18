@@ -2,11 +2,13 @@ import { test, expect } from '@playwright/test';
 import readFixture from './helpers/readFixture.js';
 import { clickButtonByName } from './helpers/selectors.js';
 import { setLanguage } from './helpers/languageSetup.js';
+import createTestUser from './helpers/createTestUser.js';
 
 let sessionData;
 
 test.beforeAll(async () => {
   sessionData = await readFixture('session.testData.json');
+  await createTestUser();
 });
 
 const languages = ['ru', 'en', 'no'];

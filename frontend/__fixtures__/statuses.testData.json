@@ -4,9 +4,9 @@
     "create": "http://localhost:3000/statuses/new",
     "editPattern": "http://localhost:3000/statuses/:id/edit"
   },
-  "user": {
+  "existing": {
     "email": "testuser@example.com",
-    "password": "password"
+    "password": "qwerty"
   },
   "languages": {
     "ru": {

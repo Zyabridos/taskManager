@@ -51,11 +51,6 @@ db-migrate:
 db-rollback:
 	cd backend && npx knex migrate:rollback
 
-build-backend:
-	cd backend
-	rm -rf dist
-	npm run build
-
 prepare:
 	cd backend && cp -n .env.example .env || true
 

@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
+import { LogInExistingUser } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 import { faker } from '@faker-js/faker';
+import createTestUser from './helpers/createTestUser.js';
 
-const prepareUserFixture = async lng => {
+const prepareUserFixture = async (lng) => {
   const raw = await readFixture('users.testData.json');
   const lang = raw.languages[lng];
 
@@ -15,25 +16,20 @@ const prepareUserFixture = async lng => {
   };
 };
 
-// const languages = ['ru', 'en', 'no'];
 const languages = ['ru'];
 
-languages.forEach(lng => {
+languages.forEach((lng) => {
   test.describe(`${lng.toUpperCase()} | Users UI`, () => {
     let data;
 
     test.beforeAll(async () => {
       data = await prepareUserFixture(lng);
+      await createTestUser();
     });
 
     test.describe('Layout and headers', () => {
-      let email, password;
-
       test.beforeEach(async ({ page }) => {
-        const user = await signUpNewUser(page, lng);
-        email = user.email;
-        password = user.password;
-        await LogInExistingUser(page, email, password, lng);
+        await LogInExistingUser(page, data.existing.email, data.existing.password, lng);
       });
 
       test('should display correct page title and table headers', async ({ page }) => {
@@ -57,24 +53,10 @@ languages.forEach(lng => {
       });
 
       test.describe('Edit/delete functionality', () => {
-        let email, password, otherEmail;
         let updatedFirstName, updatedLastName, updatedEmail, updatedPassword;
 
         test.beforeEach(async ({ page }) => {
-          const user = await signUpNewUser(page, lng);
-          email = user.email;
-          password = user.password;
-          await LogInExistingUser(page, email, password, lng);
-
-          otherEmail = faker.internet.email();
-          const otherPassword = faker.internet.password();
-
-          await page.goto(data.url.signUp);
-          await page.getByLabel(data.labels.firstName).fill(faker.person.firstName());
-          await page.getByLabel(data.labels.lastName).fill(faker.person.lastName());
-          await page.getByLabel(data.labels.email).fill(otherEmail);
-          await page.getByLabel(data.labels.password).fill(otherPassword);
-          await clickButtonByName(page, data.buttons.signUp);
+          await LogInExistingUser(page, data.existing.email, data.existing.password, lng);
 
           updatedFirstName = faker.person.firstName();
           updatedLastName = faker.person.lastName();
@@ -92,7 +74,8 @@ languages.forEach(lng => {
 
         test('should allow user to edit themselves', async ({ page }) => {
           await page.goto(data.url.usersList);
-          const row = page.locator(`[data-email="${email}"]`);
+          const row = page.locator(`[data-email="${data.existing.email}"]`);
+          await row.scrollIntoViewIfNeeded();
           await row.getByRole('link', { name: data.buttons.edit }).click();
 
           await page.getByLabel(data.labels.firstName).fill(updatedFirstName);
@@ -107,22 +90,19 @@ languages.forEach(lng => {
 
         test('should be able to delete itself', async ({ page }) => {
           await page.goto(data.url.usersList);
-          const row = page.locator(`[data-email="${email}"]`);
+          const row = page.locator(`[data-email="${data.existing.email}"]`);
           await row.getByRole('button', { name: data.buttons.delete }).click();
 
           await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
-          await expect(page.locator(`[data-email="${email}"]`)).toHaveCount(0);
+          await expect(page.locator(`[data-email="${data.existing.email}"]`)).toHaveCount(0);
         });
       });
 
       test.describe('Access control', () => {
-        let email, password, otherEmail;
+        let otherEmail;
 
         test.beforeEach(async ({ page }) => {
-          const user = await signUpNewUser(page, lng);
-          email = user.email;
-          password = user.password;
-          await LogInExistingUser(page, email, password, lng);
+          await LogInExistingUser(page, data.existing.email, data.existing.password, lng);
 
           const otherPassword = faker.internet.password();
           await page.goto(data.url.signUp);

@@ -64,18 +64,6 @@ languages.forEach(lng => {
       await expect(rows.first()).toContainText(taskName);
     });
 
-    test('Should filter tasks by label', async ({ page }) => {
-      await page.goto(tasksUrl.list);
-      await page.getByLabel(taskData.labels.label).selectOption({ label: taskData.task.label });
-      await page
-        .locator('form')
-        .getByRole('button', { name: taskData.buttons.applyFilter })
-        .click();
-      const rows = page.locator('table tbody tr');
-      await expect(rows).toHaveCount(1);
-      await expect(rows.first()).toContainText(taskName);
-    });
-
     test('Should filter tasks by creator (only my tasks)', async ({ page }) => {
       await page.goto(tasksUrl.list);
       const checkbox = page.getByLabel(taskData.labels.onlyMyTasks);

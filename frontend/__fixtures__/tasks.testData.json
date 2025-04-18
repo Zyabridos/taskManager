@@ -6,9 +6,9 @@
     "statuses": "http://localhost:3000/statuses",
     "labels": "http://localhost:3000/labels"
   },
-  "user": {
+  "existing": {
     "email": "testuser@example.com",
-    "password": "password"
+    "password": "qwerty"
   },
   "languages": {
     "ru": {

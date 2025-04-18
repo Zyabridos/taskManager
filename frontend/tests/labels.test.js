@@ -1,14 +1,17 @@
 import { test, expect } from '@playwright/test';
 import { clickButtonByName } from './helpers/selectors.js';
-import { signUpNewUser, LogInExistingUser, authAndGoToList } from './helpers/session.js';
+import { LogInExistingUser } from './helpers/session.js';
 import readFixture from './helpers/readFixture.js';
 import { v4 as uuidv4 } from 'uuid';
+import createTestUser from './helpers/createTestUser.js';
 
 let labelsFixture;
 const languages = ['ru', 'en', 'no'];
+const testUser = { email: 'testuser@example.com', password: 'qwerty' };
 
 test.beforeAll(async () => {
   labelsFixture = await readFixture('labels.testData.json');
+  await createTestUser();
 });
 
 languages.forEach(lng => {
@@ -21,12 +24,16 @@ languages.forEach(lng => {
     test.beforeAll(() => {
       data = labelsFixture.languages[lng];
       url = labelsFixture.url;
-      labelsData = labelsFixture.labelsData;
+      labelsData = data.labelsData;
     });
 
     test.describe('Layout and headers', () => {
+      test.beforeEach(async ({ page }) => {
+        await LogInExistingUser(page, testUser.email, testUser.password, lng);
+      });
+
       test('should display correct page title and table headers', async ({ page }) => {
-        await authAndGoToList(page, url, lng);
+        await page.goto(url.list);
         const ths = page.locator('th');
 
         await expect(page.getByRole('heading', { name: data.table.pageTitle })).toBeVisible();
@@ -41,7 +48,7 @@ languages.forEach(lng => {
 
     test.describe('Validation', () => {
       test.beforeEach(async ({ page }) => {
-        await authAndGoToList(page, url, lng);
+        await LogInExistingUser(page, testUser.email, testUser.password, lng);
       });
 
       test('should show error if label name is empty', async ({ page }) => {
@@ -51,7 +58,8 @@ languages.forEach(lng => {
       });
 
       test('should show error if label name already exists', async ({ page }) => {
-        const labelName = `Label ${Date.now()}`;
+        const labelName = `${labelsData.new} ${uuidv4().slice(0, 8)}`;
+
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(labelName);
         await clickButtonByName(page, data.buttons.create);
@@ -68,10 +76,9 @@ languages.forEach(lng => {
       let labelName;
 
       test.beforeEach(async ({ page }) => {
-        const { email, password } = await signUpNewUser(page, lng);
-        await LogInExistingUser(page, email, password, lng);
-        labelName = `${data.labelsData.new} ${uuidv4().slice(0, 8)}`;
+        await LogInExistingUser(page, testUser.email, testUser.password, lng);
 
+        labelName = `${labelsData.new} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.create);
         await page.getByLabel(data.labels.name).fill(labelName);
         await clickButtonByName(page, data.buttons.create);
@@ -79,12 +86,12 @@ languages.forEach(lng => {
       });
 
       test('should show created label in list', async ({ page }) => {
-        updatedName = `${data.labelsData.updated} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.list);
         await expect(page.locator(`text=${labelName}`)).toBeVisible();
       });
 
       test('should edit the label', async ({ page }) => {
+        updatedName = `${labelsData.updated} ${uuidv4().slice(0, 8)}`;
         await page.goto(url.list);
 
         const row = page.locator('table tbody tr', { hasText: labelName });
@@ -102,12 +109,12 @@ languages.forEach(lng => {
       test('should delete the label', async ({ page }) => {
         await page.goto(url.list);
 
-        const row = page.locator('table tbody tr', { hasText: labelName });
+        const row = page.locator('table tbody tr', { hasText: updatedName });
         const deleteButton = row.getByRole('button', { name: data.buttons.delete });
         await deleteButton.click();
 
         await expect(page.locator(`text=${data.messages.deleted}`)).toBeVisible();
-        await expect(page.locator(`text=${labelName}`)).not.toBeVisible();
+        await expect(page.locator(`text=${updatedName}`)).not.toBeVisible();
       });
     });
   });
