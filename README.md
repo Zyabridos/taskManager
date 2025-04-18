@@ -6,7 +6,7 @@
 ### 🧪 Tests
 
 [![Backend Tests](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml)  
-[![E2E Tests](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml)
+[![E2E Tests](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml)  
 [![Building Docker Tests](https://github.com/Zyabridos/taskManager/actions/workflows/docker-compose-build-test.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/docker-compose-build-test.yml)
 
 
