@@ -19,8 +19,10 @@ jobs:
       - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
-      - name: Create .env file for tests
-        run: cp backend/.env.test backend/.env
+      - name: Create .env files for tests
+        run: |
+          cp backend/.env.test backend/.env
+          cp frontend/.env.test frontend/.env
 
       - name: Build Docker images
         run: docker-compose build

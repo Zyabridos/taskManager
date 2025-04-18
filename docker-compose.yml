@@ -30,7 +30,7 @@ services:
   db:
     image: postgres:15
     env_file:
-      - frontend/.env
+      - backend/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
