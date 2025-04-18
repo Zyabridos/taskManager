@@ -30,8 +30,5 @@ jobs:
       - name: Start Docker containers
         run: docker-compose up -d
 
-      - name: Run tests
-        run: make test
-
       - name: Clean up Docker
         run: docker-compose down --volumes --remove-orphans

@@ -7,6 +7,7 @@
 
 [![Backend Tests](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml)  
 [![E2E Tests](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/playwright-e2e-tests.yml)
+[![Building Docker Tests](https://github.com/Zyabridos/taskManager/actions/workflows/docker-compose-build-test.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/docker-compose-build-test.yml)
 
 
 # 🗂️ Task Manager
@@ -118,8 +119,8 @@ make start
 
 By default:
 
-- Frontend is available at: [http://localhost:5001](http://localhost:5001)
-- Backend API runs at: [http://localhost:3000](http://localhost:3000)
+- Frontend is available at: [http://localhost:3000](http://localhost:3000)
+- Backend API runs at: [http://localhost:5001](http://localhost:5001)
 
 ## Run in development mode
 
