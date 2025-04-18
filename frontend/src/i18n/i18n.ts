@@ -6,11 +6,13 @@ import ru from './locales/ru/index.js';
 import en from './locales/en/index.js';
 import no from './locales/no/index.js';
 
+const defaultLanguage = process.env.REACT_APP_I18N_DEFAULT_LANGUAGE || 'en';
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
+    fallbackLng: defaultLanguage,
     resources: {
       ru,
       en,
