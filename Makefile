@@ -46,10 +46,10 @@ test-backend:
 	cd backend && npm test -s
 
 db-migrate:
-	cd backend && npx knex migrate:latest
+	cd backend && NODE_ENV=$(ENV) npx knex migrate:latest
 
 db-rollback:
-	cd backend && npx knex migrate:rollback
+	cd backend && NODE_ENV=$(ENV) npx knex migrate:rollback
 
 prepare:
 	cd backend && cp -n .env.example .env || true
@@ -75,6 +75,9 @@ dev-frontend:
 
 test-e2e:
 	cd frontend && npx playwright test
+
+test-e2e-ci:
+	make db-rollback ENV=testCI && make db-migrate ENV=testCI && cd frontend && npx playwright test
 
 lint-frontend:
 	cd frontend && npm run lint

@@ -1,5 +1,4 @@
 import { request } from '@playwright/test';
-import encrypt from '../../../backend/server/lib/secure.cjs';
 
 export default async function createTestUser() {
   const agent = await request.newContext({

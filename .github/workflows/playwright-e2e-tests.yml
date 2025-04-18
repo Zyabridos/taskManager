@@ -46,7 +46,7 @@ jobs:
         run: make prepare
 
       - name: Run DB migrations
-        run: make db-migrate
+        run: NODE_ENV=testCI npx knex migrate:latest
         
       - name: Build the app (front & back)
         run: make build

@@ -24,6 +24,18 @@ export const test = {
   migrations,
 };
 
+export const testCI = {
+  client: 'pg',
+  connection: {
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME || 'taskmanager_test',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'postgres',
+  },
+  migrations,
+};
+
 export const production = {
   client: 'pg',
   connection: {

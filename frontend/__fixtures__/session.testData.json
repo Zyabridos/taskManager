@@ -2,79 +2,99 @@
   "url": {
     "root": "http://localhost:3000",
     "signIn": "http://localhost:3000/session/new",
+    "signUp": "http://localhost:3000/users/new",
     "usersList": "http://localhost:3000/users",
     "afterSignUp": "http://localhost:3000",
     "afterLogin": "http://localhost:3000/users",
     "afterLogout": "http://localhost:3000/session/new"
   },
-  "commonUser": {
-    "email": "example@example.com",
-    "password": "qwerty",
-    "wrongEmailFormat": "a",
-    "shortPassword": "1"
+  "existing": {
+    "email": "testuser@example.com",
+    "password": "qwerty"
   },
   "languages": {
     "ru": {
       "labels": {
+        "firstName": "Имя",
+        "lastName": "Фамилия",
         "email": "Email",
         "password": "Пароль"
       },
       "buttons": {
         "signIn": "Войти",
-        "signOut": "Выход"
+        "signOut": "Выход",
+        "signUp": "Зарегестрироваться"
       },
       "messages": {
         "signedIn": "Вы вошли в систему",
-        "signedOut": "Вы вышли из системы"
+        "signedOut": "Вы вышли из системы",
+        "signedUp": "Вы зарегистрированы"
       },
       "errors": {
-        "requieredPassword": "Пароль обязателен",
-        "requieredEmail": "Email обязателен",
-        "wrongEmailFormat": "Неверный Email",
-        "min3symbols": "Минимум 3 символа",
-        "invalidCredentials": "Неверный email или пароль"
-      }
+      "requieredFirstName": "Имя обязательно",
+      "requieredLastName": "Фамилия обязательна",
+      "requieredPassword": "Пароль обязателен",
+      "requieredEmail": "Email обязателен",
+      "wrongEmailFormat": "Неверный Email",
+      "min3symbols": "Минимум 3 символа",
+      "invalidCredentials": "Неверный email или пароль",
+      "emailExists": "Пользователь с таким email уже существует"
+    }
     },
     "en": {
       "labels": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
         "email": "Email",
         "password": "Password"
       },
       "buttons": {
         "signIn": "Sign In",
-        "signOut": "Sign Out"
+        "signOut": "Sign Out",
+        "signUp": "Sign Up"
       },
       "messages": {
         "signedIn": "You have signed in",
-        "signedOut": "You have signed out"
+        "signedOut": "You have signed out",
+        "signedUp": "You have signed up"
       },
       "errors": {
+        "requieredFirstName": "First name is required",
+        "requieredLastName": "Last name is required",
         "requieredPassword": "Password is required",
         "requieredEmail": "Email is required",
         "wrongEmailFormat": "Invalid email",
         "min3symbols": "Minimum 3 characters",
-        "invalidCredentials": "Invalid email or password"
+        "invalidCredentials": "Invalid email or password",
+        "emailExists": "User with this email already exists"
       }
     },
     "no": {
       "labels": {
+        "firstName": "Fornavn",
+        "lastName": "Etternavn",
         "email": "E-post",
         "password": "Passord"
       },
       "buttons": {
         "signIn": "Logg inn",
-        "signOut": "Logg ut"
+        "signOut": "Logg ut",
+        "signUp": "Registrer"
       },
       "messages": {
         "signedIn": "Du er logget inn",
-        "signedOut": "Du er logget ut"
+        "signedOut": "Du er logget ut",
+        "signedUp": "Du er registrert"
       },
       "errors": {
+        "requieredFirstName": "Fornavn er påkrevd",
+        "requieredLastName": "Etternavn er påkrevd",
         "requieredPassword": "Passord er påkrevd",
         "requieredEmail": "E-post er påkrevd",
         "wrongEmailFormat": "Ugyldig e-post",
         "min3symbols": "Minimum 3 tegn",
-        "invalidCredentials": "Feil e-post eller passord"
+        "invalidCredentials": "Feil e-post eller passord",
+        "emailExists": "Bruker med denne e-posten finnes allerede"
       }
     }
   }
