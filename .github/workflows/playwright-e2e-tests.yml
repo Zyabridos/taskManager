@@ -64,8 +64,16 @@ jobs:
 
       - name: Run Playwright tests
         run: cd frontend && npx playwright test
+        env:
+          NEXT_PUBLIC_API_BASE: http://localhost:5001
+          PORT: 3000
+          NODE_ENV: test
+          REACT_APP_I18N_DEFAULT_LANGUAGE: ru
+          REACT_APP_I18N_SUPPORTED_LANGUAGES: ru,en,no
+
 
       - name: Upload Playwright test results
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-test-results
