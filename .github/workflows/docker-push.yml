@@ -33,7 +33,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          file: Dockerfile.production
+          file: Dockerfile
           tags: zyabridos/task_manager:latest
           build-args: |
             FRONTEND_ENV_FILE=frontend/.env
