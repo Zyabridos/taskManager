@@ -41,7 +41,6 @@ lint:
 	make lint-backend && make lint-frontend
 
 # Local-comands - backend
-
 test-backend:
 	cd backend && npm test -s
 
