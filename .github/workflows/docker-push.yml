@@ -1,4 +1,4 @@
-name: Push docker image to docker hub
+name: Push docker image to Docker Hub
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
   push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install Docker Compose
@@ -17,6 +17,8 @@ jobs:
 
       - name: Copy .env.test files
         run: |
+          chmod 644 backend/.env.test
+          chmod 644 frontend/.env.test
           cp backend/.env.test backend/.env
           cp frontend/.env.test frontend/.env
 
@@ -29,12 +31,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push backend Docker image
         uses: docker/build-push-action@v5
         with:
           push: true
-          file: Dockerfile
-          tags: zyabridos/task_manager:latest
+          file: ./backend/Dockerfile
+          tags: zyabridos/task_manager_backend:latest
+          build-args: |
+            BACKEND_ENV_FILE=backend/.env
+
+      - name: Build and push frontend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          file: ./frontend/Dockerfile
+          tags: zyabridos/task_manager_frontend:latest
           build-args: |
             FRONTEND_ENV_FILE=frontend/.env
-            BACKEND_ENV_FILE=backend/.env
