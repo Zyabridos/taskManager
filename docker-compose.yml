@@ -26,7 +26,7 @@ services:
       - backend/.env
     depends_on:
       - backend
-
+      
   db:
     image: postgres:15
     env_file:

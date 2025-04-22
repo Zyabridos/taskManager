@@ -1,6 +1,6 @@
 # Docker-commands
 docker-build:
-	docker compose build
+	docker compose build 
 
 docker-start:
 	docker compose up -d
@@ -18,6 +18,9 @@ docker-restart:
 	make docker-build
 	make docker-start
 
+docker-test-frontend:
+	docker-compose run --rm frontend-test
+
 # Local-comands - common
 install:
 	npm install
@@ -27,6 +30,9 @@ build:
 
 start:
 	make start-backend & make start-frontend
+
+test-all:
+	make test-e2e && make test-backend
 
 dev:
 	make start-backend & cd frontend && npm run dev
@@ -83,26 +89,3 @@ lint-frontend:
 
 format-frontend:
 	cd frontend && npm run format
-
-# Local-comands - TEMP
-
-u:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/users.test.js
-
-st:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/statuses.test.js
-
-se:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/session.test.js
-
-t:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/tasks.test.js
-
-l:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/labels.test.js
-
-f:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/filter.test.js
-
-h:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/helpers.test.js
