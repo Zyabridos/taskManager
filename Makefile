@@ -96,9 +96,6 @@ st:
 se:
 	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/session.test.js
 
-so:
-	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/sortTasks.test.js
-
 t:
 	make db-rollback && make db-migrate && cd frontend && npx playwright test tests/tasks.test.js
 
