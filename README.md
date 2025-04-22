@@ -7,6 +7,7 @@
 
 [![Backend Tests](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/backend-tests.yml)  
 [![Building Docker Tests](https://github.com/Zyabridos/taskManager/actions/workflows/docker-compose-build-test.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/docker-compose-build-test.yml)
+[![Push to Docker Hub](https://github.com/Zyabridos/taskManager/actions/workflows/docker-push.yml/badge.svg)](https://github.com/Zyabridos/taskManager/actions/workflows/docker-push.yml)
 
 
 # 🗂️ Task Manager
